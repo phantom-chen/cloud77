@@ -4,13 +4,22 @@ name: main-action
 on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+    inputs:
+      image_tag:
+        description: "Docker Image Tag, E.g. v0.0.0"
+        required: true
+        default: "latest"
+      test_mode:
+        description: "Flag value of test mode"
+        required: false
+        default: "true"
   pull_request:
   push:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  test-run:
+  first-job:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -35,3 +44,4 @@ jobs:
           node -v
           npm -v
           yarn -v
+          ls

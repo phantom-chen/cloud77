@@ -62,3 +62,36 @@ jobs:
 
       - name: List files
         run: ls ./cloud77-typescript/dist
+
+      # dotnet build
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: '8.0.x'  # Specify the .NET version you are using
+
+      - name: Restore dependencies
+        run: cd ./cloud77-dotnet && dotnet restore
+
+      - name: Build
+        run: cd ./cloud77-dotnet && dotnet build --configuration Release --no-restore
+
+      - name: Restore dependencies
+        run: cd ./SimpleService && dotnet restore
+
+      - name: Build
+        run: cd ./SimpleService && dotnet build --configuration Release --no-restore
+
+      # nuget package
+
+      # docker image
+      - name: set up docker
+        uses: docker/setup-buildx-action@v1
+
+      - name: echo docker version
+        run: docker version
+
+      - name: build image
+        run: cd ./SimpleService && docker build -t simple-service .
+
+      - name: list images
+        run: docker images

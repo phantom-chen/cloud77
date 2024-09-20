@@ -102,7 +102,7 @@ jobs:
         run: cd ./cloud77-dotnet && dotnet pack -p:PackageVersion=${{ github.event.inputs.pkg_version }} -o bin
 
       - name: Publish the package to nuget.org
-        run: cd ./cloud77-dotnet && dotnet nuget push */bin/*.nupkg -k $NUGET_AUTH_TOKEN -s https://api.nuget.org/v3/index.json
+        run: cd ./cloud77-dotnet && dotnet nuget push ./bin/*.nupkg -k $NUGET_AUTH_TOKEN -s https://api.nuget.org/v3/index.json
         env:
           NUGET_AUTH_TOKEN: ${{ secrets.NUGET_AUTH_TOKEN }}
 

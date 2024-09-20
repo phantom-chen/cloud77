@@ -98,13 +98,13 @@ jobs:
       - name: Build
         run: cd ./cloud77-dotnet && dotnet build --configuration Release --no-restore
 
-      - name: Pack
-        run: cd ./cloud77-dotnet && dotnet pack -p:PackageVersion=${{ github.event.inputs.pkg_version }} -o bin
+      # - name: Pack
+      #   run: cd ./cloud77-dotnet && dotnet pack -p:PackageVersion=${{ github.event.inputs.pkg_version }} -o bin
 
-      - name: Publish the package to nuget.org
-        run: cd ./cloud77-dotnet && dotnet nuget push ./bin/*.nupkg -k $NUGET_AUTH_TOKEN -s https://api.nuget.org/v3/index.json
-        env:
-          NUGET_AUTH_TOKEN: ${{ secrets.NUGET_AUTH_TOKEN }}
+      # - name: Publish the package to nuget.org
+      #   run: cd ./cloud77-dotnet && dotnet nuget push ./bin/*.nupkg -k $NUGET_AUTH_TOKEN -s https://api.nuget.org/v3/index.json
+      #   env:
+      #     NUGET_AUTH_TOKEN: ${{ secrets.NUGET_AUTH_TOKEN }}
 
       - name: Restore dependencies
         run: cd ./SimpleService && dotnet restore
@@ -129,14 +129,21 @@ jobs:
       # nuget package
 
       # docker image
-      # - name: set up docker
-      #   uses: docker/setup-buildx-action@v1
+      - name: set up docker
+        uses: docker/setup-buildx-action@v1
 
-      # - name: echo docker version
-      #   run: docker version
+      - name: echo docker version
+        run: docker version
 
-      # - name: build image
-      #   run: cd ./SimpleService && docker build -t simple-service .
+      - name: Login to Aliyun Registry
+        uses: docker/login-action@v3
+        with:
+          registry: registry.cn-hangzhou.aliyuncs.com
+          username: ${{ secrets.ALIYUN_REGISTRY_USERNAME }}
+          password: ${{ secrets.ALIYUN_REGISTRY_ACCESS_TOKEN }}
 
-      # - name: list images
-      #   run: docker images
+      - name: build image
+        run: cd ./SimpleService && docker build -t simple-service .
+
+      - name: list images
+        run: docker images

@@ -29,5 +29,14 @@ namespace SimpleService.Controllers
             })
             .ToArray();
         }
+
+        [HttpGet]
+        [Route("values")]
+        public IActionResult GetNumber()
+        {
+            var obj = new Cloud77.Dotnet.Class1() { MyProperty = 1 };
+            _logger.LogInformation(obj.Greeting());
+            return Ok(obj);
+        }
     }
 }

@@ -82,7 +82,7 @@ jobs:
         run: ls ./cloud77-typescript/dist
 
       - name: Publish package
-        run: cd ./cloud77-typescript/dist && npm publish --public
+        run: cd ./cloud77-typescript/dist && npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}} 
       

@@ -8,10 +8,10 @@ on:
 
   workflow_dispatch:
     inputs:
-      image_tag:
-        description: "Docker Image Tag"
+      pkg_version:
+        description: "NPM package version"
         required: true
-        default: "latest"
+        default: "0.0.0"
       test_mode:
         description: "Flag value of test mode"
         required: false
@@ -61,6 +61,15 @@ jobs:
 
       - name: Unit Test Check
         run: cd ./cloud77-typescript && yarn test-cc
+      
+      - name: 'change version'
+        uses: reedyuk/npm-version@1.1.1
+        with:
+          version: ${{ github.event.inputs.pkg_version }}
+          package: 'cloud77-typescript/'
+
+      - name: 'Print version'
+        run: cd ./cloud77-typescript && cat package.json
 
       - name: Build and Bubble Package
         run: cd ./cloud77-typescript && yarn release
@@ -90,30 +99,30 @@ jobs:
         run: cd ./SimpleService && dotnet build --configuration Release --no-restore
 
         # CodeQL
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
-        with:
-          languages: 'csharp'
+      # - name: Initialize CodeQL
+      #   uses: github/codeql-action/init@v2
+      #   with:
+      #     languages: 'csharp'
   
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v2
+      # - name: Autobuild
+      #   uses: github/codeql-action/autobuild@v2
   
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
-        with:
-          category: "/language:csharp"
+      # - name: Perform CodeQL Analysis
+      #   uses: github/codeql-action/analyze@v2
+      #   with:
+      #     category: "/language:csharp"
 
       # nuget package
 
       # docker image
-      - name: set up docker
-        uses: docker/setup-buildx-action@v1
+      # - name: set up docker
+      #   uses: docker/setup-buildx-action@v1
 
-      - name: echo docker version
-        run: docker version
+      # - name: echo docker version
+      #   run: docker version
 
-      - name: build image
-        run: cd ./SimpleService && docker build -t simple-service .
+      # - name: build image
+      #   run: cd ./SimpleService && docker build -t simple-service .
 
-      - name: list images
-        run: docker images
+      # - name: list images
+      #   run: docker images

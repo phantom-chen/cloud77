@@ -143,7 +143,10 @@ jobs:
           password: ${{ secrets.ALIYUN_REGISTRY_ACCESS_TOKEN }}
 
       - name: build image
-        run: cd ./SimpleService && docker build -t simple-service .
+        run: cd ./SimpleService && docker build -t registry.cn-hangzhou.aliyuncs.com/cloud_77/simple-service:${{ github.event.inputs.pkg_version }} .
+
+      - name: Push image
+        run: docker push registry.cn-hangzhou.aliyuncs.com/cloud_77/simple-service:${{ github.event.inputs.pkg_version }}
 
       - name: list images
         run: docker images

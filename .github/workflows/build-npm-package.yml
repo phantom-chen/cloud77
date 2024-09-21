@@ -112,6 +112,15 @@ jobs:
       - name: Build
         run: cd ./SimpleService && dotnet build --configuration Release --no-restore
 
+      - name: Copy folder content recursively to remote
+        uses: ArthurYdalgo/github-action-scp@release
+        with:
+          local: SimpleService/bin/Release/net8.0
+          remote: scp/simple
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+
         # CodeQL
       # - name: Initialize CodeQL
       #   uses: github/codeql-action/init@v2

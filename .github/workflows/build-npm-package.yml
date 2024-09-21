@@ -151,6 +151,29 @@ jobs:
       # - name: list images
       #   run: docker images
 
+      - if: github.event.inputs.test_mode == 'false'
+        name: ssh-pipeline
+        # You may pin to the exact commit or the version.
+        # uses: cross-the-world/ssh-pipeline@7f022867934a210af826af99ef80d96f03a094d5
+        uses: cross-the-world/ssh-pipeline@v1.2.0
+        env:
+          PKGVERSION: ${{ github.event.inputs.pkg_version }}
+        with:
+          # ssh remote host
+          host: ${{ secrets.SERVER_HOST }}
+          # ssh remote user
+          user: ${{ secrets.SERVER_USERNAME }}
+          # ssh remote password
+          pass: ${{ secrets.SERVER_PASSWORD }}
+          # execute commands on ssh
+          script: # optional |
+            pwd
+            echo 'deploy starts' &&
+            echo $PKGVERSION > version.txt &&
+            docker run -d registry.cn-hangzhou.aliyuncs.com/cloud_77/simple-service:1.0.1 &&
+            date +"%A, %B %d, %Y %H:%M:%S" > stamp.txt &&
+            echo 'deploy ends'
+
   build-desktop:
     runs-on: windows-latest
 

@@ -113,7 +113,7 @@ jobs:
         run: cd ./SimpleService && dotnet build --configuration Release --no-restore
 
       - name: Copy folder content recursively to remote
-        uses: ArthurYdalgo/github-action-scp@release
+        uses: ArthurYdalgo/github-action-scp@0.7.5
         with:
           local: SimpleService/bin/Release/net8.0
           remote: scp/simple

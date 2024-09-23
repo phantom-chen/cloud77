@@ -1,14 +1,11 @@
 import { IQueryResult } from "./gateway";
 
-export interface Author {
+export interface AuthorEntity {
+    id: string
     name: string,
     title: string,
     region: string,
     address: string,
-}
-
-export interface AuthorEntity extends Author {
-    id: string
     createdAt?: string,
     updatedAt?: string
 }

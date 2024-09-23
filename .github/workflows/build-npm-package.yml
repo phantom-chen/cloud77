@@ -1,10 +1,10 @@
 name: build-npm-package
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  # push:
+  #   branches: [ "main" ]
+  # pull_request:
+  #   branches: [ "main" ]
 
   workflow_dispatch:
     inputs:
@@ -35,176 +35,53 @@ jobs:
       - name: echo github ref
         run: echo ${{ github.ref }}
 
-      # - name: use node
-      #   uses: actions/setup-node@v1
-      #   with:
-      #     node-version: "20.x"
-      #     registry-url: https://registry.npmjs.org/
+      - name: use node
+        uses: actions/setup-node@v1
+        with:
+          node-version: "20.x"
+          registry-url: https://registry.npmjs.org/
           
-      - name: Run a one-line script
-        run: echo Hello, world!
+      # - name: Run a one-line script
+      #   run: echo Hello, world!
 
-      # - name: Run a multi-line script
-      #   run: |
-      #     echo Add other actions to build,
-      #     echo test, and deploy your project.
-      #     node -v
-      #     npm -v
-      #     yarn -v
-      #     ls
-      #     pwd
-
-      # - name: Install package
-      #   run: cd ./cloud77-typescript && yarn install
-  
-      # - name: ESLint Check
-      #   run: cd ./cloud77-typescript && yarn lint
-
-      # - name: Unit Test Check
-      #   run: cd ./cloud77-typescript && yarn test-cc
-      
-      # - name: 'change version'
-      #   uses: reedyuk/npm-version@1.1.1
-      #   with:
-      #     version: ${{ github.event.inputs.pkg_version }}
-      #     package: 'cloud77-typescript/'
-
-      # - name: 'Print version'
-      #   run: cd ./cloud77-typescript && cat package.json
-
-      # - name: Build and Bubble Package
-      #   run: cd ./cloud77-typescript && yarn release
-
-      # - name: Prepare tar file
-      #   run: cd ./cloud77-typescript/dist && npm pack
-
-      # - name: List files
-      #   run: ls ./cloud77-typescript/dist
-
-      # - name: Publish package
-      #   run: cd ./cloud77-typescript/dist && npm publish --access public
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}} 
-      
-      # dotnet build
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v2
-        with:
-          dotnet-version: '8.0.x'  # Specify the .NET version you are using
-
-      - name: Restore dependencies
-        run: cd ./cloud77-dotnet && dotnet restore
-
-      - name: Build
-        run: cd ./cloud77-dotnet && dotnet build --configuration Release --no-restore
-
-      # - name: Pack
-      #   run: cd ./cloud77-dotnet && dotnet pack -p:PackageVersion=${{ github.event.inputs.pkg_version }} -o bin
-
-      # - name: Publish the package to nuget.org
-      #   run: cd ./cloud77-dotnet && dotnet nuget push ./bin/*.nupkg -k $NUGET_AUTH_TOKEN -s https://api.nuget.org/v3/index.json
-      #   env:
-      #     NUGET_AUTH_TOKEN: ${{ secrets.NUGET_AUTH_TOKEN }}
-
-      - name: Restore dependencies
-        run: cd ./SimpleService && dotnet restore
-
-      - name: Build
-        run: cd ./SimpleService && dotnet build --configuration Release --no-restore
-
-      - name: Copy folder content recursively to remote
-        uses: ArthurYdalgo/github-action-scp@0.7.5
-        with:
-          local: SimpleService/bin/Release/net8.0
-          remote: scp/simple
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          password: ${{ secrets.SERVER_PASSWORD }}
-
-        # CodeQL
-      # - name: Initialize CodeQL
-      #   uses: github/codeql-action/init@v2
-      #   with:
-      #     languages: 'csharp'
-  
-      # - name: Autobuild
-      #   uses: github/codeql-action/autobuild@v2
-  
-      # - name: Perform CodeQL Analysis
-      #   uses: github/codeql-action/analyze@v2
-      #   with:
-      #     category: "/language:csharp"
-
-      # nuget package
-
-      # docker image
-      # - name: set up docker
-      #   uses: docker/setup-buildx-action@v1
-
-      # - name: echo docker version
-      #   run: docker version
-
-      # - name: Login to Aliyun Registry
-      #   uses: docker/login-action@v3
-      #   with:
-      #     registry: registry.cn-hangzhou.aliyuncs.com
-      #     username: ${{ secrets.ALIYUN_REGISTRY_USERNAME }}
-      #     password: ${{ secrets.ALIYUN_REGISTRY_ACCESS_TOKEN }}
-
-      # - name: build image
-      #   run: cd ./SimpleService && docker build -t registry.cn-hangzhou.aliyuncs.com/cloud_77/simple-service:${{ github.event.inputs.pkg_version }} .
-
-      # - name: Push image
-      #   run: docker push registry.cn-hangzhou.aliyuncs.com/cloud_77/simple-service:${{ github.event.inputs.pkg_version }}
-
-      # - name: list images
-      #   run: docker images
-
-      - if: github.event.inputs.test_mode == 'false'
-        name: ssh-pipeline
-        # You may pin to the exact commit or the version.
-        # uses: cross-the-world/ssh-pipeline@7f022867934a210af826af99ef80d96f03a094d5
-        uses: cross-the-world/ssh-pipeline@v1.2.0
-        env:
-          PKGVERSION: ${{ github.event.inputs.pkg_version }}
-        with:
-          # ssh remote host
-          host: ${{ secrets.SERVER_HOST }}
-          # ssh remote user
-          user: ${{ secrets.SERVER_USERNAME }}
-          # ssh remote password
-          pass: ${{ secrets.SERVER_PASSWORD }}
-          # execute commands on ssh
-          script: # optional |
-            pwd
-            echo 'deploy starts' &&
-            echo $PKGVERSION > version.txt &&
-            docker run -d registry.cn-hangzhou.aliyuncs.com/cloud_77/simple-service:1.0.1 &&
-            date +"%A, %B %d, %Y %H:%M:%S" > stamp.txt &&
-            echo 'deploy ends'
-
-  build-desktop:
-    runs-on: windows-latest
-
-    steps:
-
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Install .NET SDK
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: 8.0.x
-
-      # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
-      - name: Setup MSBuild.exe
-        uses: microsoft/setup-msbuild@v2
-
-      - name: Check MSBuild
+      - name: Run a multi-line script
         run: |
-          pwd
+          echo Add other actions to build,
+          echo test, and deploy your project.
+          node -v
+          npm -v
+          yarn -v
           ls
-          msbuild --version
-          dotnet --info
+          pwd
+
+      - name: Install package
+        run: cd ./cloud77-typescript && yarn install
+  
+      - name: ESLint Check
+        run: cd ./cloud77-typescript && yarn lint
+
+      - name: Unit Test Check
+        run: cd ./cloud77-typescript && yarn test-cc
+      
+      - name: 'Change version'
+        uses: reedyuk/npm-version@1.1.1
+        with:
+          version: ${{ github.event.inputs.pkg_version }}
+          package: 'cloud77-typescript/'
+
+      - name: 'Print version'
+        run: cd ./cloud77-typescript && cat package.json
+
+      - name: Build and Bubble Package
+        run: cd ./cloud77-typescript && yarn release
+
+      - name: Prepare tar file
+        run: cd ./cloud77-typescript/dist && npm pack
+
+      - name: List files
+        run: ls ./cloud77-typescript/dist
+
+      - name: Publish package
+        run: cd ./cloud77-typescript/dist && npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}} 

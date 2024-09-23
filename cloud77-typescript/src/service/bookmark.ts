@@ -1,6 +1,6 @@
 import { IQueryResult } from "./gateway";
 
-export interface Bookmark {
+export interface BookmarkEntity {
     id: string;
     href: string;
     title: string;
@@ -9,5 +9,5 @@ export interface Bookmark {
 }
 
 export interface BookmarkResult extends IQueryResult {
-    data: Bookmark[]
+    data: BookmarkEntity[]
 }

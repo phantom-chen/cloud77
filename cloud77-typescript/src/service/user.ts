@@ -52,6 +52,7 @@ export interface Profile {
 
 export interface UserAccount {
     email: string,
+    name: string,
     existing: boolean,
     confirmed: boolean,
     profile: Profile,

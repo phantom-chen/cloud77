@@ -1,0 +1,41 @@
+name: build-service-abstractions
+
+on:
+
+  workflow_dispatch:
+    inputs:
+      pkg_version:
+        description: "Nuget package version"
+        required: true
+        default: "0.0.0"
+      test_mode:
+        description: "Flag value of test mode"
+        required: false
+        default: "true"
+
+jobs:
+  build-package:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      actions: read
+      contents: read
+      security-events: write  # Ensure this permission is set
+
+    strategy:
+      fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: echo github ref
+        run: echo ${{ github.ref }}
+
+      # - name: Run a one-line script
+      #   run: echo Hello, world!
+
+      - name: Run a multi-line script
+        run: |
+          echo Add other actions to build,
+          echo test, and deploy your project.
+          pwd

@@ -1,0 +1,42 @@
+name: build-desktop
+
+on:
+
+  workflow_dispatch:
+    inputs:
+      pkg_version:
+        description: "Package version"
+        required: true
+        default: "0.0.0"
+      test_mode:
+        description: "Flag value of test mode"
+        required: false
+        default: "true"
+
+jobs:
+  build-desktop:
+    runs-on: windows-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+            fetch-depth: 0
+
+      - name: echo github ref
+        run: echo ${{ github.ref }}
+
+      - name: Install .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+            dotnet-version: 8.0.x
+
+        # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
+      - name: Setup MSBuild.exe
+        uses: microsoft/setup-msbuild@v2
+    
+      - name: Check MSBuild
+        run: |
+            pwd
+            ls
+            msbuild --version
+            dotnet --info

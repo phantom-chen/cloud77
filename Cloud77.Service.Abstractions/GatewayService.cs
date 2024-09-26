@@ -8,7 +8,7 @@ namespace Cloud77.Service
     {
         public string Name { get; set; }
         public string Version { get; set; }
-        public string Tags { get; set; }
+        public string[] Tags { get; set; }
         public string Hostname { get; set; }
         public string IP { get; set; }
     }

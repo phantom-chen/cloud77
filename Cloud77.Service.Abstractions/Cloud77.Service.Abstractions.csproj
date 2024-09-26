@@ -12,21 +12,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Utility\**" />
-    <EmbeddedResource Remove="Utility\**" />
-    <None Remove="Utility\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="cloud77.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="README.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="cloud77.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
@@ -36,5 +21,5 @@
       <PackagePath>\</PackagePath>
     </None>
   </ItemGroup>
-
+  
 </Project>

@@ -2,8 +2,8 @@
   "name": "@phantom-chen/cloud77",
   "version": "1.0.0",
   "description": "cloud77 typescript library",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./index.js",
+  "types": "./index.d.ts",
   "scripts": {
     "prepare": "echo hello",
     "lint": "eslint ./",
@@ -33,5 +33,6 @@
     "rollup-plugin-typescript2": "^0.32.1",
     "ts-jest": "^28.0.7",
     "typescript": "^4.6.4"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610"
 }

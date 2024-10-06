@@ -1,4 +1,5 @@
-﻿using Cooler.Plus.Windows;
+﻿using Cooler.Plus.Models;
+using Cooler.Plus.Windows;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +25,10 @@ namespace Cooler.Plus
         public MainWindow()
         {
             InitializeComponent();
+            model = new MainModel();
         }
+
+        private readonly MainModel model;
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -34,6 +38,7 @@ namespace Cooler.Plus
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            DataContext = model;
             Task.Run(() =>
             {
                 Dispatcher.Invoke(() =>
@@ -42,6 +47,17 @@ namespace Cooler.Plus
                     window.ShowDialog();
                 });
             });
+        }
+
+        private void ExitApplication(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void ShowAboutMe(object sender, RoutedEventArgs e)
+        {
+            var window = new AboutWindow();
+            window.ShowDialog();
         }
     }
 }

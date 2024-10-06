@@ -4,6 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Cooler.Plus"
+        xmlns:model="clr-namespace:Cooler.Plus.Models"
+        xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         Icon="./favicon.ico"
         WindowStartupLocation="CenterScreen"
@@ -15,7 +17,8 @@
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
-        Title="Cooler Plus" Height="900" Width="1600">
+        d:DataContext="{d:DesignInstance model:MainModel}"
+        Title="{Binding Path=Title}" Height="900" Width="1600">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -24,8 +27,56 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
+
+        <DockPanel>
+            <StackPanel Orientation="Horizontal"
+                        DockPanel.Dock="Right">
+
+                <md:PackIcon
+                             Kind="AccountBox" VerticalAlignment="Center" 
+                             HorizontalAlignment="Right"/>
+                <TextBlock Style="{DynamicResource MaterialDesignTextBlock}" 
+                           Text="{Binding Path=UserName}" VerticalAlignment="Center" 
+                           HorizontalAlignment="Center" Margin="10 0"/>
+                <md:PackIcon Kind="Email" VerticalAlignment="Center" 
+                             HorizontalAlignment="Right"/>
+                <TextBlock Style="{DynamicResource MaterialDesignTextBlock}" 
+                           Text="{Binding Path=Email}" VerticalAlignment="Center" 
+                           HorizontalAlignment="Center" Margin="10 0"/>
+                <md:PackIcon Kind="{Binding Path=Status}" 
+                             VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                <TextBlock Grid.Column="5" Style="{DynamicResource MaterialDesignTextBlock}" 
+                           Text="{Binding Path=StatusText}" VerticalAlignment="Center" 
+                           HorizontalAlignment="Center" Margin="10 0"/>
+
+            </StackPanel>
+            <Menu IsMainMenu="True">
+                <MenuItem Header="File">
+                    <MenuItem Header="New"/>
+                    <MenuItem Header="Open"/>
+                    <MenuItem Header="Save"/>
+                    <MenuItem Header="Save as"/>
+                    <MenuItem Header="Exit" 
+                          Click="ExitApplication"
+                      InputGestureText="Crrl+E" 
+                      Style="{DynamicResource MaterialDesignMenuItem}">
+                        <MenuItem.Icon>
+                            <md:PackIcon Kind="ExitToApp" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </MenuItem>
+                <MenuItem Header="Help">
+                    <MenuItem Click="ShowAboutMe" Header="About Cooler Plus"/>
+                    <MenuItem Header="Check Update">
+                        <MenuItem.Icon>
+                            <md:PackIcon Kind="Tick" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </MenuItem>
+            </Menu>
+        </DockPanel>
         
-        <StackPanel Orientation="Vertical">
+        <StackPanel Grid.Row="1" Orientation="Vertical">
             <TextBlock Text="cooler plus works"/>
             <Button Click="Button_Click" >Cooler Plus Update</Button>
         </StackPanel>

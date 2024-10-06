@@ -6,9 +6,25 @@
         xmlns:local="clr-namespace:Cooler.Plus"
         mc:Ignorable="d"
         Icon="./favicon.ico"
+        WindowStartupLocation="CenterScreen"
         Loaded="Window_Loaded"
-        Title="MainWindow" Height="450" Width="800">
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal" 
+        TextOptions.TextRenderingMode="Auto"        
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        Title="Cooler Plus" Height="900" Width="1600">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        
         <StackPanel Orientation="Vertical">
             <TextBlock Text="cooler plus works"/>
             <Button Click="Button_Click" >Cooler Plus Update</Button>

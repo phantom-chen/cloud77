@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:Cooler.Plus"
         xmlns:model="clr-namespace:Cooler.Plus.Models"
         xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:tb="http://www.hardcodet.net/taskbar"
         mc:Ignorable="d"
         Icon="./favicon.ico"
         WindowStartupLocation="CenterScreen"
@@ -75,10 +76,79 @@
                 </MenuItem>
             </Menu>
         </DockPanel>
+
+        <ToolBar Grid.Row="1">
+            <Button Click="ViewDashboard">
+                <md:PackIcon Kind="ViewDashboard"/>
+            </Button>
+            <Button Click="EditSettings">
+                <md:PackIcon Kind="Settings" />
+            </Button>
+            <Button Click="UserLogin">
+                <md:PackIcon Kind="LoginVariant"/>
+            </Button>
+            <Button Click="EditCustomer">
+                <md:PackIcon Kind="AccountGroupOutline" />
+            </Button>
+            <Button Click="ResizeWindow">
+                <md:PackIcon Kind="Resize"/>
+            </Button>
+            <ToggleButton />
+            <Button>
+                <md:PackIcon Kind="FileImportOutline"/>
+            </Button>
+            <Button>
+                <md:PackIcon Kind="Work"/>
+            </Button>
+            <Button>
+                <md:PackIcon Kind="BookmarkBox"/>
+            </Button>
+            <Button>
+                <md:PackIcon Kind="FileExcelBox"/>
+            </Button>
+            <Button>
+                <md:PackIcon Kind="FileWordBox"/>
+            </Button>
+            <Button Content="Editor">
+                <Button.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="_Close"></MenuItem>
+                        <MenuItem Header="_Delete"></MenuItem>
+                    </ContextMenu>
+                </Button.ContextMenu>
+            </Button>
+
+            <md:PopupBox StaysOpen="False" IsEnabled="True">
+                <StackPanel>
+                    <TextBlock Text="hello world"/>
+                    <Button Content="good popup"/>
+                </StackPanel>
+            </md:PopupBox>
+        </ToolBar>
         
-        <StackPanel Grid.Row="1" Orientation="Vertical">
+        <StackPanel Grid.Row="2" Orientation="Vertical">
             <TextBlock Text="cooler plus works"/>
             <Button Click="Button_Click" >Cooler Plus Update</Button>
         </StackPanel>
+
+        <md:Snackbar
+            Grid.Row="3"
+            HorizontalAlignment="Stretch"
+            x:Name="SnackbarFive"
+            IsActive="False">
+            <md:SnackbarMessage
+                ActionContent="OK"
+                ActionClick="HideMessage"
+                Content="This Snackbar is stretched horizontally. Consider allowing your content to push up."  />
+        </md:Snackbar>
+
+        <StatusBar Grid.Row="4">
+            <StatusBarItem Content="hello"/>
+            <TextBlock Text="simple log" />
+            <TextBlock x:Name="windowsize" Text="window size" />
+            <tb:TaskbarIcon x:Name="myNotifyIcon"
+                    Visibility="Visible"
+                    ToolTipText="Fallback ToolTip for Windows xp" />
+        </StatusBar>
     </Grid>
 </Window>

@@ -32,7 +32,8 @@ namespace Cooler.Plus
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var window = new UpdateWindow();
+            //var window = new UpdateWindow();
+            var window = new LoginWindow();
             window.Show();
         }
 
@@ -47,6 +48,7 @@ namespace Cooler.Plus
                     window.ShowDialog();
                 });
             });
+            windowsize.Text = this.RenderSize.Width.ToString() + " x " + this.RenderSize.Height.ToString();
         }
 
         private void ExitApplication(object sender, RoutedEventArgs e)
@@ -58,6 +60,27 @@ namespace Cooler.Plus
         {
             var window = new AboutWindow();
             window.ShowDialog();
+        }
+
+        private void ViewDashboard(object sender, RoutedEventArgs e)
+        {
+            var window = new DashboardWindow();
+            window.ShowDialog();
+        }
+
+        private void HideMessage(object sender, RoutedEventArgs e)
+        {
+            SnackbarFive.IsActive = false;
+        }
+
+        private void UserLogin(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void EditSettings(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

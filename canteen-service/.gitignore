@@ -1,0 +1,9 @@
+dist
+appsettings.production.json
+appsettings.development.json
+uploads/**
+www/**
+data/**
+nodemon.json
+yarn.lock
+tester.ts

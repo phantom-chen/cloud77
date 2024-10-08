@@ -1,0 +1,20 @@
+version: '3.6'
+
+services:
+
+  canteenapp:
+      build: .
+      volumes:
+          - ./data:/app/data
+          - ./.env:/app/.env
+          - ./appsettings.json:/app/appsettings.json
+          - ./uploads:/app/uploads
+      environment:
+          - "PORT=80"
+      expose:
+          - "80"
+
+networks:
+  default:
+      external:
+          name: cloud77

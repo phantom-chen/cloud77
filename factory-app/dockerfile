@@ -1,0 +1,14 @@
+# Stage 1: Build the Angular application
+FROM node:20-alpine3.18 as build
+WORKDIR /app
+COPY . .
+RUN npm config set registry https://registry.npm.taobao.org
+RUN npm config set strict-ssl false 
+RUN yarn config set registry https://registry.npm.taobao.org
+RUN yarn config set strict-ssl false 
+RUN yarn install
+RUN yarn run build
+
+# Stage 2: Serve the application with Nginx
+FROM nginx:alpine
+COPY --from=build /app/build /usr/share/nginx/factory

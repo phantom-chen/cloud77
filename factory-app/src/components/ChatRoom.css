@@ -1,0 +1,18 @@
+.chat-room {
+    /* border-bottom: 1px solid rgb(224, 224, 224); */
+}
+
+.chat-room:hover {
+    background-color: rgb(224, 224, 224);
+}
+
+.chat-room span {
+    font-weight: bold;
+}
+
+.chat-rooms {
+    min-width: 360px;
+    border: 1px solid rgb(224, 224, 224);
+    margin: 5px;
+    overflow: auto;
+}

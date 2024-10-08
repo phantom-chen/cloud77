@@ -1,0 +1,49 @@
+[
+    {
+        "id": 1,
+        "content": "welcome to golang",
+        "author": {
+            "id": 1,
+            "name": "franke"
+        },
+        "comments": [
+            {
+                "id": 1,
+                "content": "good",
+                "author": "visitor one"
+            },
+            {
+                "id": 2,
+                "content": "perfect",
+                "author": "visitor two"
+            }
+        ],
+        "more": {
+            "more1": "more1",
+            "more2": false,
+            "more3": 0,
+            "more4": -1,
+            "more5": 1.001
+        }
+    },
+    {
+        "id": 2,
+        "content": "welcome to rust",
+        "author": {
+            "id": 2,
+            "name": "phantom"
+        },
+        "comments": [
+            {
+                "id": 1,
+                "content": "good",
+                "author": "visitor one"
+            },
+            {
+                "id": 2,
+                "content": "perfect",
+                "author": "visitor two"
+            }
+        ]
+    }
+]

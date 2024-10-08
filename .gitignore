@@ -402,3 +402,4 @@ FodyWeavers.xsd
 **/NuGet.exe
 **/squirrel
 **/Release
+**/.env

@@ -403,3 +403,4 @@ FodyWeavers.xsd
 **/squirrel
 **/Release
 **/.env
+**/*.tgz

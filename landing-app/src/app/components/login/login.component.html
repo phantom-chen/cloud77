@@ -1,2 +1,56 @@
-<p>login works!</p>
-<button (click)="login()">login</button>
+<div class="container">
+
+  <div class="card">
+    <div class="card-header">
+      <div style="display: flex;">
+        <h5>User Login</h5>
+        <span class="example-spacer"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-body content">
+    <p>login works!</p>
+    <button (click)="login()">login</button>
+
+    <div style="margin: auto;box-shadow: 3px;" class="col-sm-6">
+
+      <form novalidate>
+        <div class="container content">
+          <div class="row">
+            <mat-form-field>
+              <mat-label>Email / Username</mat-label>
+              <input matInput placeholder="Email / Username" autocomplete="off" [(ngModel)]="account" name="username" (change)="onAccountChange();">
+            </mat-form-field>
+          </div>
+          <div class="row">
+            <mat-form-field>
+              <mat-label>Password</mat-label>
+              <input matInput type="password" placeholder="Password" autocomplete="off" [(ngModel)]="password" name="password" (keypress)="onKeyUp($event)">
+            </mat-form-field>
+          </div>
+
+          <div class="row">
+            <div style="display: flex;">
+              <mat-checkbox color="primary" [(ngModel)]="remember" name="remembercheckbox">Remember Me</mat-checkbox>
+              <a style="flex: 1 1 auto;"></a>
+              <button style="width: 200px;" mat-raised-button (click)="forgetPassword();">Forgot Password</button>
+            </div>
+
+          </div>
+
+          <div class="row">
+            <div style="display: flex;">
+              <button type="submit" mat-raised-button color="primary" (click)="login();">Login</button>
+              <button type="button" mat-outlined-button color="primary">
+                <a #signup target="_blank" [routerLink]="['/sign-up']" [relativeTo]="" routerLinkActive="active">Sign Up</a>
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+

@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --port 4000 --proxy-config ./proxy.prod.json",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
@@ -29,6 +29,7 @@
     "bootstrap": "^5.3.3",
     "guid-typescript": "^1.0.9",
     "html2canvas": "^1.4.1",
+    "jquery": "^3.7.1",
     "md5-typescript": "^1.0.5",
     "monaco-editor": "^0.52.0",
     "ng-markdown": "^0.0.1",

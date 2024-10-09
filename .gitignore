@@ -404,3 +404,6 @@ FodyWeavers.xsd
 **/Release
 **/.env
 **/*.tgz
+**/version
+**/.yarnrc.yml
+**/public/vs

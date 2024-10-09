@@ -1,0 +1,52 @@
+{
+  "/version": {
+    "target": "http://localhost:5000",
+    "secure": true,
+    "changeOrigin": true
+  },
+  "/resources": {
+    "target": "http://localhost:5000",
+    "secure": true,
+    "changeOrigin": true
+  },
+  "/api": {
+    "target": "http://localhost:5000",
+    "secure": true,
+    "changeOrigin": true
+  },
+  "/identity-app": {
+    "target": "http://localhost:5000",
+    "secure": true,
+    "changeOrigin": true
+  },
+  "/user-app": {
+    "target": "http://localhost:5000",
+    "secure": true,
+    "changeOrigin": true
+  },
+  "/hex-app": {
+    "target": "http://localhost:5000",
+    "secure": true,
+    "changeOrigin": true
+  },
+  "/canteen-app": {
+    "target": "http://localhost:5000",
+    "secure": true,
+    "changeOrigin": true
+  },
+  "/factory-app": {
+    "target": "http://localhost:5000",
+    "secure": true,
+    "changeOrigin": true
+  },
+  "/hubs": {
+    "target": "http://localhost:5000",
+    "ws": true,
+    "secure": false
+  },
+  "/chat-ws": {
+    "target": "http://localhost:5000",
+    "ws": true,
+    "secure": false
+  }
+}

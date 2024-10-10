@@ -51,7 +51,24 @@ export class LoginComponent implements OnInit, AfterViewInit {
   login(): void {
     console.log('login works')
     this.service.testing();
-    this.service.ping();
+    console.log(this.remember);
+    console.log(this.account);
+    console.log(this.password);
+
+    this.service.getToken({
+      email: this.account.includes('@') ? this.account.toLowerCase() : undefined,
+      name: this.account.includes('@') ? undefined : this.account.toLowerCase(),
+      password: this.password
+    }).then(res => {
+      console.log(res);
+      localStorage.setItem('accessToken', res.value);
+      localStorage.setItem('refreshToken', res.refreshToken);
+      if (this.remember) {
+        localStorage.setItem('remember', res.email || '');
+      } else {
+        localStorage.removeItem('remember');
+      }
+    })
   }
 
   onAccountChange(): void {

@@ -61,12 +61,12 @@ export class LoginComponent implements OnInit, AfterViewInit {
       password: this.password
     }).then(res => {
       console.log(res);
-      localStorage.setItem('accessToken', res.value);
-      localStorage.setItem('refreshToken', res.refreshToken);
+      sessionStorage.setItem('accessToken', res.value);
+      sessionStorage.setItem('refreshToken', res.refreshToken);
       if (this.remember) {
-        localStorage.setItem('remember', res.email || '');
+        sessionStorage.setItem('remember', res.email || '');
       } else {
-        localStorage.removeItem('remember');
+        sessionStorage.removeItem('remember');
       }
     })
   }

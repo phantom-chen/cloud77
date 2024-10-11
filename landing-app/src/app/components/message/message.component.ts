@@ -19,13 +19,13 @@ export class MessageComponent implements OnInit {
         if (ev.data) {
           console.log(ev.data);
           if (ev.data.request === 'login') {
-            localStorage.setItem('accessToken', ev.data.accessToken);
-            localStorage.setItem('refreshToken', ev.data.refreshToken);
+            sessionStorage.setItem('accessToken', ev.data.accessToken);
+            sessionStorage.setItem('refreshToken', ev.data.refreshToken);
             console.log('succeed updating tokens');
           } else if (ev.data.request === 'logout') {
-            localStorage.removeItem('email');
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('refreshToken');
+            sessionStorage.removeItem('email');
+            sessionStorage.removeItem('accessToken');
+            sessionStorage.removeItem('refreshToken');
             console.log('succeed removing tokens');
           }
         }

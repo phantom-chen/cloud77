@@ -1,1 +1,28 @@
-<p>tasks works!</p>
+<div class="container">
+  <p>tasks works!</p>
+  <button mat-raised-button>New Task</button>
+  <table *ngIf="!loading" class="table table-sm table-striped table-bordered table-hover">
+    <tr>
+      <th>Title</th>
+      <th>Description</th>
+      <th>State</th>
+      <th>Edit</th>
+    </tr>
+    <tr *ngFor="let task of tasks">
+      <td>{{ task.title }}</td>
+      <td>{{ task.description }}</td>
+      <td>{{ task.state }}</td>
+      <td>
+        <button type="button" class="btn btn-outline-primary btn-sm" style="margin:2px;">
+          <i class="material-icons">edit</i>
+        </button>
+        <button type="button" class="btn btn-outline-danger btn-sm">
+          <i class="material-icons">delete</i>
+        </button>
+      </td>
+    </tr>
+  </table>
+  <div *ngIf="loading" style="display: flex;">
+    <mat-spinner></mat-spinner>
+  </div>
+</div>

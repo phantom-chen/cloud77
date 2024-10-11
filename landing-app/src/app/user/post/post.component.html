@@ -1,2 +1,11 @@
 <p>post works!</p>
 <p>post id is {{id}}</p>
+<nu-monaco-editor
+  [autoFormat]="true" style="height: 600px;width: 100%;"
+  [model]="model"
+  [options]="options">
+</nu-monaco-editor>
+
+<div markdown
+  [data]="data">
+</div>

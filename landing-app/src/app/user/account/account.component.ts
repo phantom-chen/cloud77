@@ -58,7 +58,7 @@ export class AccountComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     console.log('account component');
-    const email = localStorage.getItem('remember');
+    const email = sessionStorage.getItem('remember');
     if (email) {
       console.log(email);
       this.service.getAccount(email).then(res => {
@@ -72,6 +72,11 @@ export class AccountComponent implements AfterViewInit {
           this.profile = res.profile;
         }
       });
+
+      this.service.getRole().then(res => {
+        console.log(res);
+        this.role = res.user?.role || '';
+      })
     }
   }
 

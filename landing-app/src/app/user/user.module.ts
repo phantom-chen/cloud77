@@ -4,6 +4,8 @@ import { provideRouter, Routes } from '@angular/router';
 import { AccountComponent } from './account/account.component';
 import { TasksComponent } from './tasks/tasks.component';
 import { PostComponent } from './post/post.component';
+import { MarkdownModule } from "ngx-markdown";
+import { NuMonacoEditorModule } from "@ng-util/monaco-editor";
 
 const routes: Routes = [
   {
@@ -24,6 +26,10 @@ const routes: Routes = [
   declarations: [],
   imports: [
     CommonModule,
+    MarkdownModule.forRoot(),
+    NuMonacoEditorModule.forRoot({
+      baseUrl: '/monaco'
+    }),
   ],
   providers: [
     provideRouter(routes)

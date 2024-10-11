@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { lastValueFrom, map, Subject, tap } from 'rxjs';
-import { GatewayService as GatewayApp, UserAccount, UserRole, UserToken } from "@phantom-chen/cloud77";
+import { lastValueFrom, map, Observable, Subject, tap } from 'rxjs';
+import { GatewayService as GatewayApp, UserAccount, UserRole, UserTasks, UserToken } from "@phantom-chen/cloud77";
 
 export const GatewayPrefix = '/api';
 export const IdentityAppPrefix = '/identity-app';
@@ -127,7 +127,7 @@ export class GatewayService {
       });
     }
 
-    if (!localStorage.getItem('accessToken')) {
+    if (!sessionStorage.getItem('accessToken')) {
       return Promise.resolve({
         user: {
           email: '',
@@ -143,7 +143,7 @@ export class GatewayService {
           email: email,
           name: name,
           role: role
-        }, exp: localStorage.getItem('token-expiration') || ''
+        }, exp: sessionStorage.getItem('token-expiration') || ''
       });
     } else {
       return lastValueFrom(
@@ -154,7 +154,7 @@ export class GatewayService {
             email = res.body?.email || '';
             name = res.body?.name || '',
             role = res.body?.role || '';
-            localStorage.setItem('token-expiration', res.headers.get('x-token-expiration') || '');
+            sessionStorage.setItem('token-expiration', res.headers.get('x-token-expiration') || '');
             this.succeedLogin.next();
           }),
           map(res => {
@@ -167,5 +167,9 @@ export class GatewayService {
       );
     }
 
+  }
+
+  getTasks(email: string): Observable<UserTasks> {
+    return this.http.get<UserTasks>(`${UserAppPrefix}/tasks/${email}`);
   }
 }

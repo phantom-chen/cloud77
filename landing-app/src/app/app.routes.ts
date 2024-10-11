@@ -5,6 +5,7 @@ import { MessageComponent } from './components/message/message.component';
 import { UserComponent } from './components/user/user.component';
 import { LoginComponent } from './components/login/login.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { UnAuthorizedComponent } from './un-authorized/un-authorized.component';
 
 export const routes: Routes = [
   {
@@ -15,6 +16,9 @@ export const routes: Routes = [
   },
   {
     path: 'login', component: LoginComponent
+  },
+  {
+    path: 'un-authorized', component: UnAuthorizedComponent
   },
   {
     path: 'user',

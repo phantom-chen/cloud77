@@ -7,14 +7,14 @@ export const apiInterceptor: HttpInterceptorFn = (req, next) => {
       headers: newReq.headers.set('X-API-Key', `${localStorage.getItem('apikey')}`)
     });
   }
-  if (localStorage.getItem('accessToken')) {
+  if (sessionStorage.getItem('accessToken')) {
     newReq = newReq.clone({
-      headers: newReq.headers.set('Authorization', `Bearer ${localStorage.getItem('accessToken')}`),
+      headers: newReq.headers.set('Authorization', `Bearer ${sessionStorage.getItem('accessToken')}`),
     });
   }
-  if (localStorage.getItem('refreshToken')) {
+  if (sessionStorage.getItem('refreshToken')) {
     newReq = newReq.clone({
-      headers: newReq.headers.set('x-refresh-token', `${localStorage.getItem('refreshToken')}`)
+      headers: newReq.headers.set('x-refresh-token', `${sessionStorage.getItem('refreshToken')}`)
     });
   }
   return next(newReq);

@@ -5,3 +5,21 @@ mat-form-field {
 .row {
   margin: 0px;
 }
+
+section {
+  padding: 5px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+}
+section h5 {
+  margin-top: 0;
+}
+
+article {
+  padding: 5px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+}
+article h5 {
+  margin-top: 0;
+}

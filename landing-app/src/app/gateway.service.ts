@@ -1,7 +1,12 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { lastValueFrom, map, Observable, Subject, tap } from 'rxjs';
-import { GatewayService as GatewayApp, UserAccount, UserRole, UserTasks, UserToken } from "@phantom-chen/cloud77";
+import {
+  BookmarkResult, EventQueryResult, AuthorResult,
+  GatewayService as GatewayApp,
+  UserAccount, UserFiles, UserPosts, UserPost, UserRole, UserTasks, UserToken,
+  DefaultResponse,
+  AccountQueryResult} from "@phantom-chen/cloud77";
 
 export const GatewayPrefix = '/api';
 export const IdentityAppPrefix = '/identity-app';
@@ -13,6 +18,23 @@ let tokenValid = false;
 let email = '';
 let role = '';
 let name = "";
+
+export type AppSetting = {
+  key: string,
+  value: string,
+  description: string
+}
+
+export interface BaseQuery {
+  sort: string; // desc or asc;TODO; shall use enum later, 0: desc, 1: asc
+  index: number;
+  size: number;
+}
+
+export interface AccountQuery extends BaseQuery {
+  email: string;
+  role: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -169,7 +191,53 @@ export class GatewayService {
 
   }
 
-  getTasks(email: string): Observable<UserTasks> {
-    return this.http.get<UserTasks>(`${UserAppPrefix}/tasks/${email}`);
+  getUserEvents(email: string): Promise<EventQueryResult | undefined> {
+    return lastValueFrom(this.http.get<EventQueryResult>(`/user-app/events/${email}`));
+  }
+
+  getTasks(email: string): Promise<UserTasks> {
+    return lastValueFrom(this.http.get<UserTasks>(`${UserAppPrefix}/tasks/${email}`));
+  }
+
+  getFiles(email: string): Promise<UserFiles> {
+    return lastValueFrom(this.http.get<UserFiles>(`${CanteenAppPrefix}/files?email=${email}`));
+  }
+
+  getPosts(email: string): Promise<UserPosts> {
+    return lastValueFrom(this.http.get<UserPosts>(`${CanteenAppPrefix}/posts?email=${email}`));
+  }
+
+  getAuthors(): Promise<AuthorResult> {
+    return lastValueFrom(this.http.get<AuthorResult>(`${UserAppPrefix}/authors`));
+  }
+
+  getBookmarks(email: string): Promise<BookmarkResult> {
+    return lastValueFrom(this.http.get<BookmarkResult>(`${CanteenAppPrefix}/bookmarks?index=0&size=5`));
+  }
+
+  createPost(email: string, post: UserPost): Promise<DefaultResponse> {
+    return lastValueFrom(this.http.post<DefaultResponse>(`${CanteenAppPrefix}/posts`, {
+      email,
+      title: post.title,
+      description: post.description
+    }));
+  }
+
+  getSettings(): Promise<AppSetting[]> {
+    return lastValueFrom(this.http.get<AppSetting[]>(`${UserAppPrefix}/settings`));
+  }
+
+  getSetting(key: string): Promise<AppSetting> {
+    return lastValueFrom(this.http.get<AppSetting>(`${UserAppPrefix}/settings/${key}`));
+  }
+
+  getAccounts(query: AccountQuery): Promise<AccountQueryResult | undefined> {
+    const params = new HttpParams().set('index', query.index).set('size', query.size).set('role', query.role);
+    return lastValueFrom(this.http.get<AccountQueryResult>(`${UserAppPrefix}/accounts`, { params }));
+  }
+
+  getEvents(name: string, index: number, size: number): Promise<EventQueryResult | undefined> {
+    const params: HttpParams = new HttpParams().set('name', name).set('index', index.toString()).set('size', size.toString());
+    return lastValueFrom(this.http.get<EventQueryResult>(`${UserAppPrefix}/events`, { params }));
   }
 }

@@ -1,1 +1,16 @@
-<p>posts works!</p>
+<div class="container">
+  <button mat-raised-button (click)="createPost()">New Post</button>
+
+  <div class="row">
+    <mat-form-field>
+      <mat-label>Posts</mat-label>
+      <mat-select [(ngModel)]="selectedPost.id" (valueChange)="onValueChange($event)">
+        @for (post of posts; track post) {
+          <mat-option [value]="post.id">{{post.title}}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+</div>
+

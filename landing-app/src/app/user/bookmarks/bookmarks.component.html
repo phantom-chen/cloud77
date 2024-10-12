@@ -1,1 +1,17 @@
-<p>bookmarks works!</p>
+<div class="container">
+  <p>bookmarks works!</p>
+  <table class="table table-sm table-striped table-bordered table-hover">
+    <tr>
+      <th>Url</th>
+      <th>Title</th>
+      <th>Tags</th>
+      <th>Collection</th>
+    </tr>
+    <tr *ngFor="let bookmark of bookmarks">
+      <td>{{ bookmark.href }}</td>
+      <td>{{ bookmark.title }}</td>
+      <td>{{ bookmark.tags }}</td>
+      <td>{{ bookmark.collection }}</td>
+    </tr>
+  </table>
+</div>

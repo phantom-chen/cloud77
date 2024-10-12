@@ -1,0 +1,23 @@
+<nav>
+  <ul>
+    <li><a routerLink="/">Home</a></li>
+    <li><a routerLink="/dashboard">Dashboard</a></li>
+    <li><a routerLink="/user">My Account</a></li>
+    <ng-container *ngIf="mode === 'user'">
+      <li><a routerLink="/user/setting">Setting</a></li>
+      <li><a routerLink="/user/tasks">Tasks</a></li>
+      <li><a routerLink="/user/files">Files</a></li>
+      <li><a routerLink="/user/posts">Posts</a></li>
+      <li><a routerLink="/user/authors">Authors</a></li>
+      <li><a routerLink="/user/bookmarks">Bookmarks</a></li>
+      <li><a routerLink="/user/activities">Activities</a></li>
+    </ng-container>
+    <ng-container *ngIf="mode === 'dashboard'">
+      <li><a routerLink="/dashboard/accounts">Accounts</a></li>
+      <li><a routerLink="/dashboard/settings">Settings</a></li>
+      <li><a routerLink="/dashboard/history">History</a></li>
+      <li><a routerLink="/dashboard/queues">Queues</a></li>
+    </ng-container>
+
+  </ul>
+</nav>

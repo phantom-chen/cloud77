@@ -1,66 +1,79 @@
 <div class="container">
-  <div class="card" style="display: flex;flex-direction: columns;">
-
-    <div class="card-header">
-      <p style="font-weight: bold;">Account Info</p>
-    </div>
-
-    <div style="flex: 1 1 auto;">
-      <div class="card-body" style="height: 100%; display: flex;flex-flow: column;">
-        <p>account works!</p>
-
-        <div style="padding: 0rem 1.25rem;">
-          <div class="row">
-            <mat-form-field>
-              <mat-label>Email</mat-label>
-              <input matInput placeholder="Email" [(ngModel)]="email" disabled>
-            </mat-form-field>
-          </div>
-
-          <div class="row">
-            <mat-form-field>
-              <mat-label>Username</mat-label>
-              <input matInput placeholder="Username" [(ngModel)]="name" disabled>
-            </mat-form-field>
-          </div>
-
-          <div class="row">
-            <mat-form-field>
-              <mat-label>Role</mat-label>
-              <input matInput placeholder="Role" [(ngModel)]="role" disabled>
-            </mat-form-field>
-          </div>
-
-          <div class="row">
-            <button mat-button (click)="createProfile()">Create Profile</button>
-          </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <p style="font-weight: bold;">Account Info</p>
         </div>
+        <div class="card-body">
+          <div style="padding: 0rem 1.25rem;">
+            <div class="row">
+              <mat-form-field>
+                <mat-label>Email</mat-label>
+                <input matInput placeholder="Email" [(ngModel)]="email" disabled>
+              </mat-form-field>
+            </div>
 
-        <div class="row">
-          <button mat-raised-button color="primary" *ngIf="!confirmed">You are not confirmed, resend the verification email.</button>
+            <div class="row">
+              <mat-form-field>
+                <mat-label>Username</mat-label>
+                <input matInput placeholder="Username" [(ngModel)]="name" disabled>
+              </mat-form-field>
+            </div>
+
+            <div class="row">
+              <mat-form-field>
+                <mat-label>Role</mat-label>
+                <input matInput placeholder="Role" [(ngModel)]="role" disabled>
+              </mat-form-field>
+            </div>
+
+            <div class="row">
+              <button mat-raised-button color="primary" *ngIf="!confirmed">You are not confirmed, resend the verification email.</button>
+            </div>
+
+            <div class="row">
+              <button id="login" mat-raised-button color="primary" style="margin: auto;width: 240px;">Go to Login</button>
+            </div>
+
+            <section id="services" class="section">
+              <h5>Services</h5>
+              <p>We offer a wide range of services to meet your needs.</p>
+            </section>
+
+            <section id="about" class="section">
+              <h5>About Us</h5>
+              <p>Learn more about our company and our mission.</p>
+            </section>
+
+            <section id="contact" class="section">
+              <h5>Contact Us</h5>
+              <p>Get in touch with us through our contact form or email.</p>
+            </section>
+
+            <article class="article">
+              <h5>First Blog Post</h5>
+              <p>Welcome to my first blog post! This is an example of an article element.</p>
+            </article>
+          </div>
+
         </div>
-        <hr/>
-
-        <!-- <div style="flex: 1 1 auto;">
-          <mat-tab-group style="flex: 1 1 auto;" dynamicHeight>
-            <mat-tab label="My Profile">
-              <div style="height: 100%;">
-                <div *ngIf="foundProfile">
-                </div>
-                <div style="margin: 10px 0px;" *ngIf="!foundProfile">
-                  <span class="text-info">Find no profile in service, please fill out below, and submit it.</span>
-                  <div class="container">
-                    <div class="row">
-                      <button mat-flat-button color="primary" (click)="createProfile()">Create My Profile</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </mat-tab>
-          </mat-tab-group>
-        </div> -->
       </div>
     </div>
 
-  </div>
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <p style="font-weight: bold;">Profile Info</p>
+        </div>
+        <div class="card-body">
+          <p>card body works</p>
+          <div class="row">
+            <button mat-raised-button color="primary" (click)="createProfile()">Create Profile</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
 </div>

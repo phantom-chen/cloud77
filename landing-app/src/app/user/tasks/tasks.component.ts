@@ -29,8 +29,7 @@ export class TasksComponent implements OnInit, AfterViewInit {
     this.service.getRole()
       .then(res => {
         console.log(res);
-
-        this.service.getTasks(res.user?.email || '').subscribe(res => {
+        this.service.getTasks(res.user?.email || '').then(res => {
           console.log(res);
           this.tasks = res.data;
           this.loading = false;

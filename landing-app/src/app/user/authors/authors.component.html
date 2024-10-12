@@ -1,1 +1,24 @@
-<p>authors works!</p>
+<div class="container">
+  <p>authors works!</p>
+
+  <table class="table table-sm table-striped table-bordered table-hover">
+    <tr>
+      <th>Name</th>
+      <th>Title</th>
+      <th>Region</th>
+      <th>Address</th>
+      <th>CreatedAt</th>
+      <th>Timestamp</th>
+    </tr>
+    <tr *ngFor="let author of authors">
+      <td>{{ author.name }}</td>
+      <td>{{ author.title }}</td>
+      <td>{{ author.region }}</td>
+      <td>{{ author.address }}</td>
+      <td>{{ author.createdAt | date: 'yyyy-MM-dd HH:mm' }}</td>
+      <td>{{ author.updatedAt | date: 'yyyy-MM-dd HH:mm' }}</td>
+    </tr>
+  </table>
+
+</div>
+

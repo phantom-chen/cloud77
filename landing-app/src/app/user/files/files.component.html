@@ -1,1 +1,7 @@
 <p>files works!</p>
+
+<mat-selection-list (selectionChange)="onSelectedFilesChange($event)">
+  @for (f of files; track f) {
+    <mat-list-option [value]="f">{{f}}</mat-list-option>
+  }
+</mat-selection-list>

@@ -32,7 +32,6 @@ const Items: { label: string, link: string, divider?: boolean }[] = [
   { label: "", link: "", divider: true },
   { label: 'Dashboard', link: '/dashboard'},
   { label: 'Users', link: '/users'},
-  { label: 'Licenses', link: '/licenses'},
   { label: "", link: "", divider: true },
   { label: 'Test', link: '/test'},
 ]

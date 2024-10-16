@@ -1,4 +1,4 @@
-import { IQueryResult, License, AccountQueryResult } from "@phantom-chen/cloud77";
+import { AccountQueryResult } from "@phantom-chen/cloud77";
 import axios from "axios";
 
 export function getAccounts(page: number, size: number): Promise<AccountQueryResult> {
@@ -14,35 +14,6 @@ export function getAccounts(page: number, size: number): Promise<AccountQueryRes
         }
     }).then(res => {
         return Promise.resolve(res.data);
-    }).catch(err => {
-        return Promise.reject(err);
-    })
-}
-
-export interface UserLicense {
-    email: string;
-    license: License;
-}
-
-export interface LicenseQueryResult extends IQueryResult {
-    data: UserLicense[];
-}
-
-export function getLicenses(query: {
-    page: number, size: number, email: string
-}): Promise<UserLicense[]> {
-    return axios.get<LicenseQueryResult>('/hex-app/licenses', {
-        headers: {
-            'x-api-key': localStorage.getItem('apikey') || '',
-            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-        },
-        params: {
-            index: query.page,
-            size: query.size,
-            email: query.email
-        }
-    }).then(res => {
-        return Promise.resolve(res.data.data);
     }).catch(err => {
         return Promise.reject(err);
     })

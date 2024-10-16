@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve --port 4000 --proxy-config ./proxy.prod.json",
     "build": "ng build",
+    "build-gh-page": "ng build --project gh-page-app",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },

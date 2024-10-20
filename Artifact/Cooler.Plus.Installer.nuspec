@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <metadata minClientVersion="2.5">
-    <id>Cooler_plus</id>
+    <id>cooler_plus</id>
     <version>0.0.0</version>
     <description>Cooler Plus App</description>
     <authors>Cooler</authors>

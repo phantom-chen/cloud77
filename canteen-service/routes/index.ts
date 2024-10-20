@@ -5,7 +5,6 @@ import { githubUsersHandler } from './github-users-handler';
 import { loginHandler } from './login-handler';
 import { deleteRedisCache, getRedisCache, postRedisCache } from './redis-handler';
 import { downloadHandler, fileDeleteHandler, filesListHandler, uploadHandler } from './upload-handler';
-import { getTesters } from '../controllers/tester';
 import { accessSync, existsSync, readFileSync, unlinkSync } from 'fs';
 import { getIPV4 } from '../utility/consul';
 import { addBookmark, deleteBookmark, getBookmark, getBookmarks, updateBookmark } from './bookmark';
@@ -94,13 +93,6 @@ route.get('/tasks', async (req: Request, res: Response) => {
     const tasks = await getTasks(payload?.email || '');
     res.status(200).json(tasks);
 });
-
-route.get('/testers', async (req: Request, res: Response) => {
-    const size = Number(req.query['size']) || 5;
-    const index = Number(req.query['index']) || 0;
-    const testers = await getTesters({ index, size });
-    res.status(200).json(testers);
-})
 
 route.get('/posts', async (req: Request, res: Response) => {
     const email = String(req.query['email']) || '';

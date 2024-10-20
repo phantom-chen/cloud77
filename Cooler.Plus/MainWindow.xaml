@@ -87,10 +87,10 @@
             <Button Click="UserLogin">
                 <md:PackIcon Kind="LoginVariant"/>
             </Button>
-            <Button Click="EditCustomer">
+            <Button>
                 <md:PackIcon Kind="AccountGroupOutline" />
             </Button>
-            <Button Click="ResizeWindow">
+            <Button>
                 <md:PackIcon Kind="Resize"/>
             </Button>
             <ToggleButton />

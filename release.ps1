@@ -1,3 +1,6 @@
+# nuget.exe
+# squirrel.exe
+
 # build docker image
 # build desktop exe / installer
 # build update package (nupkg/RELEASE)
@@ -5,7 +8,8 @@
 # Documents\Cloud77Server
 
 param(
-    [Parameter(Mandatory = $false)][string]$id
+    [Parameter(Mandatory = $true)][string]$id,
+    [Parameter(Mandatory = $true)][string]$version
 )
 
 function New-Folder {
@@ -21,16 +25,14 @@ New-Folder -path "$env:USERPROFILE\Documents\Cloud77Server"
 New-Folder -path "$env:USERPROFILE\Documents\Cloud77Server\resources"
 New-Folder -path "$env:USERPROFILE\Documents\Cloud77Server\resources\releases"
 New-Folder -path "$env:USERPROFILE\Documents\Cloud77Server\resources\releases\installers"
-New-Folder -path "$env:USERPROFILE\Documents\Cloud77Server\resources\releases\hex-calculator5"
 New-Folder -path "$env:USERPROFILE\Documents\Cloud77Server\resources\releases\cooler-plus"
 
 $releasePath = "$env:USERPROFILE\Documents\Cloud77Server\resources\releases"
 
-$version = '1.0.0'
+Remove-Item "Artifact/build/*.pdb" -Recurse -ErrorAction Ignore
+Remove-Item "Artifact/build/*.xml" -Recurse -ErrorAction Ignore
 
 if ($id -eq 'cooler-plus-installer') {
-    Remove-Item "Artifact/build/*.pdb" -Recurse -ErrorAction Ignore
-    Remove-Item "Artifact/build/*.xml" -Recurse -ErrorAction Ignore
     'https://www.cloud77.top/resources/releases/cooler-plus' | Out-File "Artifact\build\squirrel.txt" 
     Artifact\NuGet.exe pack Artifact\Cooler.Plus.Installer.nuspec -Version $version -Properties Configuration=Release -OutputDirectory Artifact
     Start-Process Artifact\squirrel\Squirrel.exe -ArgumentList "
@@ -44,14 +46,12 @@ if ($id -eq 'cooler-plus-installer') {
     Rename-Item -NewName "Cooler-Plus-Installer-$($version).exe" -Path Artifact\release\Setup.exe
     Write-Host (Get-Item "Artifact\build\Cooler.Plus.exe").VersionInfo.FileVersion
 
+    Remove-Item "$($releasePath)\installers\Cooler*"
     Copy-Item -Path "Artifact\release\Cooler-Plus-Installer-$version.exe" -Destination "$($releasePath)\installers\Cooler-Plus-Installer-$version.exe"
     Copy-Item -Path "Artifact\release\RELEASES" -Destination "$($releasePath)\installers\CoolerPlus"
 }
 
 if ($id -eq 'cooler-plus') {
-    Remove-Item "Artifact/build/*.pdb" -Recurse -ErrorAction Ignore
-    Remove-Item "Artifact/build/*.xml" -Recurse -ErrorAction Ignore
-
     'https://www.cloud77.top/resources/releases/cooler-plus' | Out-File "Artifact\build\squirrel.txt" 
     Artifact\NuGet.exe pack Artifact\Cooler.Plus.nuspec -Version $version -Properties Configuration=Release -OutputDirectory Artifact
     Start-Process Artifact\squirrel\Squirrel.exe -ArgumentList "

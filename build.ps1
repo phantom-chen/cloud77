@@ -1,9 +1,7 @@
 param(
-    [Parameter(Mandatory = $false)][string]$id
+    [Parameter(Mandatory = $true)][string]$id,
+    [Parameter(Mandatory = $true)][string]$version
 )
-
-# nuget.exe
-# squirrel.exe
 
 function Invoke-Script {
     param (
@@ -65,21 +63,28 @@ if ($id -eq 'web-apps') {
 }
 
 msbuild --version
-$version = '1.0.0'
+$initial = '1.0.0.0'
 
 Remove-Item Artifact\build -Recurse -ErrorAction Ignore
 Remove-Item Artifact\release -Recurse -ErrorAction Ignore
 Remove-Item Artifact\**.nupkg
 
 if ($id -eq 'cooler-plus-installer') {
+    powershell.exe .\version.ps1 -dir "Cooler.Plus.Installer" -version $version
     msbuild Cooler.Plus.Installer\Cooler.Plus.Installer.csproj /p:Configuration=Release /p:Platform=x64 /p:OutputPath=bin\publish
     Move-Item -Path Cooler.Plus.Installer\bin\publish -Destination Artifact\build
+    powershell.exe .\version.ps1 -dir "Cooler.Plus.Installer" -version $initial
 }
 
 if ($id -eq 'cooler-plus') {
+    powershell.exe .\version.ps1 -dir "Cooler.Plus" -version $version
     msbuild Cooler.Plus.sln /p:Configuration=Release /p:Platform=x64 /p:OutputPath=bin\publish
     Move-Item -Path Cooler.Plus\bin\publish -Destination Artifact\build
+    powershell.exe .\version.ps1 -dir "Cooler.Plus" -version $initial
 }
+
+Remove-Item "Artifact/build/*.pdb" -Recurse -ErrorAction Ignore
+Remove-Item "Artifact/build/*.xml" -Recurse -ErrorAction Ignore
 
 if ($id -eq 'cc') {
     Remove-Item Artifact\**.nupkg

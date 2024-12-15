@@ -71,7 +71,10 @@ jobs:
       - name: Build
         run: |
           pwd
-          msbuild CoolerApps\Cooler.Plus.sln /restore:true
+          msbuild CoolerApps\Cooler.Client /restore:true
+          msbuild CoolerApps\Cooler.Client.Providers /restore:true
+          msbuild CoolerApps\Cooler.Plus /restore:true
+          msbuild CoolerApps\Cooler.Plus.Installer /restore:true
           msbuild CoolerApps\Cooler.Plus\Cooler.Plus.csproj /p:Configuration=Release /p:Platform=x64 /p:OutputPath=build
 
           ls CoolerApps\Cooler.Plus

@@ -72,9 +72,13 @@ jobs:
         run: |
           pwd
           msbuild CoolerApps\Cooler.Client /restore:true
-          msbuild CoolerApps\Cooler.Client.Providers /restore:true
-          msbuild CoolerApps\Cooler.Plus /restore:true
-          msbuild CoolerApps\Cooler.Plus.Installer /restore:true
+
+          Copy-Item -Path $env:USERPROFILE\.nuget\packages\nuget.commandline\6.12.2\tools\NuGet.exe -Destination NuGet.exe -Force  
+
+          ./NuGet.exe
+
+          .\NuGet.exe restore .\CoolerApps\Cooler.SDK.sln
+          .\NuGet.exe restore .\CoolerApps\Cooler.Plus.sln
           msbuild CoolerApps\Cooler.Plus\Cooler.Plus.csproj /p:Configuration=Release /p:Platform=x64 /p:OutputPath=build
 
           ls CoolerApps\Cooler.Plus

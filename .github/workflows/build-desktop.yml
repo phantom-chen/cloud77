@@ -34,12 +34,13 @@ jobs:
       - name: Setup MSBuild.exe
         uses: microsoft/setup-msbuild@v2
     
-      - name: MSBuild and Nuget
+      - name: MSBuild and NuGet
         run: |
-            pwd
             msbuild --version
             dotnet --info
-            dotnet nuget --version
+            msbuild CoolerApps\Cooler.Client /restore:true
+            Copy-Item -Path $env:USERPROFILE\.nuget\packages\nuget.commandline\6.12.2\tools\NuGet.exe -Destination NuGet.exe -Force  
+            ./NuGet.exe
 
       - name: Squirrel Tool
         run: |
@@ -70,27 +71,18 @@ jobs:
       
       - name: Build
         run: |
-          pwd
-          msbuild CoolerApps\Cooler.Client /restore:true
-
-          Copy-Item -Path $env:USERPROFILE\.nuget\packages\nuget.commandline\6.12.2\tools\NuGet.exe -Destination NuGet.exe -Force  
-
-          ./NuGet.exe
-
           .\NuGet.exe restore .\CoolerApps\Cooler.SDK.sln
           .\NuGet.exe restore .\CoolerApps\Cooler.Plus.sln
           msbuild CoolerApps\Cooler.Plus\Cooler.Plus.csproj /p:Configuration=Release /p:Platform=x64 /p:OutputPath=build
 
-          ls CoolerApps\Cooler.Plus
           ls CoolerApps\Cooler.Plus\build
-
           'https://www.cloud77.top/resources/releases/cooler-plus' | Out-File "CoolerApps\Cooler.Plus\build\squirrel.txt"
 
           Move-Item -path CoolerApps\Cooler.Plus\build -Destination CoolerApps
           Write-Host (Get-Item .\CoolerApps\build\Cooler.Plus.exe).VersionInfo.FileVersion
 
       - name: Pack
-        run: dotnet nuget pack CoolerApps/Cooler.Plus.nuspec -Version ${{ github.event.inputs.pkg_version }} -Properties Configuration=CoolerApps/nupkg
+        run: .\NuGet.exe pack CoolerApps/Cooler.Plus.nuspec -Version ${{ github.event.inputs.pkg_version }} -Properties Configuration=CoolerApps/nupkg
 
       - name: Release
         run: CoolerApps/squirrel/Squirrel.exe --releasify=CoolerApps/nupkg/Cooler_plus.${{ github.event.inputs.pkg_version }}.nupkg --framework-version=net472 --icon=CoolerApps/Cooler.ico --setupIcon=CoolerApps/Cooler.ico --releaseDir=CoolerApps/release

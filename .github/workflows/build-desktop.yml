@@ -45,19 +45,22 @@ jobs:
       - name: Squirrel Tool
         run: |
             # squirrel.exe
-            if (!(Test-Path "CoolerApps\squirrel\Squirrel.exe")) {
+            if (!(Test-Path "./releases")) {
+              mkdir "./releases"
+            }
+            if (!(Test-Path "./CoolerApps/squirrel/Squirrel.exe")) {
                 Write-Host 'squirrel.exe not found, downloading'
-                if (!(Test-Path "releases\squirrel.zip")) {
+                if (!(Test-Path "./releases/squirrel.zip")) {
                     Write-Host 'squirrel.zip not found, downloading'
                     $url = 'https://www.cloud77.top/resources/squirrel.zip'
-                    Invoke-RestMethod -Uri $url -OutFile "releases\squirrel.zip"
+                    Invoke-RestMethod -Uri $url -OutFile "./releases/squirrel.zip"
                 }
-                Expand-Archive -LiteralPath "releases\squirrel.zip" -DestinationPath "CoolerApps\squirrel"
+                Expand-Archive -LiteralPath "./releases/squirrel.zip" -DestinationPath "./CoolerApps/squirrel"
             }
             else
             {
                 Write-Host 'squirrel.exe found'
             }
-            Write-Host (Get-Item "CoolerApps\squirrel\Squirrel.exe").VersionInfo.FileVersion
+            Write-Host (Get-Item "./CoolerApps/squirrel/Squirrel.exe").VersionInfo.FileVersion
             Write-Host ${{ github.event.inputs.pkg_version }}
           

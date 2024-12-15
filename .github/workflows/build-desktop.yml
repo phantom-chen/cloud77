@@ -89,7 +89,6 @@ jobs:
 
       - name: List
         run: |
-          ${{ github.event.inputs.pkg_version }} | Out-File CoolerApps/release/version.txt
           ls CoolerApps/build
           Write-Host ''
           ls CoolerApps/nupkg
@@ -100,7 +99,31 @@ jobs:
         uses: ArthurYdalgo/github-action-scp@0.7.5
         with:
           local: CoolerApps/release
-          remote: /cloud77/resources/releases/cooler-plus-temp
+          remote: /cloud77/resources/releases/temp
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
+
+      - name: ssh-pipeline
+        # You may pin to the exact commit or the version.
+        # uses: cross-the-world/ssh-pipeline@7f022867934a210af826af99ef80d96f03a094d5
+        uses: cross-the-world/ssh-pipeline@v1.2.0
+        env:
+            PKGVERSION: ${{ github.event.inputs.pkg_version }}
+        with:
+            # ssh remote host
+            host: ${{ secrets.SERVER_HOST }}
+            # ssh remote user
+            user: ${{ secrets.SERVER_USERNAME }}
+            # ssh remote password
+            pass: ${{ secrets.SERVER_PASSWORD }}
+            # execute commands on ssh
+            script: # optional |
+                pwd
+                echo 'deploy starts' &&
+                mv -f /cloud77/resources/releases/temp/RELEASES /cloud77/resources/releases/cooler-plus/RELEASES &&
+                mv -f /cloud77/resources/releases/temp/*.nupkg /cloud77/resources/releases/cooler-plus &&
+                rm -f -r /cloud77/resources/releases/temp &&
+                echo $PKGVERSION >> /cloud77//cloud77/resources/releases/logs.txt &&
+                date +"%A, %B %d, %Y %H:%M:%S" >> /cloud77/resources/releases/logs.txt &&
+                echo 'deploy ends'

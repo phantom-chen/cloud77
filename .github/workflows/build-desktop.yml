@@ -118,11 +118,11 @@ jobs:
             # ssh remote password
             pass: ${{ secrets.SERVER_PASSWORD }}
             # execute commands on ssh
-            script: # optional |
-                pwd
+            script: |
+                pwd &&
                 echo 'deploy starts' &&
+                mv /cloud77/resources/releases/temp/*.nupkg /cloud77/resources/releases/cooler-plus &&
                 mv -f /cloud77/resources/releases/temp/RELEASES /cloud77/resources/releases/cooler-plus/RELEASES &&
-                mv -f /cloud77/resources/releases/temp/*.nupkg /cloud77/resources/releases/cooler-plus &&
                 rm -f -r /cloud77/resources/releases/temp &&
                 echo $PKGVERSION >> /cloud77//cloud77/resources/releases/logs.txt &&
                 date +"%A, %B %d, %Y %H:%M:%S" >> /cloud77/resources/releases/logs.txt &&

@@ -82,7 +82,7 @@ jobs:
           Write-Host (Get-Item .\CoolerApps\build\Cooler.Plus.exe).VersionInfo.FileVersion
 
       - name: Pack
-        run: .\NuGet.exe pack CoolerApps/Cooler.Plus.nuspec -Version ${{ github.event.inputs.pkg_version }} -Properties Configuration=CoolerApps/nupkg
+        run: .\NuGet.exe pack CoolerApps/Cooler.Plus.nuspec -Version ${{ github.event.inputs.pkg_version }} -OutputDirectory CoolerApps/nupkg -Properties Configuration=Release
 
       - name: Release
         run: CoolerApps/squirrel/Squirrel.exe --releasify=CoolerApps/nupkg/Cooler_plus.${{ github.event.inputs.pkg_version }}.nupkg --framework-version=net472 --icon=CoolerApps/Cooler.ico --setupIcon=CoolerApps/Cooler.ico --releaseDir=CoolerApps/release

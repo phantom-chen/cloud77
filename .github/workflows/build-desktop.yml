@@ -37,7 +37,6 @@ jobs:
       - name: MSBuild and Nuget
         run: |
             pwd
-            ls
             msbuild --version
             dotnet --info
             dotnet nuget --version
@@ -45,22 +44,50 @@ jobs:
       - name: Squirrel Tool
         run: |
             # squirrel.exe
-            if (!(Test-Path "./releases")) {
-              mkdir "./releases"
+            if (!(Test-Path "CoolerApps/build")) {
+              mkdir "CoolerApps/build"
             }
             if (!(Test-Path "./CoolerApps/squirrel/Squirrel.exe")) {
                 Write-Host 'squirrel.exe not found, downloading'
-                if (!(Test-Path "./releases/squirrel.zip")) {
+                if (!(Test-Path "./CoolerApps/build/squirrel.zip")) {
                     Write-Host 'squirrel.zip not found, downloading'
                     $url = 'https://www.cloud77.top/resources/squirrel.zip'
-                    Invoke-RestMethod -Uri $url -OutFile "./releases/squirrel.zip"
+                    Invoke-RestMethod -Uri $url -OutFile "./CoolerApps/build/squirrel.zip"
                 }
-                Expand-Archive -LiteralPath "./releases/squirrel.zip" -DestinationPath "./CoolerApps/squirrel"
+                Expand-Archive -LiteralPath "./CoolerApps/build/squirrel.zip" -DestinationPath "./CoolerApps/squirrel"
             }
             else
             {
                 Write-Host 'squirrel.exe found'
             }
+            
+            Remove-Item "./CoolerApps/build" -Recurse  -ErrorAction Ignore
             Write-Host (Get-Item "./CoolerApps/squirrel/Squirrel.exe").VersionInfo.FileVersion
             Write-Host ${{ github.event.inputs.pkg_version }}
           
+      - name: 'Change version'
+        run: ./version.ps1 CoolerApps/Cooler.Plus -version ${{ github.event.inputs.pkg_version }}
+      
+      - name: Build
+        run: |
+          pwd
+          msbuild CoolerApps\Cooler.Plus\Cooler.Plus.csproj /p:Configuration=Release /p:Platform=x64 /p:OutputPath=CoolerApps\build
+
+          ls CoolerApps
+          ls CoolerApps\build
+
+          'https://www.cloud77.top/resources/releases/cooler-plus' | Out-File "CoolerApps\build\squirrel.txt" 
+
+      - name: Pack
+        run: dotnet nuget pack CoolerApps/Cooler.Plus.nuspec -Version ${{ github.event.inputs.pkg_version }} -Properties Configuration=CoolerApps/nupkg
+
+      - name: Release
+        run: CoolerApps/squirrel/Squirrel.exe --releasify=CoolerApps/nupkg/Cooler_plus.${{ github.event.inputs.pkg_version }}.nupkg --framework-version=net472 --icon=CoolerApps/Cooler.ico --setupIcon=CoolerApps/Cooler.ico --releaseDir=CoolerApps/release
+
+      - name: List
+        run: |
+          ls CoolerApps/build
+          Write-Host ''
+          ls CoolerApps/nupkg
+          Write-Host ''
+          ls CoolerApps/release

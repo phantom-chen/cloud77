@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package>
+  <metadata minClientVersion="2.5">
+    <id>cooler_plus</id>
+    <version>1.0.0</version>
+    <description>Cooler Plus App</description>
+    <authors>Cooler</authors>
+    <title>Cooler Plus</title>
+    <projectUrl>https://github.com/phantom-chen/cloud77.git</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <copyright>Copyright 2024</copyright>
+    <icon>Cooler.png</icon>
+    <tags>Cooler</tags>
+    <dependencies>
+      <group targetFramework=".NETFramework4.7.2" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="build\**" target="lib\net472" exclude="**\*.pdb;**\*.xml;**\*.so;**\Select.Html.dep;" />
+    <file src="Cooler.ico" target=""/>
+    <file src="Cooler.png" target=""/>
+  </files>
+</package>

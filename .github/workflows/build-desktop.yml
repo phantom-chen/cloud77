@@ -64,6 +64,7 @@ jobs:
             Remove-Item "./CoolerApps/build" -Recurse  -ErrorAction Ignore
             Write-Host (Get-Item "./CoolerApps/squirrel/Squirrel.exe").VersionInfo.FileVersion
             Write-Host ${{ github.event.inputs.pkg_version }}
+            Write-Host (Get-Item .\CoolerApps\build\Cooler.Plus.exe).VersionInfo.FileVersion
           
       - name: 'Change version'
         run: ./version.ps1 CoolerApps/Cooler.Plus -version ${{ github.event.inputs.pkg_version }}
@@ -71,12 +72,14 @@ jobs:
       - name: Build
         run: |
           pwd
-          msbuild CoolerApps\Cooler.Plus\Cooler.Plus.csproj /p:Configuration=Release /p:Platform=x64 /p:OutputPath=CoolerApps\build
+          msbuild CoolerApps\Cooler.Plus\Cooler.Plus.csproj /p:Configuration=Release /p:Platform=x64 /p:OutputPath=build
 
           ls CoolerApps
-          ls CoolerApps\build
+          ls CoolerApps\Cooler.Plus\build
 
-          'https://www.cloud77.top/resources/releases/cooler-plus' | Out-File "CoolerApps\build\squirrel.txt" 
+          'https://www.cloud77.top/resources/releases/cooler-plus' | Out-File "CoolerApps\Cooler.Plus\build\squirrel.txt"
+
+          Move-Item -path CoolerApps\Cooler.Plus\build -Destination CoolerApps
 
       - name: Pack
         run: dotnet nuget pack CoolerApps/Cooler.Plus.nuspec -Version ${{ github.event.inputs.pkg_version }} -Properties Configuration=CoolerApps/nupkg

@@ -1,19 +1,14 @@
-﻿using Squirrel;
+﻿using Cooler.Client.Providers;
+using Squirrel;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace Cooler.Plus.Windows
 {
@@ -22,85 +17,47 @@ namespace Cooler.Plus.Windows
     /// </summary>
     public partial class UpdateWindow : Window
     {
-        public UpdateManager updateManager;
+        private readonly UpdateDownloadManager downloadManger;
+        private readonly UpdateManager updateManager;
+        private readonly UpdateInfo updateInfo;
+        private readonly bool prod = true;
 
-        private UpdateInfo updateInfo;
-
-        public UpdateWindow()
+        public UpdateWindow(UpdateDownloadManager downloadMgr, UpdateManager mgr, UpdateInfo info)
         {
+#if DEBUG
+            prod = false;
+#endif
+            downloadManger = downloadMgr;
+            updateManager = mgr;
+            updateInfo = info;
             InitializeComponent();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             var assembly = Assembly.GetExecutingAssembly();
-            var location = System.IO.Path.GetDirectoryName(assembly.Location);
-            var hasUpdate = true;
             var version = assembly.GetName().Version.ToString(3);
+            var location = Path.GetDirectoryName(assembly.Location);
+
             Title = "Cooler Plus" + $" v{version}";
-#if DEBUG
-            //hasUpdate = false;
-#endif
-
-            var p = Directory.GetParent(location).ToString();
-            if (!File.Exists(System.IO.Path.Combine(p, "Update.exe")))
-            {
-                hasUpdate = false;
-            }
-
-            var url = "";
-            if (!File.Exists(System.IO.Path.Combine(location, "squirrel.txt")))
-            {
-                hasUpdate = false;
-            }
-            else
-            {
-                url = File.ReadAllText(System.IO.Path.Combine(location, "squirrel.txt")).Trim();
-            }
-
-            if (string.IsNullOrEmpty(url))
-            {
-                hasUpdate = false;
-            }
-            var prod = true;
-#if DEBUG
-            prod = false;
-#endif
-
-            if (hasUpdate && prod)
-            {
-                Task.Run(() =>
-                {
-                    CheckNewVersion(url);
-                });
-            }
-            else
-            {
-                this.Close();
-            }
+            CheckNewVersion();
         }
 
         private bool findNewUpdate = false;
         private string newUpdateVersion = "";
         private int newUpdateSize = 0;
 
-        private async void CheckNewVersion(string url)
+        private void CheckNewVersion()
         {
             try
             {
-                if (string.IsNullOrEmpty(url))
-                {
-                    return;
-                }
-                // check if update.exe exists
-                updateManager = new UpdateManager(url);
-                updateInfo = await updateManager.CheckForUpdate(true, (pg) =>
-                {
-                    Dispatcher.Invoke(new Action<int>((p) =>
-                    {
-                        header.Text = "Checking update ... " + pg.ToString() + "%";
-                    }), System.Windows.Threading.DispatcherPriority.Normal, pg);
-                });
+                //updateInfo = await updateManager.CheckForUpdate(true, (pg) =>
+                //{
+                //    Dispatcher.Invoke(new Action<int>((p) =>
+                //    {
+                //        header.Text = "Checking update ... " + pg.ToString() + "%";
+                //    }), System.Windows.Threading.DispatcherPriority.Normal, pg);
+                //});
 
                 if (updateInfo.ReleasesToApply == null || updateInfo.ReleasesToApply.Count == 0)
                 {
@@ -120,6 +77,7 @@ namespace Cooler.Plus.Windows
                         header.Text = $"Find update ({newUpdateVersion}), Size: {newUpdateSize} MB";
                         noUpdate.Content = "Skip, Not For Now";
                         download.Visibility = Visibility.Visible;
+                        download.IsEnabled = prod;
                     }));
                 }
                 progress.Visibility = Visibility.Hidden;
@@ -130,15 +88,7 @@ namespace Cooler.Plus.Windows
             }
             finally
             {
-                //if (!findNewUpdate)
-                //{
-                //    Dispatcher.Invoke(() =>
-                //    {
-                //        var window = new MainWindow();
-                //        window.Show();
-                //        this.Close();
-                //    });
-                //}
+
             }
         }
 

@@ -84,4 +84,31 @@ namespace Cooler.Client.Providers
             File.WriteAllText(Path.Combine(directroy, file), content);
         }
     }
+
+    public class UpdateDownloadManager
+    {
+        /// <summary>
+        /// Assembly execution path.
+        /// </summary>
+        /// <param name="path"></param>
+        public UpdateDownloadManager(string path)
+        {
+            if (File.Exists(Path.Combine(path, "squirrel.txt")))
+            {
+                EndPoint = File.ReadAllText(Path.Combine(path, "squirrel.txt")).Trim();
+            }
+
+            HasUpdateEXE = File.Exists(Path.Combine(Directory.GetParent(path).ToString(), "Update.exe"));
+        }
+
+        /// <summary>
+        /// Url that accesses RELEASE and NUPKG
+        /// </summary>
+        public string EndPoint { get; private set; } = "";
+
+        /// <summary>
+        /// Update.exe exists or not
+        /// </summary>
+        public bool HasUpdateEXE { get; private set; } = false;
+    }
 }

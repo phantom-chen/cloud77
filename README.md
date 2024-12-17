@@ -10,9 +10,9 @@
 + Canteen Service
 + Factory Service
 
-[API Design](Documentation\API.md)
-[UI Design](Documentation\UI.md)
-[Deployment](Documentation\Deployment.md)
+[API Design](Documentation/API.md)
+[UI Design](Documentation/UI.md)
+[Deployment](Documentation/Deployment.md)
 
 ### Desktop
 

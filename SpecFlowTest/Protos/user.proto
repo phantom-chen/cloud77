@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+option csharp_namespace = "ServiceTest";
+
+package user;
+
+service UserQuery {
+  rpc Query (UserRequest) returns (UserReply);
+  rpc GetEmails (EmailSearch) returns (EmailSearchResult);
+}
+
+message UserRequest {
+  string email = 1;
+}
+
+message UserReply {
+  int64 Id = 1;
+  string name = 2;
+  string role = 3;
+}
+
+message EmailSearch {
+	string keywords = 1;
+	int64 size = 2;
+}
+
+message EmailSearchResult {
+	repeated string results = 2;
+}
+
+message Profile {
+	string surname = 1;
+}
+
+message UserProfile {
+	string email = 1;
+	Profile data = 2;
+}

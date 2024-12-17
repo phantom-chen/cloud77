@@ -1,0 +1,16 @@
+﻿name: tester
+age: 20
+scores: 9.9
+contact:
+    email: xxx
+    phone: 123456
+    github: xxx
+
+address: 
+    office: xxx
+    home: xxx
+
+tags:
+    - react
+    - vue
+    - angular

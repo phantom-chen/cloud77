@@ -34,9 +34,106 @@ jobs:
       - name: Setup MSBuild.exe
         uses: microsoft/setup-msbuild@v2
     
-      - name: Check MSBuild
+      - name: MSBuild and NuGet
         run: |
-            pwd
-            ls
             msbuild --version
             dotnet --info
+            msbuild CoolerApps\Cooler.Client /restore:true
+            Copy-Item -Path $env:USERPROFILE\.nuget\packages\nuget.commandline\6.12.2\tools\NuGet.exe -Destination NuGet.exe -Force  
+            ./NuGet.exe
+
+      - name: Squirrel Tool
+        run: |
+            # squirrel.exe
+            if (!(Test-Path "CoolerApps/build")) {
+              mkdir "CoolerApps/build"
+            }
+            if (!(Test-Path "./CoolerApps/squirrel/Squirrel.exe")) {
+                Write-Host 'squirrel.exe not found, downloading'
+                if (!(Test-Path "./CoolerApps/build/squirrel.zip")) {
+                    Write-Host 'squirrel.zip not found, downloading'
+                    $url = 'https://www.cloud77.top/resources/squirrel.zip'
+                    Invoke-RestMethod -Uri $url -OutFile "./CoolerApps/build/squirrel.zip"
+                }
+                Expand-Archive -LiteralPath "./CoolerApps/build/squirrel.zip" -DestinationPath "./CoolerApps/squirrel"
+            }
+            else
+            {
+                Write-Host 'squirrel.exe found'
+            }
+            
+            Remove-Item "./CoolerApps/build" -Recurse  -ErrorAction Ignore
+            Write-Host (Get-Item "./CoolerApps/squirrel/Squirrel.exe").VersionInfo.FileVersion
+            Write-Host ${{ github.event.inputs.pkg_version }}
+          
+      - name: 'Change version'
+        run: ./version.ps1 CoolerApps/Cooler.Plus -version ${{ github.event.inputs.pkg_version }}
+      
+      - name: Build
+        run: |
+          .\NuGet.exe restore .\CoolerApps\Cooler.SDK.sln
+          .\NuGet.exe restore .\CoolerApps\Cooler.Plus.sln
+          msbuild CoolerApps\Cooler.Plus\Cooler.Plus.csproj /p:Configuration=Release /p:Platform=x64 /p:OutputPath=build
+
+          ls CoolerApps\Cooler.Plus\build
+          'https://www.cloud77.top/resources/releases/cooler-plus' | Out-File "CoolerApps\Cooler.Plus\build\squirrel.txt"
+
+          Move-Item -path CoolerApps\Cooler.Plus\build -Destination CoolerApps
+          Write-Host (Get-Item .\CoolerApps\build\Cooler.Plus.exe).VersionInfo.FileVersion
+
+      - name: Pack
+        run: .\NuGet.exe pack CoolerApps/Cooler.Plus.nuspec -Version ${{ github.event.inputs.pkg_version }} -OutputDirectory CoolerApps/nupkg -Properties Configuration=Release
+
+      - name: Release
+        run: CoolerApps/squirrel/Squirrel.exe --releasify=CoolerApps/nupkg/Cooler_plus.${{ github.event.inputs.pkg_version }}.nupkg --framework-version=net472 --icon=CoolerApps/Cooler.ico --setupIcon=CoolerApps/Cooler.ico --releaseDir=CoolerApps/release
+
+      - name: List
+        run: |
+          ls CoolerApps/build
+          Write-Host ''
+          ls CoolerApps/nupkg
+          Write-Host ''
+          ls CoolerApps/release
+
+      - name: Copy files to remote
+        uses: ArthurYdalgo/github-action-scp@0.7.5
+        with:
+          local: CoolerApps/release
+          remote: /cloud77/resources/releases/temp
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+
+
+          runs-on: ubuntu-latest
+    
+          steps:
+
+  release-desktop:
+    needs: build-desktop
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ssh-pipeline
+        # You may pin to the exact commit or the version.
+        # uses: cross-the-world/ssh-pipeline@7f022867934a210af826af99ef80d96f03a094d5
+        uses: cross-the-world/ssh-pipeline@v1.2.0
+        env:
+            PKGVERSION: ${{ github.event.inputs.pkg_version }}
+        with:
+            # ssh remote host
+            host: ${{ secrets.SERVER_HOST }}
+            # ssh remote user
+            user: ${{ secrets.SERVER_USERNAME }}
+            # ssh remote password
+            pass: ${{ secrets.SERVER_PASSWORD }}
+            # execute commands on ssh
+            script: |
+                pwd
+                echo '# cooler plus release starts' >> /cloud77/resources/releases/logs.txt
+                mv /cloud77/resources/releases/temp/*.nupkg /cloud77/resources/releases/cooler-plus
+                mv -f /cloud77/resources/releases/temp/RELEASES /cloud77/resources/releases/cooler-plus/RELEASES
+                rm -f -r /cloud77/resources/releases/temp
+                echo $PKGVERSION >> /cloud77/resources/releases/logs.txt
+                date +"%A, %B %d, %Y %H:%M:%S" >> /cloud77/resources/releases/logs.txt
+                echo '# cooler plus release ends' >> /cloud77/resources/releases/logs.txt

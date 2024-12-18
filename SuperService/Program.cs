@@ -19,6 +19,10 @@ namespace SuperService
             app.UseAuthorization();
 
             app.MapControllers();
+
+            // services
+            // user service (not require token)
+            // account service
             app.MapGrpcService<GreeterService>();
 
             app.Run();

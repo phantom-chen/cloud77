@@ -23,8 +23,6 @@ namespace SuperService.Services
             _logger.LogInformation(request.Name);
             _logger.LogInformation(request.Age.ToString());
 
-            testing();
-
             string shuxiang = request.Age > 24 ? "monkey" : "tiger";
             return Task.FromResult(new HelloReply
             {

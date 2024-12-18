@@ -4,19 +4,17 @@ option csharp_namespace = "SuperService.Protos";
 
 package user;
 
-service UserQuery {
-  rpc Query (UserRequest) returns (UserReply);
-  rpc GetEmails (EmailSearch) returns (EmailSearchResult);
-}
-
-message UserRequest {
+message UserEmail {
   string email = 1;
 }
 
-message UserReply {
-  int64 Id = 1;
-  string name = 2;
-  string role = 3;
+message UserEmailResult {
+ string email = 1;
+ bool existing = 2;
+}
+
+service UserService {
+	rpc QueryEmail (UserEmail) returns (UserEmailResult);
 }
 
 message EmailSearch {
@@ -35,4 +33,14 @@ message Profile {
 message UserProfile {
 	string email = 1;
 	Profile data = 2;
+}
+
+message UserAccount {
+ string email = 1;
+ string username = 2;
+ string role = 3;
+}
+
+service AccountService {
+  rpc Query (UserEmail) returns (UserAccount);
 }

@@ -13,8 +13,19 @@ message UserEmailResult {
  bool existing = 2;
 }
 
-service UserService {
-	rpc QueryEmail (UserEmail) returns (UserEmailResult);
+message UserLogin {
+	string email = 1;
+	string username = 2;
+	string password = 3;
+	string refresh_token = 4;
+}
+
+message UserLoginResult {
+	string email = 1;
+	string value = 2;
+	string issueAt = 3;
+	int64 expireInHours = 4;
+	string refreshToken = 5;
 }
 
 message EmailSearch {
@@ -41,6 +52,14 @@ message UserAccount {
  string role = 3;
 }
 
+service UserService {
+	rpc GetUser (UserEmail) returns (UserEmailResult);
+	rpc CreateUser (UserEmail) returns (UserEmailResult);
+	rpc VerifyUser (UserEmail) returns (UserEmailResult);
+	rpc GetToken (UserLogin) returns (UserLoginResult);
+}
+
 service AccountService {
-  rpc Query (UserEmail) returns (UserAccount);
+  rpc GetRole (UserEmail) returns (UserAccount);
+  rpc GetAccount (UserEmail) returns (UserAccount);
 }

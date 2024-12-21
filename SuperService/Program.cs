@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
-using ServiceStack;
+using RabbitMQ.Client;
 using SuperService.Services;
 using System.Security.Claims;
 using System.Text;
@@ -29,6 +29,15 @@ namespace SuperService
                     connection = File.ReadAllText("./cluster.txt");
                 }
                 return new MongoClient(connection);
+            });
+            builder.Services.AddScoped<ConnectionFactory>(o =>
+            {
+                return new ConnectionFactory()
+                {
+                    HostName = Environment.GetEnvironmentVariable("MQ_HOST") ?? "localhost",
+                    UserName = Environment.GetEnvironmentVariable("MQ_USERNAME") ?? "admin",
+                    Password = Environment.GetEnvironmentVariable("MQ_PASSWORD") ?? "123456"
+                };
             });
 
             builder.Services.AddAuthentication(option =>
@@ -62,6 +71,7 @@ namespace SuperService
 
             builder.Services.AddGrpcHealthChecks().AddCheck("rpc-service-health", () => HealthCheckResult.Healthy());
             builder.Services.AddGrpc();
+            builder.Services.AddHostedService<MessageConsumer>();
 
             var app = builder.Build();
 
@@ -75,7 +85,8 @@ namespace SuperService
             // rpc services
             app.MapGrpcHealthChecksService();
             app.MapGrpcService<UserService>();
-
+            app.MapGrpcService<MessageService>();
+            
             app.Run();
         }
     }

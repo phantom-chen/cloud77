@@ -1,4 +1,11 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.IdentityModel.Tokens;
+using MongoDB.Driver;
+using ServiceStack;
 using SuperService.Services;
+using System.Security.Claims;
+using System.Text;
 
 namespace SuperService
 {
@@ -8,22 +15,66 @@ namespace SuperService
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // Accessing IConfiguration and IWebHostEnvironment from the builder
+            IConfiguration configuration = builder.Configuration;
+            IWebHostEnvironment environment = builder.Environment;
+
             // Add services to the container.
             builder.Services.AddScoped<TokenGenerator>();
+            builder.Services.AddScoped<MongoClient>(p =>
+            {
+                var connection = Environment.GetEnvironmentVariable("DB_CONNECTION") ?? "localhost";
+                if (File.Exists("./cluster.txt"))
+                {
+                    connection = File.ReadAllText("./cluster.txt");
+                }
+                return new MongoClient(connection);
+            });
+
+            builder.Services.AddAuthentication(option =>
+            {
+                option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.SaveToken = true;
+
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    NameClaimType = ClaimTypes.Name,
+                    RoleClaimType = ClaimTypes.Role,
+                    ValidateIssuerSigningKey = true,
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["SecurityKey"] ?? "")),
+                    ValidIssuer = configuration["Issuer"],
+                    ValidAudience = configuration["Audience"],
+                    ClockSkew = TimeSpan.FromSeconds(30),
+                    RequireExpirationTime = true,
+                };
+            });
+
+            builder.Services.AddAuthorization();
+
             builder.Services.AddControllers();
+
+            builder.Services.AddGrpcHealthChecks().AddCheck("rpc-service-health", () => HealthCheckResult.Healthy());
+            builder.Services.AddGrpc();
 
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
-
+            app.UseRouting();
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();
 
-            // services
-            // user service (not require token)
-            // account service
-            app.MapGrpcService<GreeterService>();
+            // rpc services
+            app.MapGrpcHealthChecksService();
+            app.MapGrpcService<UserService>();
 
             app.Run();
         }

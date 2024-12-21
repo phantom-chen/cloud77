@@ -87,6 +87,7 @@ namespace SuperService
             app.MapGrpcService<UserService>();
             app.MapGrpcService<MessageService>();
             app.MapGrpcService<SettingService>();
+            app.MapGrpcService<AccountService>();
 
             app.Run();
         }

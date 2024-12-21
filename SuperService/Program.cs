@@ -86,7 +86,8 @@ namespace SuperService
             app.MapGrpcHealthChecksService();
             app.MapGrpcService<UserService>();
             app.MapGrpcService<MessageService>();
-            
+            app.MapGrpcService<SettingService>();
+
             app.Run();
         }
     }

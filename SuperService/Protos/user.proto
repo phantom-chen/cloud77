@@ -115,3 +115,12 @@ service SettingService {
 	rpc DeleteSetting (ServiceSetting) returns (ServiceReply);
 	rpc GetSettings (google.protobuf.Empty) returns (ServiceSettings);
 }
+
+message SimpleQueueMessage {
+	string queue = 1;
+	string message = 2;
+}
+
+service MessageService {
+	rpc SendSimpleMessage (SimpleQueueMessage) returns (ServiceReply);
+}

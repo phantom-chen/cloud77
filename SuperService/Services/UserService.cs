@@ -5,7 +5,6 @@ using Cloud77.Service;
 using Cloud77.Service.Entity;
 using UserEmail = SuperService.Protos.UserEmail;
 using UserPassword = SuperService.Protos.UserPassword;
-using Newtonsoft.Json;
 
 namespace SuperService.Services
 {
@@ -13,8 +12,9 @@ namespace SuperService.Services
     {
         private readonly ILogger<UserService> logger;
         private readonly TokenGenerator generator;
-        private readonly UserDatabase database;
+        private readonly UserCollection database;
         private readonly string defaultRole;
+
         public UserService(
             IConfiguration configuration,
             MongoClient client,
@@ -24,7 +24,7 @@ namespace SuperService.Services
             this.defaultRole = configuration["Role_default"] ?? "";
             this.logger = logger;
             this.generator = generator;
-            this.database = new UserDatabase(client, configuration);
+            this.database = new UserCollection(client, configuration);
         }
 
         public override Task<UserEmailResult> GetUser(UserEmail request, ServerCallContext context)
@@ -113,20 +113,8 @@ namespace SuperService.Services
             {
                 throw new RpcException(new Status());
             }
-            database.UpdateUser(request.Email, true);
-            database.AppendEventLog(new EventEntity()
-            {
-                Name = "Verify-Email",
-                UserEmail = request.Email,
-                Email = request.Email,
-                Payload = JsonConvert.SerializeObject(new TokenPayload()
-                {
-                    Token = token,
-                    Usage = "verify-email",
-                }),
-                Date = DateTime.UtcNow
-            });
-
+            database.UpdateUser(request.Email, true, token);
+            
             return Task.FromResult(new ServiceReply()
             {
                 Code = "user-email-verified",

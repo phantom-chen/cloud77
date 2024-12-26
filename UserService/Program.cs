@@ -1,3 +1,5 @@
+using MongoDB.Driver;
+
 namespace UserService
 {
     public class Program
@@ -9,6 +11,20 @@ namespace UserService
             // Add services to the container.
 
             builder.Services.AddControllers();
+            builder.Services.AddScoped<MongoClient>(p =>
+            {
+                var connection = Environment.GetEnvironmentVariable("DB_CONNECTION") ?? "localhost";
+                if (File.Exists("./cluster.txt"))
+                {
+                    connection = File.ReadAllText("./cluster.txt");
+                }
+
+                var settings = MongoClientSettings.FromConnectionString(connection);
+                settings.ConnectTimeout = TimeSpan.FromSeconds(5);
+                settings.ServerSelectionTimeout = TimeSpan.FromSeconds(5);
+                var client = new MongoClient(settings);
+                return client;
+            });
 
             var app = builder.Build();
 

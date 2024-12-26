@@ -12,14 +12,14 @@ namespace SuperService.Services
     {
         private readonly ILogger<AccountService> logger;
         private readonly TokenGenerator generator;
-        private readonly UserDatabase database;
+        private readonly UserCollection database;
         public AccountService(
             IConfiguration configuration,
             MongoClient client,
             ILogger<AccountService> logger)
         {
             this.logger = logger;
-            this.database = new UserDatabase(client, configuration);
+            this.database = new UserCollection(client, configuration);
         }
 
         public override Task<UserRole> GetRole(UserEmail request, ServerCallContext context)

@@ -280,7 +280,7 @@ namespace UserService.Controllers
         {
             var _collection = new SettingCollection(client, configuration);
             var settings = _collection.Get();
-            var link = "http://localhost";
+            var link = configuration["Home_url"];
             var dir = Directory.GetParent(Assembly.GetExecutingAssembly().Location).ToString();
             var content = new EmailContentEntity()
             {
@@ -320,7 +320,7 @@ namespace UserService.Controllers
                 {
                     try
                     {
-                        var client = new MailClient(settings);
+                        var client = new MailClient(settings, !string.IsNullOrEmpty(configuration["Smtp_client_enable"]));
                         client.Send(content);
                     }
                     catch (Exception exception)

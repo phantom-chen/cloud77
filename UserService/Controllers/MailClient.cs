@@ -11,9 +11,11 @@ namespace UserService.Controllers
         private readonly string password;
         private readonly string address;
         private readonly string display;
+        private readonly bool enabled;
 
-        public MailClient(IEnumerable<SettingEntity> settings)
+        public MailClient(IEnumerable<SettingEntity> settings, bool enabled)
         {
+            this.enabled = enabled;
             this.host = settings.FirstOrDefault(s => s.Key == "smtp_client_host").Value ?? "";
             this.username = settings.FirstOrDefault(s => s.Key == "smtp_client_username").Value ?? "";
             this.password = settings.FirstOrDefault(s => s.Key == "smtp_client_password").Value ?? "";
@@ -30,6 +32,11 @@ namespace UserService.Controllers
                 || string.IsNullOrEmpty(display))
             {
                 throw new Exception();
+            }
+
+            if (!enabled)
+            {
+                return;
             }
             else
             {

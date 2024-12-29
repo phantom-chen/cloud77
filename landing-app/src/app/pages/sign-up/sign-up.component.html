@@ -1,1 +1,41 @@
-<p>sign-up works!</p>
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <p>sign-up works!</p>
+        </div>
+    
+        <div class="card-body">
+
+            <div class="row col-lg-6">
+                <mat-form-field>
+                    <mat-label>Email</mat-label>
+                    <input matInput placeholder="Email" [(ngModel)]="email">
+                </mat-form-field>
+            </div>
+
+            <div class="row col-lg-6">
+                <mat-form-field>
+                    <mat-label>Username</mat-label>
+                    <input matInput placeholder="Username" [(ngModel)]="name">
+                </mat-form-field>
+            </div>
+
+            <div class="row col-lg-6">
+                <mat-form-field>
+                    <mat-label>Password</mat-label>
+                    <input matInput placeholder="Password" type="password" autocomplete="off"
+                        [(ngModel)]="password">
+                </mat-form-field>
+                <password-strength-meter [password]="password" enableFeedback />
+            </div>
+
+            <div class="row col-lg-6">
+                <mat-label>Privacy Policy</mat-label>
+                <mat-checkbox class="col-sm-6">read terms</mat-checkbox>
+                <mat-checkbox class="col-sm-6" color="primary">read policy</mat-checkbox>
+            </div>
+            
+            <button mat-raised-button color="primary" (click)="signUp()">Create Account</button>
+        </div>
+    </div>
+</div>

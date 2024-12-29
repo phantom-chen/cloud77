@@ -12,7 +12,7 @@ export class HistoryComponent implements OnInit {
   constructor(private http: HttpClient) {}
   
   ngOnInit(): void {
-    this.http.get('/api/event-logs').subscribe((data: any) => {
+    this.http.get('/api/events').subscribe((data: any) => {
       console.log(data);
     });
   }

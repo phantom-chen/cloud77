@@ -1,0 +1,19 @@
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            User History
+        </div>
+        <div class="card-body">
+            <mat-list role="list">
+                <mat-list-item role="listitem" *ngFor="let item of history">
+                    <div>
+                        <div>
+                            <span> {{ item.date | date: 'yyyy-MM-dd HH:mm' }}: {{ item.name }}</span>
+                        </div>
+                        <!-- <app-preview [content]="item.payload || 'null'" /> -->
+                        <span class="text-info">{{ item.payload || 'null' }}</span>
+                    </div>
+                </mat-list-item>
+            </mat-list>
+    </div>
+</div>

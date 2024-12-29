@@ -1,0 +1,35 @@
+<style>
+    mat-form-field {
+        min-width: 300px;
+    }
+</style>
+
+<div class="container col-lg-12">
+    <h1 mat-dialog-title>Create New Service Setting</h1>
+
+    <div mat-dialog-content>
+        <div class="row">
+            <mat-form-field appearance="outline" class="col-lg-12">
+                <mat-label>Key</mat-label>
+                <input matInput placeholder="Key" [(ngModel)]="data.key">
+            </mat-form-field>
+        </div>
+        <div class="row">
+            <mat-form-field appearance="outline" class="col-lg-12">
+                <mat-label>Value</mat-label>
+                <input matInput placeholder="Value" [(ngModel)]="data.value">
+            </mat-form-field>
+        </div>
+        <div class="row">
+            <mat-form-field appearance="outline" class="col-lg-12">
+                <mat-label>Description</mat-label>
+                <input matInput placeholder="Description" [(ngModel)]="data.description">
+            </mat-form-field>
+        </div>
+    </div>
+    <div mat-dialog-actions align="end">
+        <button mat-button (click)="onDelete()">Delete</button>
+        <button mat-button (click)="onNoClick()">Cancel</button>
+        <button mat-raised-button [mat-dialog-close]="data">Save</button>
+    </div>
+</div>

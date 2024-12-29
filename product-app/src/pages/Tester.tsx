@@ -5,6 +5,7 @@ import { UserList, UserEdit } from "./User";
 import { Dashboard } from "./Dashboard";
 import { Route } from "react-router-dom";
 import { Settings } from "./Settings";
+import Flow from "./Flow";
 
 export function Tester() {
 
@@ -17,6 +18,7 @@ export function Tester() {
             <Resource name="roles" list={RoleList} edit={RoleEdit} create={RoleCreate}/>
             <CustomRoutes>
                 <Route path="/settings" element={<Settings />} />
+                <Route path="/flow" element={<Flow />} />
             </CustomRoutes>
         </Admin>
     )

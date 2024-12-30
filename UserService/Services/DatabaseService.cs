@@ -23,12 +23,13 @@ namespace UserService.Services
             {
                 connection = File.ReadAllText("./cluster.txt");
             }
-
+            logger.LogInformation($"Connecting to: {connection}");
             var settings = MongoClientSettings.FromConnectionString(connection);
             settings.ConnectTimeout = TimeSpan.FromSeconds(5);
             settings.ServerSelectionTimeout = TimeSpan.FromSeconds(5);
             var client = new MongoClient(settings);
             database = client.GetDatabase(configuration["Database"]);
+            logger.LogInformation($"Database: {configuration["Database"]}");
             var dir = Directory.GetParent(Assembly.GetExecutingAssembly().Location).ToString();
         }
 
@@ -36,6 +37,7 @@ namespace UserService.Services
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
+            logger.LogInformation("Database service started.");
             Task.Run(Execute);
             return Task.CompletedTask;
         }
@@ -48,11 +50,12 @@ namespace UserService.Services
         private async Task Execute()
         {
             var field = Environment.GetEnvironmentVariable("DB_UNSET_FIELD") ?? "";
+            
             if (string.IsNullOrEmpty(field))
             {
                 return;
             }
-
+            logger.LogInformation($"Unsetting field: {field}");
             var collection = database.GetCollection<BsonDocument>(Cloud77Utility.Users);
             long count = 1;
 

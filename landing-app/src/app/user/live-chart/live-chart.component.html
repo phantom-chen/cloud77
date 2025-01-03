@@ -1,0 +1,6 @@
+<p>live-chart works!</p>
+<div style="display: block">
+    <canvas baseChart [datasets]="chartData" [labels]="chartLabels" [options]="chartOptions" [legend]="chartLegend"
+        [type]="chartType" (chartClick)="clickData()">
+    </canvas>
+</div>

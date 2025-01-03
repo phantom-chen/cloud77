@@ -1,8 +1,9 @@
-<div class="container">
-    <div class="card">
+<div class="container row">
+    <div class="card col-lg-6">
         <div class="card-header">
-            <p>settings works!</p>
-            <button mat-raised-button (click)="addSetting()">New</button>
+            <button mat-icon-button (click)="addSetting()">
+                <mat-icon fontIcon="add"></mat-icon>
+            </button>
         </div>
     
         <div class="card-body">
@@ -11,4 +12,39 @@
             </ul>
         </div>
     </div>
+
+    <div class="card col-lg-6">
+        <div class="card-header">
+            <p>Health!</p>            
+        </div>
+    
+        <div class="card-body">
+            <div class="row">
+                <mat-slide-toggle [(ngModel)]="healthEnable">Enable Daily Health Check</mat-slide-toggle>
+            </div>
+            <div class="row">
+                <mat-form-field>
+                    <mat-label>Email Address</mat-label>
+                    <input matInput placeholder="Email Address" [(ngModel)]="address" />
+                </mat-form-field>
+            </div>
+            
+            <div class="row">
+                <mat-form-field>
+                    <mat-label>Subject</mat-label>
+                    <input matInput placeholder="Subject" [(ngModel)]="subject" />
+                </mat-form-field>
+            </div>
+            
+            <div class="row">
+                <mat-form-field>
+                    <mat-label>Body</mat-label>
+                    <textarea matInput placeholder="Body" [(ngModel)]="body"></textarea>
+                    <mat-hint align="end" aria-live="polite">
+                        10 / 100
+                    </mat-hint>
+                </mat-form-field>
+            </div>
+            <button mat-raised-button color="primary">Update Health Setting</button>
+        </div>
 </div>

@@ -1,0 +1,35 @@
+<div class="container co-lg-12">
+    <div class="card">
+        <div class="card-header" style="display:flex;">
+            <h5>Accounts</h5>
+            <div style="flex: 1 1 auto;"></div>
+        </div>
+
+        <div class="card-body">
+
+            <table class="table table-sm table-striped table-bordered table-hover">
+                <tr>
+                    <th>Name</th>
+                    <th>Confirmed</th>
+                    <th>Email</th>
+                    <th style="width: 100px;">Actions</th>
+                </tr>
+                <tr *ngFor="let a of accounts">
+                    <td>{{ a.name || 'Null' }}</td>
+                    <td>{{ a.confirmed }}</td>
+                    <td>{{ a.email }}</td>
+                    <td style="display:flex;">
+                        <button type="button" class="btn btn-outline-primary btn-sm" style="margin-right:6px;"><i
+                                class="material-icons">edit</i></button>
+                        <button type="button" class="btn btn-outline-danger btn-sm"><i
+                                class="material-icons">delete</i></button>
+                    </td>
+                </tr>
+            </table>
+            <mat-paginator [length]="listLength" [pageSize]="pageSize" [pageSizeOptions]="[10, 12]" showFirstLastButtons=true (page)="pageChanged($event)"></mat-paginator>
+
+        </div>
+
+    </div>
+
+</div>

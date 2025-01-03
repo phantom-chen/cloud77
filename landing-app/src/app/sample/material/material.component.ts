@@ -14,6 +14,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MaterialDialogComponent } from '../material-dialog/material-dialog.component';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatIconModule } from '@angular/material/icon';
 
 const RawHTML = `
 <div>
@@ -45,24 +46,34 @@ const RawHTML = `
     MatChipsModule,
     MatDialogModule,
     MatNativeDateModule,
-    MatDatepickerModule
+    MatDatepickerModule,
+    MatIconModule,
+    MatButtonModule
   ],
   templateUrl: './material.component.html',
   styleUrl: './material.component.css'
 })
 export class MaterialComponent {
+  isLoading = true;
   role = 'role1';
   roles = ['role1', 'role2'];
   @ViewChild("canvasSource")
   canvasSource!: ElementRef;
   selected: Date | null = null;
-
+  links = [
+    { name: "link1", isActive: true },
+    { name: "link2", isActive: true },
+    { name: "link3", isActive: true },
+  ]
   constructor(
     private dialog: MatDialog,
     private sanitizer: DomSanitizer
   ) {
     this.htmlValue = this.sanitizer.bypassSecurityTrustHtml(RawHTML);
     this.selected = new Date();
+    setTimeout(() => {
+      this.isLoading = false;
+    }, 2000);
   }
 
   htmlValue: SafeHtml | undefined;

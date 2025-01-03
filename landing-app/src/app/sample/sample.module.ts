@@ -7,6 +7,7 @@ import { TutorialComponent } from './tutorial/tutorial.component';
 import { PeriodicTableComponent } from './periodic-table/periodic-table.component';
 import { MaterialComponent } from './material/material.component';
 import { DiagramComponent } from './diagram/diagram.component';
+import { LayoutComponent } from './layout/layout.component';
 
 const routes: Routes = [
   {
@@ -33,6 +34,10 @@ const routes: Routes = [
     path: 'tutorial',
     component: TutorialComponent
   },
+  {
+    path: 'layout',
+    component: LayoutComponent
+  }
 ];
 
 @NgModule({

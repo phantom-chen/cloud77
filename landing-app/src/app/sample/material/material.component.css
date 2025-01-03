@@ -10,3 +10,16 @@
 .demo-inline-calendar-card {
     width: 300px;
 }
+
+.loading-placeholder {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.grey-box {
+    width: 100px;
+    height: 100px;
+    background-color: grey;
+}

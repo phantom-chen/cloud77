@@ -49,3 +49,8 @@ button {
 button:hover {
   background-color: #126e99;
 }
+
+app-root {
+  height: 100%;
+  display: block;
+}

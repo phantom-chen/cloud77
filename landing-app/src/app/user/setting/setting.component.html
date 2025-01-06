@@ -1,0 +1,71 @@
+<p>setting works!</p>
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>
+            <h3>Theme</h3>
+        </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <div style="padding: 0px 16px;">
+            <mat-checkbox>light</mat-checkbox>
+            <mat-checkbox>dark</mat-checkbox>
+        </div>
+    </mat-card-content>
+</mat-card>
+
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>
+            <h3>Reset Password</h3>
+        </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <div style="padding: 0px 16px;">
+            <div class="row">
+                <mat-form-field style="width: 600px;">
+                    <mat-label>Current Password</mat-label>
+                    <input matInput type="password" placeholder="Type current password" autocomplete="off"
+                        [(ngModel)]="password">
+                </mat-form-field>
+            </div>
+            <div class="row">
+                <mat-form-field style="width: 600px;">
+                    <mat-label>New Password</mat-label>
+                    <input matInput type="password" placeholder="Type new password" autocomplete="off"
+                        [(ngModel)]="newPassword">
+                </mat-form-field>
+            </div>
+            <div class="row">
+                <mat-form-field style="width: 600px;">
+                    <mat-label>New Password Again</mat-label>
+                    <input matInput type="password" placeholder="Type new password again" autocomplete="off"
+                        [(ngModel)]="newPasswordAgain">
+                </mat-form-field>
+            </div>
+            <button mat-raised-button (click)="updatePassword()">Save && Update</button>
+        </div>
+    </mat-card-content>
+</mat-card>
+
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>
+            <h3 class="text-danger">Delete Account</h3>
+        </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <div style="padding: 0px 16px;width: 100%;">
+            <div style="padding: 0px 16px;">
+                <mat-form-field style="width: 600px;">
+                    <mat-label>Email</mat-label>
+                    <input matInput placeholder="Type your email" [(ngModel)]="emailConfirm" (change)="onEmailChange()">
+                </mat-form-field>
+            </div>
+            <div>
+                <span class="text-danger">Please type your email to confirm before deleting account.</span>
+            </div>
+            <button mat-raised-button color="primary" [disabled]="disableDelete" (click)="delete()">delete
+                account</button>
+        </div>
+    </mat-card-content>
+</mat-card>

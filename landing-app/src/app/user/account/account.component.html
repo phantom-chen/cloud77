@@ -1,5 +1,5 @@
 <div class="container">
-    <div class="card">
+    <div *ngIf="isLogin" class="card">
         <div class="card-header">
             <p style="font-weight: bold;">Account Info</p>
         </div>
@@ -61,4 +61,6 @@
             </div>
         </div>
     </div>
+    
+    <app-un-authorized *ngIf="!isLogin"></app-un-authorized>
 </div>

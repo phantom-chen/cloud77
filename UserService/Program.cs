@@ -1,4 +1,5 @@
 using MongoDB.Driver;
+using UserService.Services;
 
 namespace UserService
 {
@@ -25,6 +26,7 @@ namespace UserService
                 var client = new MongoClient(settings);
                 return client;
             });
+            builder.Services.AddHostedService<DatabaseService>();
 
             var app = builder.Build();
 

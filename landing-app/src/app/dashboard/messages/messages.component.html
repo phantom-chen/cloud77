@@ -1,0 +1,60 @@
+<p>messages works!</p>
+<div class="row">
+    <mat-form-field>
+        <mat-label>Message</mat-label>
+        <input matInput placeholder="Message" [(ngModel)]="message" />
+    </mat-form-field>
+</div>
+
+<div class="row">
+    <div style="width: 100%;display: flex;padding: 2px;">
+        <button mat-raised-button color="primary" (click)="sendMessage('login_test_queue')">Message to Login Test
+            Queue</button>
+        <button mat-raised-button color="primary" (click)="sendMessage('workspace_test_queue')">Message to Workspace
+            Test Queue</button>
+    </div>
+</div>
+
+<div class="row">
+    <div style="width: 100%;display: flex;padding: 2px;">
+        <button mat-raised-button color="primary" (click)="sendMessage('management_test_queue')">Message to
+            Management Test Queue</button>
+        <button mat-raised-button color="primary" (click)="sendMessage('super_test_queue')">Message to Super Test
+            Queue</button>
+    </div>
+</div>
+
+<div class="row">
+    <mat-form-field>
+        <mat-label>Email</mat-label>
+        <input matInput placeholder="Email" [(ngModel)]="email" />
+    </mat-form-field>
+</div>
+
+<div class="row">
+    <mat-form-field>
+        <mat-label>Subject</mat-label>
+        <input matInput placeholder="Subject" [(ngModel)]="subject" />
+    </mat-form-field>
+</div>
+
+<div class="row">
+    <mat-form-field>
+        <mat-label>Body</mat-label>
+        <textarea matInput placeholder="Body" [(ngModel)]="body"></textarea>
+    </mat-form-field>
+</div>
+
+<div class="row">
+    <div style="width: 96%;display: flex;">
+        <button type="button" class="btn btn-outline-primary btn-sm"><i class="material-icons">edit</i></button>
+        <button type="button" class="btn btn-outline-danger btn-sm"><i class="material-icons">delete</i></button>
+        <button type="button" class="btn btn-outline-primary btn-sm" (click)="sendMail()"><i
+                class="material-icons">email</i></button>
+        <button type="button" class="btn btn-outline-danger btn-sm"><i class="material-icons">save</i></button>
+        <button type="button" class="btn btn-outline-primary btn-sm"><i class="material-icons">arrow_upward</i></button>
+        <button type="button" class="btn btn-outline-danger btn-sm"><i
+                class="material-icons">arrow_downward</i></button>
+    </div>
+
+</div>

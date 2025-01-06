@@ -10,6 +10,7 @@ import { Profile, UserAccount } from '@phantom-chen/cloud77';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ProfileDialogComponent } from '../profile-dialog/profile-dialog.component';
+import { SharedModule } from '../../shared/shared.module';
 
 const SNACKBAR_DURATION = 3000;
 
@@ -19,6 +20,7 @@ const SNACKBAR_DURATION = 3000;
   imports: [
     CommonModule,
     FormsModule,
+    SharedModule,
     MatCommonModule,
     MatFormFieldModule,
     MatInputModule,
@@ -63,6 +65,9 @@ export class AccountComponent implements OnInit {
         this.confirmed = data.confirmed;
         this.profile = data.profile;
       });
+    } else {
+      console.warn('No email found in session storage');
+      
     }
   }
 

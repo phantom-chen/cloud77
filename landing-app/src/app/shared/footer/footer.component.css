@@ -1,0 +1,26 @@
+footer a {
+    /* display: flex; */
+    align-items: center;
+}
+
+section {
+    padding: 20px;
+    margin: auto;
+    border: 1px solid #ccc;
+    width: fit-content;
+}
+
+#twitter-logo {
+    height: 40px;
+    margin: 0 8px;
+}
+
+#youtube-logo {
+    height: 40px;
+    margin: 0 16px;
+}
+
+#twitter-logo:hover,
+#youtube-logo:hover {
+    opacity: 0.8;
+}

@@ -29,6 +29,9 @@ export class HistoryComponent implements OnInit {
         console.log(data);
         this.history = data.data;
       });
+    } else {
+      console.warn('No email found in session storage');
+      
     }
   }
 }

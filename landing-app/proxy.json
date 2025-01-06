@@ -5,7 +5,7 @@
     "changeOrigin": true
   },
   "/resources": {
-    "target": "http://localhost:5389",
+    "target": "https://www.cloud77.top",
     "secure": true,
     "changeOrigin": true
   },

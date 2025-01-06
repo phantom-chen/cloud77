@@ -1,0 +1,18 @@
+<style>
+    mat-form-field {
+        min-width: 300px;
+    }
+</style>
+
+<div class="container col-lg-12">
+    <h1 mat-dialog-title>Screenshot Preview</h1>
+
+    <div mat-dialog-content>
+        <div #canvas>
+
+        </div>
+    </div>
+    <div mat-dialog-actions align="end">
+        <button mat-raised-button (click)="onNoClick()">Close</button>
+    </div>
+</div>

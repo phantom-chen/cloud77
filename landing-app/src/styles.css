@@ -18,3 +18,39 @@ html, body {
   direction: ltr;
   -webkit-font-smoothing: antialiased;
 }
+
+:host {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-size: 14px;
+  color: #333;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  display: flex;
+  flex-flow: column;
+  height: inherit;
+  width: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 8px 0;
+}
+
+button {
+  border: none;
+  background-color: #126e9986;
+}
+
+button:hover {
+  background-color: #126e99;
+}
+
+app-root {
+  height: 100%;
+  display: block;
+}

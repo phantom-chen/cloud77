@@ -1,4 +1,4 @@
-name: build-simple-service
+name: build-user-service
 
 on:
 

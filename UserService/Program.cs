@@ -1,4 +1,5 @@
 using MongoDB.Driver;
+using System.Reflection;
 using UserService.Services;
 
 namespace UserService
@@ -15,9 +16,10 @@ namespace UserService
             builder.Services.AddScoped<MongoClient>(p =>
             {
                 var connection = Environment.GetEnvironmentVariable("DB_CONNECTION") ?? "localhost";
-                if (File.Exists("./cluster.txt"))
+                var dir = Directory.GetParent(Assembly.GetExecutingAssembly().Location).ToString();
+                if (File.Exists(Path.Combine(dir, "localhost.txt")))
                 {
-                    connection = File.ReadAllText("./cluster.txt");
+                    connection = connection.Replace("localhost", File.ReadAllLines(Path.Combine(dir, "localhost.txt"))[0]);
                 }
 
                 var settings = MongoClientSettings.FromConnectionString(connection);

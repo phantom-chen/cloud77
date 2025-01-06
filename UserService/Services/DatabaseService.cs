@@ -19,9 +19,10 @@ namespace UserService.Services
             this.logger = logger;
 
             var connection = Environment.GetEnvironmentVariable("DB_CONNECTION") ?? "localhost";
-            if (File.Exists("./cluster.txt"))
+            var dir = Directory.GetParent(Assembly.GetExecutingAssembly().Location).ToString();
+            if (File.Exists(Path.Combine(dir, "localhost.txt")))
             {
-                connection = File.ReadAllText("./cluster.txt");
+                connection = connection.Replace("localhost", File.ReadAllLines(Path.Combine(dir, "localhost.txt"))[0]);
             }
             logger.LogInformation($"Connecting to: {connection}");
             var settings = MongoClientSettings.FromConnectionString(connection);
@@ -30,7 +31,7 @@ namespace UserService.Services
             var client = new MongoClient(settings);
             database = client.GetDatabase(configuration["Database"]);
             logger.LogInformation($"Database: {configuration["Database"]}");
-            var dir = Directory.GetParent(Assembly.GetExecutingAssembly().Location).ToString();
+
         }
 
         private IMongoDatabase database;

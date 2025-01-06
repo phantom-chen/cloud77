@@ -1,9 +1,13 @@
-name: build-landing-app
+name: build-web-apps
 
 on:
 
   workflow_dispatch:
     inputs:
+      app_name:
+        description: "App Name"
+        required: true
+        default: "web-app"
       image_tag:
         description: "Docker Image Tag"
         required: true
@@ -29,13 +33,23 @@ jobs:
       - name: echo docker version
         run: docker version
 
-      - name: build image
+      - if: github.event.inputs.app_name == 'landing-app'
+        name: build image
         run: cd ./landing-app && docker build -t registry.cn-hangzhou.aliyuncs.com/cloud_77/web-apps:${{ github.event.inputs.image_tag }} .
+
+      - if: github.event.inputs.app_name == 'canteen-app'
+        name: build image
+        run: cd ./canteen-app && docker build -t registry.cn-hangzhou.aliyuncs.com/cloud_77/web-apps:${{ github.event.inputs.image_tag }} .
+
+      - if: github.event.inputs.app_name == 'factory-app'
+        name: build image
+        run: cd ./factory-app && docker build -t registry.cn-hangzhou.aliyuncs.com/cloud_77/web-apps:${{ github.event.inputs.image_tag }} .
 
       - name: list images
         run: docker images
+        if: success()
     
-      - if: github.event.inputs.push_to_registry == 'yes'
+      - if: github.event.inputs.push_to_registry == 'yes' && success()
         name: Login to Aliyun Registry
         uses: docker/login-action@v3
         with:
@@ -43,6 +57,6 @@ jobs:
           username: ${{ secrets.ALIYUN_REGISTRY_USERNAME }}
           password: ${{ secrets.ALIYUN_REGISTRY_ACCESS_TOKEN }}
 
-      - if: github.event.inputs.push_to_registry == 'yes'
+      - if: github.event.inputs.push_to_registry == 'yes' && success()
         name: Push image
         run: docker push registry.cn-hangzhou.aliyuncs.com/cloud_77/web-apps:${{ github.event.inputs.image_tag }}

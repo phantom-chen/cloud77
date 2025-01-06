@@ -1,4 +1,4 @@
-name: build-simple-service
+name: build-landing-app
 
 on:
 
@@ -30,7 +30,7 @@ jobs:
         run: docker version
 
       - name: build image
-        run: cd ./UserService && docker build -t registry.cn-hangzhou.aliyuncs.com/cloud_77/user-service:${{ github.event.inputs.image_tag }} .
+        run: cd ./landing-app && docker build -t registry.cn-hangzhou.aliyuncs.com/cloud_77/web-apps:${{ github.event.inputs.image_tag }} .
 
       - name: list images
         run: docker images
@@ -45,4 +45,4 @@ jobs:
 
       - if: github.event.inputs.push_to_registry == 'yes'
         name: Push image
-        run: docker push registry.cn-hangzhou.aliyuncs.com/cloud_77/user-service:${{ github.event.inputs.image_tag }}
+        run: docker push registry.cn-hangzhou.aliyuncs.com/cloud_77/web-apps:${{ github.event.inputs.image_tag }}

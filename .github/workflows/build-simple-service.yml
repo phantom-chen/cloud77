@@ -39,18 +39,20 @@ jobs:
       - name: echo docker version
         run: docker version
 
-      # - name: Login to Aliyun Registry
-      #   uses: docker/login-action@v3
-      #   with:
-      #     registry: registry.cn-hangzhou.aliyuncs.com
-      #     username: ${{ secrets.ALIYUN_REGISTRY_USERNAME }}
-      #     password: ${{ secrets.ALIYUN_REGISTRY_ACCESS_TOKEN }}
-
       - name: build image
         run: cd ./landing-app && docker build -t registry.cn-hangzhou.aliyuncs.com/cloud_77/web-apps:${{ github.event.inputs.pkg_version }} .
 
-      # - name: Push image
-      #   run: docker push registry.cn-hangzhou.aliyuncs.com/cloud_77/web-apps:${{ github.event.inputs.pkg_version }}
-
       - name: list images
         run: docker images
+    
+      - if: github.event.inputs.test_mode == 'false'
+        name: Login to Aliyun Registry
+        uses: docker/login-action@v3
+        with:
+          registry: registry.cn-hangzhou.aliyuncs.com
+          username: ${{ secrets.ALIYUN_REGISTRY_USERNAME }}
+          password: ${{ secrets.ALIYUN_REGISTRY_ACCESS_TOKEN }}
+
+      - if: github.event.inputs.test_mode == 'false'
+        name: Push image
+        run: docker push registry.cn-hangzhou.aliyuncs.com/cloud_77/web-apps:${{ github.event.inputs.pkg_version }}

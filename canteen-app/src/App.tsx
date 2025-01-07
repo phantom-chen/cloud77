@@ -5,6 +5,9 @@ import './App.css';
 
 import React, { Suspense, useEffect, useState } from "react";
 
+import HomePage from './pages/Home';
+import DashboardPage from './pages/Dashboard';
+
 process.env.DEMO_USER = "hello";
 console.log(process.env);
 
@@ -24,7 +27,48 @@ function App() {
 
     return (
         <ErrorBoundary fallback={<div>Something went wrong</div>}>
+            <nav>
+                <ul style={{ display: 'flex', listStyleType: 'none', padding: 0 }}>
+                    <li style={{ marginRight: '10px' }}>
+                        <a href="/">Home</a>
+                    </li>
+                    <li>
+                        <a href="/dashboard">Dashboard</a>
+                    </li>
+                </ul>
+            </nav>
             <p>Canteen App WIP</p>
+            <div className="UnderConstruction-social-networks">
+                <a className="UnderConstruction-social-networks-link">
+                    <img
+                        className="UnderConstruction-social-networks-image"
+                        alt="hello"
+                        src="assets/facebook_icon.png"></img>
+                </a>
+                <a className="UnderConstruction-social-networks-link">
+                    <img
+                        className="UnderConstruction-social-networks-image"
+                        alt="hello"
+                        src="assets/facebook_icon.png"></img>
+                </a>
+                <a className="UnderConstruction-social-networks-link">
+                    <img
+                        className="UnderConstruction-social-networks-image"
+                        alt="hello"
+                        src="assets/facebook_icon.png"></img>
+                </a>
+                <a className="UnderConstruction-social-networks-link">
+                    <img
+                        className="UnderConstruction-social-networks-image"
+                        alt="hello"
+                        src="assets/facebook_icon.png"></img>
+                </a>
+            </div>
+
+            <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/dashboard" element={<DashboardPage />} />
+            </Routes>
         </ErrorBoundary>
     );
 }

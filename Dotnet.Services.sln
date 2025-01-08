@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperService", "SuperServic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpecFlowTest", "SpecFlowTest\SpecFlowTest.csproj", "{9A767490-4D59-424A-94BD-9911FA68B5A4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GatewayService", "GatewayService\GatewayService.csproj", "{D6E7C7D7-66D4-46DE-8010-C4732F6F0F5E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{9A767490-4D59-424A-94BD-9911FA68B5A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9A767490-4D59-424A-94BD-9911FA68B5A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9A767490-4D59-424A-94BD-9911FA68B5A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6E7C7D7-66D4-46DE-8010-C4732F6F0F5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6E7C7D7-66D4-46DE-8010-C4732F6F0F5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6E7C7D7-66D4-46DE-8010-C4732F6F0F5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6E7C7D7-66D4-46DE-8010-C4732F6F0F5E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -7,6 +7,10 @@ import React, { Suspense, useEffect, useState } from "react";
 
 import HomePage from './pages/Home';
 import DashboardPage from './pages/Dashboard';
+import GraphPage from './pages/Graph';
+import CompanyPage from './pages/Company';
+import MapPage from './pages/Map';
+import MessagePage from './pages/Message';
 
 process.env.DEMO_USER = "hello";
 console.log(process.env);
@@ -29,11 +33,23 @@ function App() {
         <ErrorBoundary fallback={<div>Something went wrong</div>}>
             <nav>
                 <ul style={{ display: 'flex', listStyleType: 'none', padding: 0 }}>
-                    <li style={{ marginRight: '10px' }}>
+                    <li>
                         <a href="/">Home</a>
                     </li>
                     <li>
                         <a href="/dashboard">Dashboard</a>
+                    </li>
+                    <li>
+                        <a href="/graph">Graph</a>
+                    </li>
+                    <li>
+                        <a href="/map">Map</a>
+                    </li>
+                    <li>
+                        <a href="/company">Company</a>
+                    </li>
+                    <li>
+                        <a href="/message">Message</a>
                     </li>
                 </ul>
             </nav>
@@ -68,6 +84,10 @@ function App() {
             <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/company" element={<CompanyPage />} />
+                <Route path="/map" element={<MapPage />} />
+                <Route path="/graph" element={<GraphPage />} />
+                <Route path="/message" element={<MessagePage />} />
             </Routes>
         </ErrorBoundary>
     );

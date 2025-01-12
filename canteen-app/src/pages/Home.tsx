@@ -24,7 +24,22 @@ const Home: React.FC = () => {
 
             <button onClick={() => {
                 fetch('/resources/site.json').then(res => {
-                    res.text().then(value => console.log(value));
+                    res.text().then(value => {
+                        const obj = JSON.parse(value);
+                        console.log(obj.amap);
+                        if (!localStorage.getItem('cloud77_amap_value')) {
+                            localStorage.setItem('cloud77_amap_value', obj.amap);
+                        }
+                        for (const installer of obj.installers) {
+                            fetch(`https://www.cloud77.top/resources/installers/${installer}`, {
+                            }).then(res => {
+                                res.text().then(value => {
+                                    const version = value.split(' ')[1].split('-')[1];
+                                    console.log(`https://www.cloud77.top/resources/installers/${installer}-Installer-${version}.exe`);
+                                });
+                            });   
+                        }
+                    });
                 });
             }}>Site</button>
         </div>

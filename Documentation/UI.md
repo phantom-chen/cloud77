@@ -7,6 +7,9 @@
 + cloud77_home
 + cloud77_api_key
 + cloud77_amap_value
++ cloud77_user_emails
++ cloud77_access_token_xxx
++ cloud77_refresh_token_xxx
 
 2. Sessionstorage
 

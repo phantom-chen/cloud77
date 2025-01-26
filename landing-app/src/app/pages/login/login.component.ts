@@ -8,11 +8,14 @@ import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
-import { convertFromBase64, hashString } from '../../sample/toolbox/toolbox.component';
+import { convertFromBase64 } from '../../sample/toolbox/toolbox.component';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { SharedModule } from "../../shared/shared.module";
-import { debugMode } from '../../storage';
+import { addUserEmail, debugMode, getTokens, getUserEmails, removeUserEmail, saveTokens, syncTokens } from '../../storage';
 import { IGatewayService } from '../../gateway.service';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-login',
@@ -26,6 +29,9 @@ import { IGatewayService } from '../../gateway.service';
     MatInputModule,
     MatFormFieldModule,
     MatAutocompleteModule,
+    MatSelectModule,
+    MatDividerModule,
+    MatCheckboxModule,
     SharedModule
 ],
   templateUrl: './login.component.html',
@@ -38,28 +44,50 @@ export class LoginComponent implements OnInit {
     private http: HttpClient,
     private san: DomSanitizer,
     route: ActivatedRoute) {
+      this.debugMode = debugMode();
+
+      if (this.debugMode) {
+        this.logs += 'Debug Mode\n';
+      }
+
       if (route.snapshot.queryParamMap.get('message_url')) {
         this.messageUrl = convertFromBase64(route.snapshot.queryParamMap.get('message_url')|| '');
         this.frameResourceUrl = san.bypassSecurityTrustResourceUrl(this.messageUrl);
+        this.logs += `Message url: ${this.messageUrl}\n`;
+        console.log(this.messageUrl);
+        
       }
     }
 
   ngOnInit(): void {
-    this.debugMode = debugMode();
-    this.account = localStorage.getItem('cloud77_user_emails') || '';
+    const emails = getUserEmails(false);
+    this.users = emails;
+    this.authenticatedUsers =  getUserEmails(true);
+    this.account = emails.length > 0 ? emails[0] : '';
+    this.authenticatedAccount = this.authenticatedUsers.length > 0 ? this.authenticatedUsers[0] : '';
     if (this.account) {
 
     }
+
+    window.addEventListener('message', function(ev) {
+      if (ev.data) {
+        console.log(ev.data);
+        if (ev.data.request === 'user-login-success' && ev.data.app_url) {
+          this.window.location.href = ev.data.app_url;
+        }
+      }
+    });
   }
-
+  remember = true;
   account: string = '';
-
+  authenticatedAccount: string = '';
   password = '';
 
   loginRequired: boolean = true;
 
-  users: string[] = ['user1@example.com','user2@example.com','user3@example.com'];
-
+  users: string[] = [];
+  authenticatedUsers: string[] = [];
+  logs = '';
   messageUrl = '';
   frameResourceUrl?: SafeResourceUrl;
   debugMode: boolean = false;
@@ -73,17 +101,14 @@ export class LoginComponent implements OnInit {
 
   onLoginClick() {
     if (this.account.includes('@')) {
-      sessionStorage.setItem('user_email', this.account);
-      localStorage.setItem('cloud77_user_emails', this.account);
+      sessionStorage.setItem('cloud77_user_email', this.account);
+      addUserEmail(this.account);
     }
 
     this.gateway.generateToken(this.account, this.password)
     .then(data => {
-      const key = hashString(data.email);
-      localStorage.setItem(`cloud77_access_token_${key}`, data.value);
-      localStorage.setItem(`cloud77_refresh_token_${key}`, data.refreshToken);
-      sessionStorage.setItem('user_access_token', data.value);
-      sessionStorage.setItem('user_refresh_token', data.refreshToken);
+      saveTokens(data.email, data.value, data.refreshToken);
+      syncTokens(data.email);
     });
   }
 
@@ -93,15 +118,26 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  syncTokens(): void {
-    console.log(`${this.messageUrl}?access_token=123&refresh_token=456`);
-    this.frameResourceUrl = this.san.bypassSecurityTrustResourceUrl(`${this.messageUrl}?access_token=123&refresh_token=456`);
-    // const key = this.getKey();
-    // const accessToken = localStorage.getItem(`cloud77_access_token_${key}`);
-    // const refreshToken = localStorage.getItem(`cloud77_refresh_token_${key}`);
-    // if (accessToken && refreshToken) {
-    //   sessionStorage.setItem('user_access_token', accessToken);
-    //   sessionStorage.setItem('user_refresh_token', refreshToken);
-    // }
+  clearLogin(): void {
+    if (this.account) {
+      removeUserEmail(this.account);
+      this.users = getUserEmails();
+      this.authenticatedUsers = getUserEmails(true);
+      this.account = this.users.length > 0 ? this.users[0] : '';
+      this.authenticatedAccount = this.authenticatedUsers.length > 0 ? this.authenticatedUsers[0] : '';
+    }
+  }
+
+  autoLogin(): void {
+    if (this.authenticatedAccount) {
+      if (this.messageUrl) {
+        const tokens = getTokens(this.authenticatedAccount);
+        if (tokens.access) {
+          this.frameResourceUrl = this.san.bypassSecurityTrustResourceUrl(`${this.messageUrl}?access_token=${tokens.access}&refresh_token=${tokens.refresh}`);
+        }
+      } else {
+        syncTokens(this.authenticatedAccount);
+      }
+    }
   }
 }

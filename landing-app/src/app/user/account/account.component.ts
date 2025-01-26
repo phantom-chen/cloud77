@@ -54,7 +54,7 @@ export class AccountComponent implements OnInit {
     supplier: ''
   };
   ngOnInit(): void {
-    this.email = sessionStorage.getItem('email') ?? '';
+    this.email = sessionStorage.getItem('cloud77_email') ?? '';
     if (this.email) {
       this.isLogin = true;
       this.http.get(`/api/accounts/${this.email}`).subscribe((data: any) => {

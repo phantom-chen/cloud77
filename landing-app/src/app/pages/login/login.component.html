@@ -35,12 +35,18 @@
             </div>
 
             <div class="row">
+              <mat-checkbox color="primary" [(ngModel)]="remember" name="remembercheckbox">Remember Me (Auto login in other tabs)</mat-checkbox>
+            </div>
+            
+            <div class="row">
               <div style="display: flex;">
                 <button type="submit" mat-raised-button color="primary" (click)="onLoginClick();">Login</button>
                 <button type="button" mat-outlined-button color="primary">
                   <a #signup target="_blank" [routerLink]="['/sign-up']" [relativeTo]="" routerLinkActive="active">Sign
                     Up</a>
                 </button>
+                <button type="button" mat-button (click)="clearLogin();">Clear Account Login</button>
+                <button mat-button>Forget password</button>
               </div>
             </div>
           </ng-container>
@@ -48,14 +54,27 @@
       </form>
     </div>
 
+    <mat-divider></mat-divider>
+
+    <div *ngIf="authenticatedUsers.length > 0" style="margin: auto;" class="row col-lg-6">
+      <mat-form-field>
+        <mat-label>Users below login at the site</mat-label>
+        <mat-select [(ngModel)]="authenticatedAccount" name="selectedUser">
+          <mat-option [value]="item" *ngFor="let item of users">{{ item | uppercase }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="authenticatedUsers.length > 0" style="margin: auto;" class="row col-lg-6">
+      <button mat-button color="accent" (click)="autoLogin();">Auto Login as selected user above</button>
+    </div>
+
     <div *ngIf="messageUrl !==''" class="content">
-      <button (click)="syncTokens()">Sync tokens</button>
       <iframe [src]="frameResourceUrl"></iframe>
     </div>
 
     <div *ngIf="debugMode" class="content">
-      <p class="text-warning">Debug Mode</p>
-      <app-preview content="# preview works"></app-preview>
+      <app-preview [content]="logs"></app-preview>
     </div>
   </div>
 </div>

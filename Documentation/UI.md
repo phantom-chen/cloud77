@@ -15,7 +15,22 @@
 
 + cloud77_debug
 + cloud77_mockup
-+ user_access_token
-+ user_refresh_token
-+ user_email
-+ user_token_expiration
++ cloud77_user_access_token
++ cloud77_user_refresh_token
++ cloud77_user_email
++ cloud77_user_token_expiration
+
+## Window Message
+
+Post message
+
+{
+    request: 'user-login-success',
+    message: 'User logins successfully',
+    app_url: 'http://localhost:3000'
+}
+
+## Message at url
+
+/message?access_token=xxx&refresh_token=xxx
+

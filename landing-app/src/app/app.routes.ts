@@ -12,6 +12,7 @@ import { PostComponent } from './pages/post/post.component';
 import { HomeComponent } from './pages/home/home.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { LogoutComponent } from './pages/logout/logout.component';
+import { MessageComponent } from './pages/message/message.component';
 
 export const routes: Routes = [
   {
@@ -40,6 +41,9 @@ export const routes: Routes = [
   },
   {
     path: 'posts/:id', component: PostComponent
+  },
+  {
+    path: 'message', component: MessageComponent
   },
   {
     path: 'sample',

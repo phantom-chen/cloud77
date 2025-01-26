@@ -1,4 +1,11 @@
-<p>tool works!</p>
-<p>Databases: {{ databases.join(",") }}</p>
-<p>Selected Database: {{ database }}</p>
-<p>Collections: {{ collections.join("," )}}</p>
+<div class="container">
+    <div class="row">
+        <button mat-raised-button color="primary" (click)="toggleDebugMode();">{{ debugButton }}</button>
+        <button mat-raised-button color="accent" (click)="toggleMockData();">{{ mockDataButton }}</button>
+    </div>
+
+    <p>tool works!</p>
+    <p>Databases: {{ databases.join(",") }}</p>
+    <p>Selected Database: {{ database }}</p>
+    <p>Collections: {{ collections.join("," )}}</p>
+</div>

@@ -11,8 +11,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ProfileDialogComponent } from '../profile-dialog/profile-dialog.component';
 import { SharedModule } from '../../shared/shared.module';
-
-const SNACKBAR_DURATION = 3000;
+import { SNACKBAR_DURATION } from '../../gateway.service';
 
 @Component({
   selector: 'app-account',
@@ -67,7 +66,7 @@ export class AccountComponent implements OnInit {
       });
     } else {
       console.warn('No email found in session storage');
-      
+
     }
   }
 

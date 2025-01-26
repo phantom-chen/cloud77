@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute } from '@angular/router';
+import { IGatewayService } from '../../gateway.service';
 
 @Component({
   selector: 'app-confirm-email',
@@ -22,25 +23,21 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class ConfirmEmailComponent implements OnInit {
   constructor(
-    private http: HttpClient,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    @Inject('IGatewayService') private gateway: IGatewayService,
   ) {}
   email = '';
   token = '';
   ngOnInit(): void {
     this.email = this.route.snapshot.queryParamMap.get('email') || '';
     this.token = this.route.snapshot.queryParamMap.get('token') || '';
+    this.confirmEmail();
   }
 
   confirmEmail(): void {
     if (this.email && this.token) {
-      this.http.put(`/api/users/verification?email=${this.email}`, undefined, {
-        headers: {
-          'x-cloud77-onetime-token': this.token
-        }
-      }).subscribe((data: any) => {
-        console.log(data);
-      });
+      this.gateway.confirmEmail(this.email, this.token)
+      .then(res => console.log(res))
     }
   }
 }

@@ -11,8 +11,7 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-
-const SNACKBAR_DURATION = 3000;
+import { SNACKBAR_DURATION } from '../../gateway.service';
 
 export type AppSetting = {
   key: string,
@@ -40,7 +39,7 @@ export type AppSetting = {
   styleUrl: './settings.component.css'
 })
 export class SettingsComponent implements OnInit {
-  
+
   constructor(
     private http: HttpClient,
     private dialog: MatDialog,
@@ -62,7 +61,7 @@ export class SettingsComponent implements OnInit {
     value: '',
     description: ''
   };
-  
+
   refresh(): void {
     this.http.get('/api/settings').subscribe((data: any) => {
       console.log(data);
@@ -79,7 +78,7 @@ export class SettingsComponent implements OnInit {
       ]
     });
   }
-  
+
   addSetting(): void {
     const dialogRef = this.dialog.open(SettingDialogComponent, {
       width: '800px',

@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { FormsModule } from "@angular/forms";
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCommonModule } from '@angular/material/core';
@@ -10,6 +10,9 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { convertFromBase64, hashString } from '../../sample/toolbox/toolbox.component';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { SharedModule } from "../../shared/shared.module";
+import { debugMode } from '../../storage';
+import { IGatewayService } from '../../gateway.service';
 
 @Component({
   selector: 'app-login',
@@ -22,14 +25,16 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
     MatButtonModule,
     MatInputModule,
     MatFormFieldModule,
-    MatAutocompleteModule
-  ],
+    MatAutocompleteModule,
+    SharedModule
+],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
 export class LoginComponent implements OnInit {
 
   constructor(
+    @Inject('IGatewayService') private gateway: IGatewayService,
     private http: HttpClient,
     private san: DomSanitizer,
     route: ActivatedRoute) {
@@ -40,9 +45,10 @@ export class LoginComponent implements OnInit {
     }
 
   ngOnInit(): void {
+    this.debugMode = debugMode();
     this.account = localStorage.getItem('cloud77_user_emails') || '';
     if (this.account) {
-      console.log(hashString(this.account));
+
     }
   }
 
@@ -56,9 +62,13 @@ export class LoginComponent implements OnInit {
 
   messageUrl = '';
   frameResourceUrl?: SafeResourceUrl;
-
-  onEmailChange(event: any) {
-    console.log(event);
+  debugMode: boolean = false;
+  existing: boolean = true;
+  onAccountChange() {
+    this.gateway.getUser(this.account)
+    .then(res => {
+      this.existing = res.existing;
+    });
   }
 
   onLoginClick() {
@@ -67,9 +77,8 @@ export class LoginComponent implements OnInit {
       localStorage.setItem('cloud77_user_emails', this.account);
     }
 
-    this.http.post(`/api/users/token?email=${this.account}&password=${this.password}`, undefined)
-    .subscribe((data: any) => {
-      console.log(data);
+    this.gateway.generateToken(this.account, this.password)
+    .then(data => {
       const key = hashString(data.email);
       localStorage.setItem(`cloud77_access_token_${key}`, data.value);
       localStorage.setItem(`cloud77_refresh_token_${key}`, data.refreshToken);

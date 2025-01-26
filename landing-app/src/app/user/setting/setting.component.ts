@@ -9,8 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-
-const SNACKBAR_DURATION = 3000;
+import { SNACKBAR_DURATION } from '../../gateway.service';
 
 @Component({
   selector: 'app-setting',
@@ -35,7 +34,7 @@ export class SettingComponent {
     private router: Router
   ) {}
 
-  
+
   email: string = '';
   password: string = '';
   newPassword: string = '';

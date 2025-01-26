@@ -1,52 +1,61 @@
 <div class="container col-lg-12">
-    <div class="card">
-        <div class="card-header">
-            <div style="display: flex;">
-                <h5>User Login</h5>
-                <span class="example-spacer"></span>
+  <div class="card">
+    <div class="card-header">
+      <div style="display: flex;">
+        <h5>User Login</h5>
+        <span class="example-spacer"></span>
+      </div>
+    </div>
+  </div>
+  <div class="card-body content">
+
+    <div style="margin: auto;box-shadow: 3px;" class="col-lg-6">
+      <form novalidate>
+        <div class="container content">
+          <ng-container *ngIf="loginRequired">
+            <div class="row">
+              <mat-form-field>
+                <mat-label>Email / Username</mat-label>
+                <input matInput placeholder="Email / Username" autocomplete="off" [(ngModel)]="account"
+                  name="user-account" [matAutocomplete]="userac"
+                  (change)="onAccountChange()">
+                <mat-autocomplete #userac>
+                  <mat-option [value]="item" *ngFor="let item of users">{{ item }}</mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+
+              <p *ngIf="!existing" class="text-warning">your account is not existing.</p>
             </div>
+            <div class="row">
+              <mat-form-field>
+                <mat-label>Password</mat-label>
+                <input matInput type="password" placeholder="Password" autocomplete="off" [(ngModel)]="password"
+                  name="user-password" (keypress)="onKeyUp($event)">
+              </mat-form-field>
+            </div>
+
+            <div class="row">
+              <div style="display: flex;">
+                <button type="submit" mat-raised-button color="primary" (click)="onLoginClick();">Login</button>
+                <button type="button" mat-outlined-button color="primary">
+                  <a #signup target="_blank" [routerLink]="['/sign-up']" [relativeTo]="" routerLinkActive="active">Sign
+                    Up</a>
+                </button>
+              </div>
+            </div>
+          </ng-container>
         </div>
+      </form>
     </div>
-    <div class="card-body content">
 
-        <div style="margin: auto;box-shadow: 3px;" class="col-lg-6">
-            <form novalidate>
-                <div class="container content">
-                    <ng-container *ngIf="loginRequired">
-                        <div class="row">
-                            <mat-form-field>
-                                <mat-label>Email / Username</mat-label>
-                                <input matInput placeholder="Email / Username" autocomplete="off" [(ngModel)]="account"
-                                    name="user-account" [matAutocomplete]="userac">
-                                <mat-autocomplete #userac>
-                                    <mat-option [value]="item" *ngFor="let item of users">{{ item }}</mat-option>
-                                </mat-autocomplete>
-                            </mat-form-field>
-                        </div>
-                        <div class="row">
-                            <mat-form-field>
-                                <mat-label>Password</mat-label>
-                                <input matInput type="password" placeholder="Password" autocomplete="off"
-                                    [(ngModel)]="password" name="user-password" (keypress)="onKeyUp($event)">
-                            </mat-form-field>
-                        </div>
-
-                        <div class="row">
-                            <div style="display: flex;">
-                                <button type="submit" mat-raised-button color="primary" (click)="onLoginClick();">Login</button>
-                                <button type="button" mat-outlined-button color="primary">
-                                    <a #signup target="_blank" [routerLink]="['/sign-up']" [relativeTo]="" routerLinkActive="active">Sign Up</a>
-                                </button>
-                            </div>
-                        </div>
-                    </ng-container>
-                </div>
-            </form>
-        </div>
-
-        <div class="content">
-          <button (click)="syncTokens()">Sync tokens</button>
-          <iframe [src]="frameResourceUrl"></iframe>
-        </div>
+    <div *ngIf="messageUrl !==''" class="content">
+      <button (click)="syncTokens()">Sync tokens</button>
+      <iframe [src]="frameResourceUrl"></iframe>
     </div>
+
+    <div *ngIf="debugMode" class="content">
+      <p class="text-warning">Debug Mode</p>
+      <app-preview content="# preview works"></app-preview>
+    </div>
+  </div>
 </div>

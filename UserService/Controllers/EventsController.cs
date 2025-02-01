@@ -1,4 +1,5 @@
 ﻿using Cloud77.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
@@ -10,6 +11,7 @@ namespace UserService.Controllers
     /// Help manage event logs.
     /// </summary>
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class EventsController : ControllerBase
     {

@@ -3,7 +3,7 @@ using Cloud77.Service.Entity;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
-namespace UserService.Controllers
+namespace UserService.Collections
 {
     public class SettingMongoEntity : SettingEntity
     {

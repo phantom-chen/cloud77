@@ -13,16 +13,23 @@ namespace UserService
     {
         public static void Main(string[] args)
         {
+            // set up data folder
+            var dir = Directory.GetParent(Assembly.GetExecutingAssembly().Location).ToString();
+            if (!Directory.Exists(Path.Combine(dir, "data")))
+            {
+                Directory.CreateDirectory(Path.Combine(dir, "data"));
+            }
+
             var builder = WebApplication.CreateBuilder(args);
             IConfiguration configuration = builder.Configuration;
-
+            
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers().AddNewtonsoftJson();
             builder.Services.AddScoped<MongoClient>(p =>
             {
                 var connection = Environment.GetEnvironmentVariable("DB_CONNECTION") ?? "localhost";
-                var dir = Directory.GetParent(Assembly.GetExecutingAssembly().Location).ToString();
+                
                 if (File.Exists(Path.Combine(dir, "localhost.txt")))
                 {
                     connection = connection.Replace("localhost", File.ReadAllLines(Path.Combine(dir, "localhost.txt"))[0]);

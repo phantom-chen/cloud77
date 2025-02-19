@@ -1,5 +1,13 @@
 # API Design
 
+## Message Code
+
+- empty-email
+- empty-password
+- empty-account (email or username)
+- empty-user-entity
+- internal-server-error
+
 ## Http Service
 
 - Service

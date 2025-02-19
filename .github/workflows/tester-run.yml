@@ -12,6 +12,10 @@ on:
         description: "Flag value of test mode"
         required: false
         default: "true"
+  
+  push:
+    tags:
+      - 'v*'
 
 jobs:
   build-package:
@@ -31,3 +35,10 @@ jobs:
           echo Add other actions to build,
           echo test, and deploy your project.
           pwd
+
+      - name: get version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+        
+      - name: echo version
+        run: echo ${{ steps.get_version.outputs.VERSION }}

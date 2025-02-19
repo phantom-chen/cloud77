@@ -413,3 +413,6 @@ FodyWeavers.xsd
 **/*-service/tester.ts
 **/*-app/src/styles
 **/*-app/*.prod.json
+
+**/*.feature.cs
+**/*.runsettings

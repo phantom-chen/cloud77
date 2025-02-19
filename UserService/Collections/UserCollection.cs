@@ -4,8 +4,9 @@ using Consul;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Newtonsoft.Json;
+using System.Xml.Linq;
 
-namespace UserService.Controllers
+namespace UserService.Collections
 {
     public class UserMongoEntity : UserEntity
     {
@@ -56,8 +57,12 @@ namespace UserService.Controllers
             return document.Id.ToString();
         }
 
-        public UserEntity GetUser(string email)
+        public UserEntity GetUser(string email, string username = "")
         {
+            if (string.IsNullOrEmpty(email))
+            {
+                return collection.Find(Builders<UserMongoEntity>.Filter.Eq("Name", username)).FirstOrDefault();
+            }
             return collection.Find(Builders<UserMongoEntity>.Filter.Eq("Email", email)).FirstOrDefault();
         }
 

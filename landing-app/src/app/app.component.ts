@@ -1,6 +1,7 @@
 import { AfterViewInit, Component } from '@angular/core';
 import { NavigationEnd, NavigationStart, Router, RouterModule } from '@angular/router';
 import { SharedModule } from './shared/shared.module';
+import { CommonModule } from '@angular/common';
 
 function yourMethod() {
   console.log('HTML is reloading');
@@ -27,6 +28,7 @@ function yourMethod3() {
   selector: 'app-root',
   standalone: true,
   imports: [
+    CommonModule,
     RouterModule,
     SharedModule
   ],
@@ -38,6 +40,7 @@ export class AppComponent implements AfterViewInit {
   constructor(private router: Router) {}
 
   links: string[][] = [];
+  noHeader: boolean = false;
 
   ngAfterViewInit(): void {
     document.addEventListener('DOMContentLoaded', function () {
@@ -58,8 +61,8 @@ export class AppComponent implements AfterViewInit {
     this.router.events.subscribe((e) => {
       if (e instanceof NavigationStart) {
         // this.activeLink = e.url;
-        // console.log(e.url);
-        
+        console.log(e.url);
+        this.noHeader = e.url.startsWith('/message');
       }
       if (e instanceof NavigationEnd) {        
         if (e.url.startsWith('/user')) {

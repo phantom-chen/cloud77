@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
+using UserService.Collections;
 
 namespace UserService.Controllers
 {
@@ -12,6 +13,7 @@ namespace UserService.Controllers
     /// It can only be accessible for admin users.
     /// </summary>
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class SettingsController : ControllerBase
     {

@@ -1,0 +1,8 @@
+dist
+node_modules
+sample
+uploads
+structure
+data
+appsettings.development.json
+appsettings.production.json

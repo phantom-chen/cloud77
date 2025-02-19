@@ -6,6 +6,7 @@ using MongoDB.Driver;
 using Newtonsoft.Json;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using UserService.Collections;
 
 namespace UserService.Controllers
 {
@@ -42,19 +43,21 @@ namespace UserService.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult Get([FromQuery] string email, [FromQuery] string username)
+        public IActionResult Get()
         {
+            var email = Request.Query["email"].ToString() ?? "";
+            var username = Request.Query["username"].ToString() ?? "";
             if (string.IsNullOrEmpty(email) && string.IsNullOrEmpty(username))
             {
                 return BadRequest(new ServiceResponse(
                     "empty-account"));
             }
-            UserEntity user = collection.GetUser(email);
+            UserEntity user = collection.GetUser(email, username);
             if (user == null)
             {
                 return Ok(new UserEmail()
                 {
-                    Email = email,
+                    Email = "",
                     Existing = false
                 });
             }
@@ -62,7 +65,7 @@ namespace UserService.Controllers
             {
                 return Ok(new UserEmail()
                 {
-                    Email = email,
+                    Email = user.Email,
                     Existing = true,
                 });
             }

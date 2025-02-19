@@ -15,4 +15,12 @@ namespace Cloud77.Service.Entity
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
     }
+
+    public class BookmarkEntity
+    {
+        public string Title { get; set; }
+        public string Href { get; set; }
+        public string Tags { get; set; }
+        public string Collection { get; set; }
+    }
 }

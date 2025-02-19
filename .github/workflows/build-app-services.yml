@@ -41,6 +41,10 @@ jobs:
         name: build image
         run: cd ./SuperService && docker build -t registry.cn-hangzhou.aliyuncs.com/cloud_77/${{ github.event.inputs.service_name }}:${{ github.event.inputs.image_tag }} .
 
+      - if: github.event.inputs.service_name == 'canteen-service'
+        name: build image
+        run: cd ./canteen-service && docker build -t registry.cn-hangzhou.aliyuncs.com/cloud_77/${{ github.event.inputs.service_name }}:${{ github.event.inputs.image_tag }} .
+
       - name: list images
         run: docker images
         if: success()
@@ -55,4 +59,4 @@ jobs:
 
       - if: github.event.inputs.push_to_registry == 'yes' && success()
         name: Push image
-        run: docker push registry.cn-hangzhou.aliyuncs.com/cloud_77/${{ github.event.inputs.image_tag }}:${{ github.event.inputs.image_tag }}
+        run: docker push registry.cn-hangzhou.aliyuncs.com/cloud_77/${{ github.event.inputs.service_name }}:${{ github.event.inputs.image_tag }}

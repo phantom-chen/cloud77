@@ -1,7 +1,12 @@
 ﻿using Cloud77.Service;
+using Consul;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
+using System.Security.Claims;
+using System.Xml.Linq;
+using UserService.Collections;
 
 namespace UserService.Controllers
 {
@@ -9,6 +14,7 @@ namespace UserService.Controllers
     /// Help update user account.
     /// </summary>
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class AccountsController : ControllerBase
     {
@@ -34,13 +40,42 @@ namespace UserService.Controllers
         [HttpGet]
         public IActionResult GetRole()
         {
-            return Ok();
+            var email = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+            var name = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name);
+            var role = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
+            var exp1 = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Expiration);
+            if (email == null) return BadRequest();
+            Response.Headers.Append("X-Token-Expiration", exp1.Value);
+            return Ok(new UserRole()
+            {
+                Email = email.Value,
+                Name = name.Value,
+                Role = role.Value
+            });
         }
 
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok();
+            var email = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+            var user = collection.GetUser(email.Value);
+            if (user == null)
+            {
+                return NotFound(new ServiceResponse()
+                {
+                    Code = ResponseCode.EmptyUserEntity,
+                    Message = $"Fail to find user information for {email.Value}",
+                    Id = ""
+                });
+            }
+            return Ok(new UserAccount()
+            {
+                Email = user.Email,
+                Name = user.Name,
+                Profile = user.Profile,
+                Role = user.Role,
+                Confirmed = user.Confirmed ?? false
+            });
         }
 
         [Route("{email}")]
@@ -74,7 +109,18 @@ namespace UserService.Controllers
         [HttpGet]
         public IActionResult GetProfile(string email)
         {
-            return Ok();
+            if (string.IsNullOrEmpty(email))
+            {
+                return BadRequest(new EmptyEmail());
+            }
+
+            var user = collection.GetUser(email.Trim().ToLower());
+            if (user == null)
+            {
+                return NotFound(new ServiceResponse("empty-user-entity", email));
+            }
+            
+            return Ok(user.Profile ?? new Cloud77.Service.Entity.ProfileEntity());
         }
     }
 }

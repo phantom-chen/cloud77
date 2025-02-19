@@ -1,0 +1,28 @@
+li {
+    margin-right: 10px;
+}
+
+.UnderConstruction-social-networks {
+    width: 100%;
+    position: fixed;
+    text-align: center;
+    bottom: 30px;
+}
+
+.UnderConstruction-social-networks-link {
+    color: white;
+    opacity: .8;
+    display: inline-block;
+    text-decoration: none;
+    transition: all .3s ease-in;
+    margin-right: 20px;
+}
+
+.UnderConstruction-social-networks-link:hover {
+    opacity: 1;
+    text-decoration: underline;
+}
+
+.UnderConstruction-social-networks-link:last-child {
+    margin-right: 0;
+}

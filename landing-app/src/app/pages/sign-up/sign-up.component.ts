@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCommonModule } from '@angular/material/core';
@@ -7,7 +7,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { PasswordStrengthMeterComponent } from 'angular-password-strength-meter';
-import { HttpClient } from '@angular/common/http';
+import { MatIconModule } from '@angular/material/icon';
+import { IGatewayService } from '../../gateway.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-sign-up',
@@ -20,6 +22,7 @@ import { HttpClient } from '@angular/common/http';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
+    MatIconModule,
     PasswordStrengthMeterComponent
   ],
   templateUrl: './sign-up.component.html',
@@ -28,7 +31,8 @@ import { HttpClient } from '@angular/common/http';
 export class SignUpComponent {
 
   constructor(
-    private http: HttpClient
+    @Inject('IGatewayService') private gateway: IGatewayService,
+    private snackbar: MatSnackBar,
   ) {}
 
   email = '';
@@ -37,13 +41,11 @@ export class SignUpComponent {
 
   signUp(): void {
     if (this.email && this.name && this.password) {
-      this.http.post('/api/users', {
-        email: this.email,
-        name: this.name,
-        password: this.password
-      }).subscribe((data: any) => {
-        console.log(data);
-      });
+      this.gateway.createUser(this.email, this.name, this.password)
+      .then(res => {
+        console.log(res);
+        this.snackbar.open('Info', res.message, {duration: 3000});
+      })
     }
   }
 }

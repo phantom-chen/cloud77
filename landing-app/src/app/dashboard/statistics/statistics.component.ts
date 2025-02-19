@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { AfterViewInit, Component, Inject } from '@angular/core';
 import { NgxChartsModule } from "@swimlane/ngx-charts";
+import { IGatewayService } from '../../gateway.service';
 
 @Component({
   selector: 'app-statistics',
@@ -12,7 +13,17 @@ import { NgxChartsModule } from "@swimlane/ngx-charts";
   templateUrl: './statistics.component.html',
   styleUrl: './statistics.component.css'
 })
-export class StatisticsComponent {
+export class StatisticsComponent implements AfterViewInit {
+
+  constructor(
+    @Inject('IGatewayService') private gateway: IGatewayService
+  ) {}
+
+  ngAfterViewInit(): void {
+    this.gateway.getSite()
+    .then(res => console.log(res));    
+  }
+
   isLogin = true;
   gradient: boolean = true;
   showLegend: boolean = true;

@@ -1,5 +1,10 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
+using ServiceStack;
 using System.Reflection;
+using System.Security.Claims;
+using System.Text;
 using UserService.Services;
 
 namespace UserService
@@ -8,15 +13,23 @@ namespace UserService
     {
         public static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
+            // set up data folder
+            var dir = Directory.GetParent(Assembly.GetExecutingAssembly().Location).ToString();
+            if (!Directory.Exists(Path.Combine(dir, "data")))
+            {
+                Directory.CreateDirectory(Path.Combine(dir, "data"));
+            }
 
+            var builder = WebApplication.CreateBuilder(args);
+            IConfiguration configuration = builder.Configuration;
+            
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers().AddNewtonsoftJson();
             builder.Services.AddScoped<MongoClient>(p =>
             {
                 var connection = Environment.GetEnvironmentVariable("DB_CONNECTION") ?? "localhost";
-                var dir = Directory.GetParent(Assembly.GetExecutingAssembly().Location).ToString();
+                
                 if (File.Exists(Path.Combine(dir, "localhost.txt")))
                 {
                     connection = connection.Replace("localhost", File.ReadAllLines(Path.Combine(dir, "localhost.txt"))[0]);
@@ -30,13 +43,67 @@ namespace UserService
             });
             builder.Services.AddHostedService<DatabaseService>();
 
+            builder.Services.AddAuthentication(option =>
+            {
+                option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.SaveToken = true;
+
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    NameClaimType = ClaimTypes.Name,
+                    RoleClaimType = ClaimTypes.Role,
+                    ValidateIssuerSigningKey = true,
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["SecurityKey"])),
+                    ValidIssuer = configuration["Issuer"],
+                    ValidAudience = configuration["Audience"],
+                    ClockSkew = TimeSpan.FromSeconds(30),
+                    RequireExpirationTime = true,
+                };
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        //var auth = context.Request.Headers["Authorization"].ToString();
+                        //var accessToken = auth.Replace("Bearer ", "");
+                        var accessToken = context.Request.Query["access_token"];
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) &&
+                            (path.StartsWithSegments("/hubs")))
+                        {
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    },
+                    OnChallenge = context =>
+                    {
+                        //此处代码为终止.Net Core默认的返回类型和数据结果，这个很重要哦，必须
+                        context.HandleResponse();
+                        var payload = new { StatusCode = 0, Message = "Authentication failed" };
+                        context.Response.ContentType = "application/json";
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        context.Response.WriteAsync(Convert.ToString(payload));
+                        return Task.FromResult(0);
+                    }
+                };
+            });
+
+            builder.Services.AddAuthorization();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
 
+            app.UseAuthentication();
             app.UseAuthorization();
-
-
+            
             app.MapControllers();
 
             app.Run();

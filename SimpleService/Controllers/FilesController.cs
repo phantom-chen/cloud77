@@ -7,20 +7,10 @@ namespace SimpleService.Controllers
   [ApiController]
   public class FilesController : ControllerBase
   {
-    private readonly string _storagePath = Path.Combine(Directory.GetCurrentDirectory(), "uploads");
-
-    public FilesController()
-    {
-      if (!Directory.Exists(_storagePath))
-      {
-        Directory.CreateDirectory(_storagePath);
-      }
-    }
-
     [HttpGet]
     public IActionResult Get()
     {
-      return Ok("wip");
+      return Ok(new LocalDataModel().UploadFolder);
     }
 
     [HttpPost("")]
@@ -31,7 +21,7 @@ namespace SimpleService.Controllers
         return BadRequest("No file uploaded.");
       }
 
-      var filePath = Path.Combine(_storagePath, file.FileName);
+      var filePath = new LocalDataModel().GetFilePath(file.FileName);
 
       using (var stream = new FileStream(filePath, FileMode.Create))
       {
@@ -44,7 +34,7 @@ namespace SimpleService.Controllers
     [HttpGet("{fileName}")]
     public IActionResult DownloadFile(string fileName)
     {
-      var filePath = Path.Combine(_storagePath, fileName);
+      var filePath = new LocalDataModel().GetFilePath(fileName);
 
       if (!System.IO.File.Exists(filePath))
       {

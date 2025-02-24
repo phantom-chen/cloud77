@@ -4,6 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --port 4000 --proxy-config ./proxy.json",
+    "start-sample": "ng serve --project sample-app --port 4000 --proxy-config ./proxy.sample.json",
     "build": "ng build",
     "build-prod": "ng build landing-app --configuration production --aot --source-map=false",
     "build-gh-page": "ng build --project gh-page-app",

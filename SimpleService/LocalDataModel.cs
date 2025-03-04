@@ -41,7 +41,7 @@ namespace SimpleService
 
     public string[] GetFiles()
     {
-      string[] files = Directory.GetFiles(UploadFolder);
+      string[] files = Directory.GetFiles(UploadFolder).Select(f => Path.GetFileName(f)).ToArray();
       return files;
     }
 

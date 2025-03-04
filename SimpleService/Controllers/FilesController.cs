@@ -10,7 +10,7 @@ namespace SimpleService.Controllers
     [HttpGet]
     public IActionResult Get()
     {
-      return Ok(new LocalDataModel().UploadFolder);
+      return Ok(new LocalDataModel().GetFiles());
     }
 
     [HttpPost("")]

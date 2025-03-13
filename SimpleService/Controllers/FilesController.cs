@@ -47,5 +47,12 @@ namespace SimpleService.Controllers
 
       return File(fileBytes, contentType, fileDownloadName);
     }
+
+    [HttpDelete("{fileName}")]
+    public IActionResult Delete(string fileName)
+    {
+      new LocalDataModel().DeleteFile(fileName);
+      return Ok();
+    }
   }
 }

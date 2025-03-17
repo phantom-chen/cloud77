@@ -10,8 +10,7 @@ namespace SimpleService.Controllers
     [HttpGet]
     public IActionResult Get()
     {
-      new LocalDataModel().GetPosts();
-      return Ok();
+      return Ok(new LocalDataModel().GetPosts());
     }
 
     [HttpGet("{name}")]

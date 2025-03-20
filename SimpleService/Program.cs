@@ -1,3 +1,4 @@
+using Cloud77.Service;
 using SimpleService.Hubs;
 
 namespace SimpleService
@@ -9,7 +10,7 @@ namespace SimpleService
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
+            builder.Services.AddSingleton<TimerManager>();
             builder.Services.AddControllers();
             builder.Services.AddSignalR();
 
@@ -19,7 +20,7 @@ namespace SimpleService
             app.UseRouting();
             app.UseAuthorization();
             app.MapControllers();
-            app.MapHub<ChatHub>("/chathub");
+            app.MapHub<ChatHub>("/hubs/chat");
             app.Run();
         }
     }

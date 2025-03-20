@@ -5,6 +5,7 @@ using ServiceStack;
 using System.Reflection;
 using System.Security.Claims;
 using System.Text;
+using UserService.Hubs;
 using UserService.Services;
 
 namespace UserService
@@ -96,6 +97,7 @@ namespace UserService
             });
 
             builder.Services.AddAuthorization();
+            builder.Services.AddSignalR();
 
             var app = builder.Build();
 
@@ -105,7 +107,7 @@ namespace UserService
             app.UseAuthorization();
             
             app.MapControllers();
-
+            app.MapHub<ChatHub>("/hubs/chat");
             app.Run();
         }
     }

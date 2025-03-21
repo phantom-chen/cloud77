@@ -31,7 +31,6 @@ export class PostsComponent implements AfterViewInit {
   }
 
   onSavePost(): void {
-    console.log(this.content);
     this.http.post(`/api/posts/${this.name}`, { content: this.content })
     .subscribe(res => {
       this.onGetPosts();

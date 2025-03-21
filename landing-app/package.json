@@ -6,7 +6,9 @@
     "start": "ng serve --port 4000 --proxy-config ./proxy.json",
     "start-sample": "ng serve --project sample-app --port 4000 --proxy-config ./proxy.sample.json",
     "build": "ng build",
-    "build-prod": "ng build landing-app --configuration production --aot --source-map=false",
+    "build-sample": "ng build sample-app --configuration production --aot --source-map=false",
+    "build-landing": "ng build landing-app --configuration production --aot --source-map=false",
+    "build-all": "yarn build-sample && yarn build-landing",
     "build-gh-page": "ng build --project gh-page-app",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"

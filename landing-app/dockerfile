@@ -4,7 +4,7 @@ WORKDIR /app
 COPY package.json ./
 RUN yarn install
 COPY . .
-RUN yarn run build-prod
+RUN yarn run build-all
 
 # Stage 2: Serve the application with Nginx
 FROM nginx:alpine

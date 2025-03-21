@@ -59,7 +59,7 @@ namespace SimpleService
     public string[] GetPosts()
     {
       string[] txtFiles = Directory.GetFiles(PostFolder, "*.md");
-      return txtFiles;
+      return txtFiles.Select(f => Path.GetFileNameWithoutExtension(f)).ToArray();
     }
 
     public bool PostIsExisting(string name)

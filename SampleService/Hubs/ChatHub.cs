@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
 
-namespace SimpleService.Hubs
+namespace SampleService.Hubs
 {
     public class ChatHub : Hub
     {

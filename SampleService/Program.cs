@@ -1,7 +1,7 @@
 using Cloud77.Service;
-using SimpleService.Hubs;
+using SampleService.Hubs;
 
-namespace SimpleService
+namespace SampleService
 {
     public class Program
     {

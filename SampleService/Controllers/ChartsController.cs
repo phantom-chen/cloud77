@@ -3,9 +3,9 @@ using Cloud77.Service.Entity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using SimpleService.Hubs;
+using SampleService.Hubs;
 
-namespace SimpleService.Controllers
+namespace SampleService.Controllers
 {
   [Route("api/[controller]")]
   [ApiController]

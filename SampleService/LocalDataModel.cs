@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace SimpleService
+namespace SampleService
 {
   public class LocalDataModel
   {

@@ -1,4 +1,4 @@
-namespace SimpleService
+namespace SampleService
 {
     public class WeatherForecast
     {

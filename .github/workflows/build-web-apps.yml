@@ -33,9 +33,9 @@ jobs:
       - name: echo docker version
         run: docker version
 
-      - if: github.event.inputs.app_name == 'landing-app'
+      - if: github.event.inputs.app_name == 'angular-apps'
         name: build image
-        run: cd ./landing-app && docker build -t registry.cn-hangzhou.aliyuncs.com/cloud_77/web-apps:${{ github.event.inputs.image_tag }} .
+        run: cd ./angular-apps && docker build -t registry.cn-hangzhou.aliyuncs.com/cloud_77/web-apps:${{ github.event.inputs.image_tag }} .
 
       - if: github.event.inputs.app_name == 'canteen-app'
         name: build image

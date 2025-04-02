@@ -9,3 +9,6 @@ RUN yarn run build-all
 # Stage 2: Serve the application with Nginx
 FROM nginx:alpine
 COPY --from=build /app/dist/landing-app/browser /usr/share/nginx/landing-app
+COPY --from=build /app/dist/sample-app/browser /usr/share/nginx/sample-app
+COPY --from=build /app/dist/account-app/browser /usr/share/nginx/account-app
+COPY --from=build /app/dist/dashboard-app/browser /usr/share/nginx/dashboard-app

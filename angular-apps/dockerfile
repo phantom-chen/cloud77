@@ -12,3 +12,4 @@ COPY --from=build /app/dist/landing-app/browser /usr/share/nginx/landing-app
 COPY --from=build /app/dist/sample-app/browser /usr/share/nginx/sample-app
 COPY --from=build /app/dist/account-app/browser /usr/share/nginx/account-app
 COPY --from=build /app/dist/dashboard-app/browser /usr/share/nginx/dashboard-app
+COPY --from=build /app/dist/internal-app/browser /usr/share/nginx/internal-app

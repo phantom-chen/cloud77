@@ -24,14 +24,14 @@ export class PostsComponent implements AfterViewInit {
   }
 
   onGetPosts(): void {
-    this.http.get<string[]>('/api/posts')
+    this.http.get<string[]>('/sample-api/posts')
       .subscribe(res => {
         this.names = res;
       });
   }
 
   onSavePost(): void {
-    this.http.post(`/api/posts/${this.name}`, { content: this.content })
+    this.http.post(`/sample-api/posts/${this.name}`, { content: this.content })
     .subscribe(res => {
       this.onGetPosts();
     });

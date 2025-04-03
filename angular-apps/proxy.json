@@ -10,12 +10,12 @@
     "changeOrigin": true
   },
   "/sample-api": {
-    "target": "http://localhost:5294",
+    "target": "http://localhost:4359",
     "secure": true,
     "changeOrigin": true
   },
   "/api": {
-    "target": "http://localhost:5389",
+    "target": "http://localhost:4359",
     "secure": true,
     "changeOrigin": true
   },
@@ -24,8 +24,8 @@
     "secure": true,
     "changeOrigin": true
   },
-  "/user-app": {
-    "target": "http://localhost:5389",
+  "/user-api": {
+    "target": "http://localhost:4359",
     "secure": true,
     "changeOrigin": true
   },

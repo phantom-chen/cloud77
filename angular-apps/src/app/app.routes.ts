@@ -7,7 +7,6 @@ import { SignUpComponent } from './pages/sign-up/sign-up.component';
 import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
 import { ConfirmEmailComponent } from './pages/confirm-email/confirm-email.component';
 import { SampleComponent } from './pages/sample/sample.component';
-import { PostsComponent } from './pages/posts/posts.component';
 import { PostComponent } from './pages/post/post.component';
 import { HomeComponent } from './pages/home/home.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
@@ -35,9 +34,6 @@ export const routes: Routes = [
   },
   {
     path: 'tool', component: ToolComponent
-  },
-  {
-    path: 'posts', component: PostsComponent
   },
   {
     path: 'posts/:id', component: PostComponent

@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --port 4000 --proxy-config ./proxy.json",
-    "start-sample": "ng serve --project sample-app --port 4000 --proxy-config ./proxy.sample.json",
+    "start-sample": "ng serve --project sample-app --port 4100 --proxy-config ./proxy.json",
     "start-account": "ng serve --project account-app --port 4000",
     "start-dashboard": "ng serve --project dashboard-app --port 4000",
     "start-internal": "ng serve --project internal-app --port 4000",

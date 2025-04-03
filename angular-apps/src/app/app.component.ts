@@ -98,7 +98,6 @@ export class AppComponent implements AfterViewInit {
           this.links = [
             ['Login', '/login'],
             ['Sign Up', '/sign-up'],
-            ['Posts', '/posts'],
             ['Post (123)', '/posts/123'],
             ['Sample', '/sample'],
             ['User', '/user'],

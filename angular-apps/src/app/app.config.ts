@@ -5,7 +5,7 @@ import { routes } from './app.routes';
 import { provideHttpClient } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideZxvbnServiceForPSM } from 'angular-password-strength-meter/zxcvbn';
-import { provideMarkdown } from 'ngx-markdown';
+
 import { provideNuMonacoEditorConfig } from '@ng-util/monaco-editor'
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 import { GatewayService } from './gateway.service';
@@ -17,7 +17,7 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     provideHttpClient(),
     provideZxvbnServiceForPSM(),
-    provideMarkdown(),
+    
     provideNuMonacoEditorConfig({ baseUrl: '/monaco' }),
     provideCharts(withDefaultRegisterables()),
     { provide: 'IGatewayService', useClass: GatewayService }

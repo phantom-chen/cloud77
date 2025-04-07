@@ -46,7 +46,7 @@ export class GatewayService implements IGatewayService {
     }
 
     return lastValueFrom(
-      this.http.post<DefaultResponse>('/api/users', {
+      this.http.post<DefaultResponse>('/user-api/users', {
         email: email,
         name: name,
         password: password,
@@ -65,7 +65,7 @@ export class GatewayService implements IGatewayService {
 
     return lastValueFrom(
       this.http.put<DefaultResponse>(
-        `/api/users/verification?email=${email}`,
+        `/user-api/users/verification?email=${email}`,
         undefined,
         {
           headers: {
@@ -89,7 +89,7 @@ export class GatewayService implements IGatewayService {
 
     return lastValueFrom(
       this.http.post<UserToken>(
-        `/api/users/token?email=${email}&password=${password}`,
+        `/user-api/users/token?email=${email}&password=${password}`,
         undefined
       )
     );
@@ -104,7 +104,7 @@ export class GatewayService implements IGatewayService {
     }
 
     return lastValueFrom(
-      this.http.get<UserEmail>(`/api/users?email=${account}&username=abc`)
+      this.http.get<UserEmail>(`/user-api/users?email=${account}&username=abc`)
     )
   }
 }

@@ -34,7 +34,7 @@ export class ResetPasswordComponent {
 
   sendToken(): void {
     if (this.email) {
-      this.http.post(`/api/users/password-token?email=${this.email}`, {})
+      this.http.post(`/user-api/users/password-token?email=${this.email}`, {})
         .subscribe((data: any) => {
           console.log(data);
         });
@@ -43,7 +43,7 @@ export class ResetPasswordComponent {
 
   resetPassword(): void {
     if (this.email && this.password && this.token) {
-      this.http.put('/api/users/password', {
+      this.http.put('/user-api/users/password', {
         email: this.email,
         password: this.password,
       }, {

@@ -101,7 +101,7 @@ export class LoginComponent implements OnInit {
 
   onLoginClick() {
     if (this.account.includes('@')) {
-      sessionStorage.setItem('cloud77_user_email', this.account);
+      sessionStorage.setItem('user_email', this.account);
       addUserEmail(this.account);
     }
 

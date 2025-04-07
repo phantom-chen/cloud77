@@ -12,12 +12,12 @@ export class MessageComponent implements OnInit, AfterViewInit {
   constructor(
     route: ActivatedRoute
   ) {
-    sessionStorage.setItem('cloud77_user_access_token', route.snapshot.queryParamMap.get('access_token') || '');
-    sessionStorage.setItem('cloud77_user_refresh_token', route.snapshot.queryParamMap.get('refresh_token') || '');
+    sessionStorage.setItem('user_access_token', route.snapshot.queryParamMap.get('access_token') || '');
+    sessionStorage.setItem('user_refresh_token', route.snapshot.queryParamMap.get('refresh_token') || '');
   }
   ngAfterViewInit(): void {
-    if (sessionStorage.getItem('cloud77_user_access_token')
-      && sessionStorage.getItem('cloud77_user_refresh_token')
+    if (sessionStorage.getItem('user_access_token')
+      && sessionStorage.getItem('user_refresh_token')
       && window.parent) {
       window.parent.postMessage({
         request: 'user-login-success',

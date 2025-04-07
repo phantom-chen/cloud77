@@ -30,12 +30,12 @@ export class ToolComponent implements OnInit {
   database: string = "";
   ngOnInit(): void {
     this.updateButtonTexts();
-    this.http.get('/api/database').subscribe((data: any) => {
+    this.http.get('/user-api/database').subscribe((data: any) => {
       console.log(data);
       this.databases = data.databases;
     });
 
-    this.http.get('/api/database/collections').subscribe((data: any) => {
+    this.http.get('/user-api/database/collections').subscribe((data: any) => {
       console.log(data);
       this.database = data.database;
       this.collections = data.collections;

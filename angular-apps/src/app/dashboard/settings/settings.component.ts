@@ -63,7 +63,7 @@ export class SettingsComponent implements OnInit {
   };
 
   refresh(): void {
-    this.http.get('/api/settings').subscribe((data: any) => {
+    this.http.get('/user-api/settings').subscribe((data: any) => {
       console.log(data);
       this.settings = data;
       this.healthEnable = this.settings.find(s => s.key === 'health_check_enable')?.value === 'true' ? true : false;
@@ -89,7 +89,7 @@ export class SettingsComponent implements OnInit {
       console.log(result);
       if (result) {
         if (result.key && result.value && result.description) {
-          this.http.post('/api/settings', result).subscribe((data: any) => {
+          this.http.post('/user-api/settings', result).subscribe((data: any) => {
             console.log(data);
             this.refresh();
           });

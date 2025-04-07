@@ -15,5 +15,5 @@ import { MarkdownModule } from 'ngx-markdown';
   styleUrl: './post.component.css'
 })
 export class PostComponent {
-  data = '# hello world'
+  
 }

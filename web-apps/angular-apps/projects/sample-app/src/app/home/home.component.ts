@@ -9,7 +9,7 @@ import { AfterViewInit, Component } from '@angular/core';
   styleUrl: './home.component.css'
 })
 export class HomeComponent implements AfterViewInit {
-  title = 'sample-app';
+  title = 'Sample Portal';
 
   constructor(private http: HttpClient) {}
 
@@ -17,7 +17,7 @@ export class HomeComponent implements AfterViewInit {
     this.http.get('/api/health', { responseType: 'text' })
     .subscribe(res => {
       console.log(res);
-      
+
     })
   }
 

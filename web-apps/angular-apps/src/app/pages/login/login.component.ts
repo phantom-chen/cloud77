@@ -55,7 +55,12 @@ export class LoginComponent implements OnInit {
         this.frameResourceUrl = san.bypassSecurityTrustResourceUrl(this.messageUrl);
         this.logs += `Message url: ${this.messageUrl}\n`;
         console.log(this.messageUrl);
-        
+      }
+
+      if (route.snapshot.queryParamMap.get('page_url')) {
+        this.pageUrl = convertFromBase64(route.snapshot.queryParamMap.get('page_url')|| '');
+        this.logs += `Page url: ${this.pageUrl}\n`;
+        console.log(this.pageUrl);
       }
     }
 
@@ -88,6 +93,7 @@ export class LoginComponent implements OnInit {
   users: string[] = [];
   authenticatedUsers: string[] = [];
   logs = '';
+  pageUrl = '';
   messageUrl = '';
   frameResourceUrl?: SafeResourceUrl;
   debugMode: boolean = false;
@@ -109,6 +115,10 @@ export class LoginComponent implements OnInit {
     .then(data => {
       saveTokens(data.email, data.value, data.refreshToken);
       syncTokens(data.email);
+
+      if (this.pageUrl) {
+        window.location.href = this.pageUrl;
+      }
     });
   }
 
@@ -137,6 +147,9 @@ export class LoginComponent implements OnInit {
         }
       } else {
         syncTokens(this.authenticatedAccount);
+        if (this.pageUrl) {
+          window.location.href = this.pageUrl;
+        }
       }
     }
   }

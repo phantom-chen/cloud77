@@ -57,14 +57,14 @@ export class AppComponent implements AfterViewInit {
       // Call your method here
       yourMethod();
     });
-  
+
     this.router.events.subscribe((e) => {
       if (e instanceof NavigationStart) {
         // this.activeLink = e.url;
         console.log(e.url);
         this.noHeader = e.url.startsWith('/message');
       }
-      if (e instanceof NavigationEnd) {        
+      if (e instanceof NavigationEnd) {
         if (e.url.startsWith('/user')) {
           this.links = [
             ['My Account', '/user'],
@@ -72,16 +72,14 @@ export class AppComponent implements AfterViewInit {
           ];
         }
         else if (e.url.startsWith('/dashboard')) {
-          
+
         } else if (e.url.startsWith('/sample')) {
           this.links = [
             ['Sample Home', '/sample'],
             ['Toolbox', '/sample/toolbox'],
             ['Tutorial', '/sample/tutorial'],
             ['Periodic Table', '/sample/periodic-table'],
-            ['Material', '/sample/material'],
-            ['Diagram', '/sample/diagram'],
-            ['Layout', '/sample/layout']
+            ['Material', '/sample/material']
           ];
         } else {
           this.links = [

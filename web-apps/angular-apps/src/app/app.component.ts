@@ -68,12 +68,7 @@ export class AppComponent implements AfterViewInit {
         if (e.url.startsWith('/user')) {
           this.links = [
             ['My Account', '/user'],
-            ['Setting', '/user/setting'],
             ['History', '/user/history'],
-            ['Posts', '/user/posts'],
-            ['Live Chart', '/user/chart'],
-            ['Orders', '/user/orders'],
-            ['Tasks', '/user/tasks']
           ];
         }
         else if (e.url.startsWith('/dashboard')) {
@@ -93,8 +88,7 @@ export class AppComponent implements AfterViewInit {
             ['Login', '/login'],
             ['Sign Up', '/sign-up'],
             ['Sample', '/sample'],
-            ['User', '/user'],
-            ['Tool (Internal)', '/tool']
+            ['User', '/user']
           ];
         }
       }

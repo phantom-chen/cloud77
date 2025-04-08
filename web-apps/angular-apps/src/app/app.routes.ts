@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { ToolComponent } from './pages/tool/tool.component';
 import { LoginComponent } from './pages/login/login.component';
 import { UserComponent } from './pages/user/user.component';
 import { SignUpComponent } from './pages/sign-up/sign-up.component';
@@ -30,9 +29,6 @@ export const routes: Routes = [
   },
   {
     path: 'reset-password', component: ResetPasswordComponent
-  },
-  {
-    path: 'tool', component: ToolComponent
   },
   {
     path: 'posts/:id', component: PostComponent

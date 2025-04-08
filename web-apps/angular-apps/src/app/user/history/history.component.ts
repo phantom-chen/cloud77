@@ -22,7 +22,7 @@ export class HistoryComponent implements OnInit {
   email: string = '';
   history: EventEntity[] = [];
   ngOnInit(): void {
-    this.email = sessionStorage.getItem('email') ?? '';
+    this.email = sessionStorage.getItem('user_email') ?? '';
     if (this.email) {
       this.isLogin = true;
       this.http.get(`/user-api/events/${this.email}`).subscribe((data: any) => {

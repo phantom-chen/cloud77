@@ -1,5 +1,5 @@
 {
-  "name": "@cloud77/landing-app",
+  "name": "@cloud77/angular-apps",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",

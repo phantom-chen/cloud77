@@ -1,19 +1,15 @@
 <div class="col-lg-12 row">
-    <div class="col-lg-6">
-        <ngx-charts-pie-chart style="margin: auto; text-align: center;" [view]="view" [scheme]="'cool'"
-            [results]="single2" [gradient]="gradient" [legend]="showLegend" [labels]="showLabels"
-            [doughnut]="isDoughnut"></ngx-charts-pie-chart>
-    </div>
-
-
-    <div class="col-lg-6">
-        <ngx-charts-pie-chart style="margin: auto; text-align: center;" [view]="view" [scheme]="'cool'"
-            [results]="single" [gradient]="gradient" [legend]="showLegend" [labels]="showLabels"
-            [doughnut]="isDoughnut">
-        </ngx-charts-pie-chart>
-    </div>
+    <ngx-charts-pie-chart style="margin: auto; text-align: center;" [view]="view" [scheme]="'cool'" [results]="single2"
+        [gradient]="gradient" [legend]="showLegend" [labels]="showLabels"
+        [doughnut]="isDoughnut"></ngx-charts-pie-chart>
 </div>
 
+<div class="col-lg-12 row">
+    <ngx-charts-pie-chart style="margin: auto; text-align: center;" [view]="view" [scheme]="'cool'" [results]="single"
+        [gradient]="gradient" [legend]="showLegend" [labels]="showLabels" [doughnut]="isDoughnut">
+    </ngx-charts-pie-chart>
+
+</div>
 <div *ngIf="!isLogin;else wc">
     <p>you do not login current app.</p>
 </div>
@@ -30,4 +26,3 @@
         </svg>
     </button>
 </ng-template>
-

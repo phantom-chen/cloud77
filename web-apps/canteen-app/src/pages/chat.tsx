@@ -2,15 +2,15 @@ import React, { useEffect, useState } from 'react';
 import signalRService from './signalrService';
 
 const ChatComponent = () => {
-    const [messages, setMessages] = useState([]);
+    const [messages, setMessages] = useState<{ user: string, message: string }[]>([]);
     const [user, setUser] = useState('');
     const [message, setMessage] = useState('');
 
     useEffect(() => {
         signalRService.startConnection();
 
-        signalRService.onReceiveMessage((user, message) => {
-            setMessages([...messages, { user, message }]);
+        signalRService.onReceiveMessage((payload: { user: string, message: string }) => {
+            setMessages([...messages, { user: payload.user, message: payload.message }]);
         });
 
         return () => {

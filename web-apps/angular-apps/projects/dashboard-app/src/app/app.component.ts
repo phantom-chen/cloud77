@@ -10,5 +10,5 @@ import { ToolbarComponent } from "./toolbar/toolbar.component";
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'dashboard-app';
+  
 }

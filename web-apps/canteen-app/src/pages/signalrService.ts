@@ -19,11 +19,11 @@ class SignalRService {
         }
     };
 
-    onReceiveMessage = (callback: any) => {
+    onReceiveMessage = (callback: (payload: { user: string, message: string }) => void) => {
         this.connection.on('ReceiveMessage', callback);
     };
 
-    sendMessage = async (user: any, message: any) => {
+    sendMessage = async (user: string, message: string) => {
         try {
             await this.connection.invoke('SendMessage', user, message);
         } catch (err) {

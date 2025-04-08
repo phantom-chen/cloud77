@@ -11,13 +11,7 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { SNACKBAR_DURATION } from '../../gateway.service';
-
-export type AppSetting = {
-  key: string,
-  value: string,
-  description: string
-}
+import { SNACKBAR_DURATION, AppSetting } from '../models';
 
 @Component({
   selector: 'app-settings',

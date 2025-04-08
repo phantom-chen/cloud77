@@ -1,9 +1,8 @@
 # Stage 1: Build the Angular application
 FROM node:20-alpine3.18 as build
 WORKDIR /app
-COPY package.json ./
-RUN yarn install
 COPY angular-apps .
+RUN yarn install
 RUN yarn run build-all
 
 # Stage 2: Build the React application

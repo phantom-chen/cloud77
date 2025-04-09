@@ -14,7 +14,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/api/values', (req, res) => {
-    res.json(['value1', 'value2', 'value3']);
+    res.json(['canteen service value1', 'canteen service value2', 'canteen service value3']);
 });
 
 const server = http.createServer(app);

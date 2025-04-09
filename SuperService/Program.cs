@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using RabbitMQ.Client;
 using SuperService.Services;
+using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 
@@ -18,26 +19,33 @@ namespace SuperService
             // Accessing IConfiguration and IWebHostEnvironment from the builder
             IConfiguration configuration = builder.Configuration;
             IWebHostEnvironment environment = builder.Environment;
-
+            var dir = Directory.GetParent(Assembly.GetExecutingAssembly().Location).ToString();
             // Add services to the container.
             builder.Services.AddScoped<TokenGenerator>();
             builder.Services.AddScoped<MongoClient>(p =>
             {
                 var connection = Environment.GetEnvironmentVariable("DB_CONNECTION") ?? "localhost";
-                if (File.Exists("./cluster.txt"))
+                if (File.Exists(Path.Combine(dir, "localhost.txt")))
                 {
-                    connection = File.ReadAllText("./cluster.txt");
+                  connection = connection.Replace("localhost", File.ReadAllLines(Path.Combine(dir, "localhost.txt"))[0]);
                 }
+
                 return new MongoClient(connection);
             });
             builder.Services.AddScoped<ConnectionFactory>(o =>
             {
-                return new ConnectionFactory()
+                var hostName = Environment.GetEnvironmentVariable("MQ_HOST") ?? "localhost";
+                if (File.Exists(Path.Combine(dir, "localhost.txt")))
                 {
-                    HostName = Environment.GetEnvironmentVariable("MQ_HOST") ?? "localhost",
-                    UserName = Environment.GetEnvironmentVariable("MQ_USERNAME") ?? "admin",
-                    Password = Environment.GetEnvironmentVariable("MQ_PASSWORD") ?? "123456"
-                };
+                  hostName = hostName.Replace("localhost", File.ReadAllLines(Path.Combine(dir, "localhost.txt"))[0]);
+                }
+
+                return new ConnectionFactory()
+                  {
+                      HostName = hostName,
+                      UserName = Environment.GetEnvironmentVariable("MQ_USERNAME") ?? "admin",
+                      Password = Environment.GetEnvironmentVariable("MQ_PASSWORD") ?? "123456"
+                  };
             });
 
             builder.Services.AddAuthentication(option =>

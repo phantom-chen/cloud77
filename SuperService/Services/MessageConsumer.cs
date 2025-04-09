@@ -5,6 +5,7 @@ using System.Text;
 using Newtonsoft.Json;
 using Cloud77.Service.Entity;
 using MongoDB.Driver;
+using System.Reflection;
 
 namespace SuperService.Services
 {
@@ -14,19 +15,19 @@ namespace SuperService.Services
         private readonly SettingCollection collection;
         private readonly string demoMessageQueue;
         private readonly string mailMessageQueue;
+        
         public MessageConsumer(
             ILogger<MessageConsumer> logger,
             IConfiguration configuration)
         {
             this.logger = logger;
-
             demoMessageQueue = configuration["Demo_queue"];
             mailMessageQueue = configuration["Mail_queue"];
-
+            var dir = Directory.GetParent(Assembly.GetExecutingAssembly().Location).ToString();
             var connection = Environment.GetEnvironmentVariable("DB_CONNECTION") ?? "localhost";
-            if (File.Exists("./cluster.txt"))
+            if (File.Exists(Path.Combine(dir, "localhost.txt")))
             {
-                connection = File.ReadAllText("./cluster.txt");
+                connection = connection.Replace("localhost", File.ReadAllLines(Path.Combine(dir, "localhost.txt"))[0]);
             }
             var client = new MongoClient(connection);
             collection = new SettingCollection(client, configuration);
@@ -46,22 +47,19 @@ namespace SuperService.Services
 
         private async Task Execute()
         {
-            ConnectionFactory factory = null;
-            try
+            var dir = Directory.GetParent(Assembly.GetExecutingAssembly().Location).ToString();
+            var hostName = Environment.GetEnvironmentVariable("MQ_HOST") ?? "localhost";
+            if (File.Exists(Path.Combine(dir, "localhost.txt")))
             {
-                factory = new ConnectionFactory()
-                {
-                    HostName = Environment.GetEnvironmentVariable("MQ_HOST") ?? "localhost",
-                    UserName = Environment.GetEnvironmentVariable("MQ_USERNAME") ?? "admin",
-                    Password = Environment.GetEnvironmentVariable("MQ_PASSWORD") ?? "123456"
-                };
-            }
-            catch (Exception ex)
-            {
-                logger.LogInformation("fail to create connection factory");
-                logger.LogInformation(ex.Message);
+              hostName = hostName.Replace("localhost", File.ReadAllLines(Path.Combine(dir, "localhost.txt"))[0]);
             }
 
+            var factory = new ConnectionFactory()
+            {
+              HostName = hostName,
+              UserName = Environment.GetEnvironmentVariable("MQ_USERNAME") ?? "admin",
+              Password = Environment.GetEnvironmentVariable("MQ_PASSWORD") ?? "123456"
+            };
             if (factory != null)
             {
                 try

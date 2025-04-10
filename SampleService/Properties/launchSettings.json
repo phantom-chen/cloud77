@@ -5,7 +5,13 @@
       "launchBrowser": false,
       "launchUrl": "weatherforecast",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "DB_CONNECTION": "mongodb://root:123456@localhost:27017",
+        "REDIS_HOST": "localhost",
+        "REDIS_PASSWORD": "123456",
+        "MQ_HOST": "localhost",
+        "MQ_USERNAME": "admin",
+        "MQ_PASSWORD": "123456"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "http://localhost:5294"

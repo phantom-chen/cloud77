@@ -25,17 +25,19 @@ namespace SampleService.Controllers
     [HttpGet]
     public IActionResult Get([FromQuery] int index, [FromQuery] int size)
     {
+      if (index < 0) index = 0;
+      if (size <= 0) size = 3;
       var authors = collection.GetAuthors(index, size);
       if (authors == null)
       {
         return NotFound(new ServiceResponse("empty-author", "", "empty author"));
       }
-
+      var count = collection.Count();
       return Ok(new Collections.AuthorsResult()
       {
-        Index = 0,
-        Size = 10,
-        Total = 999,
+        Index = index,
+        Size = size,
+        Total = count,
         Query = "",
         Data = authors.ToArray()
       });
@@ -65,7 +67,7 @@ namespace SampleService.Controllers
         Region = body.Region,
         Address = body.Address
       });
-      return Accepted("/authors/" + id, new ServiceResponse("author-created", id, ""));
+      return Accepted("/authors/" + id, new ServiceResponse("author-updated", id, ""));
     }
 
     [HttpDelete]
@@ -83,12 +85,12 @@ namespace SampleService.Controllers
       }
     }
 
-    [HttpDelete]
-    [Route("")]
-    public IActionResult Clear()
-    {
-      collection.Clear();
-      return Ok(new ServiceResponse("author-clear"));
-    }
+    //[HttpDelete]
+    //[Route("")]
+    //public IActionResult Clear()
+    //{
+    //  collection.Clear();
+    //  return Ok(new ServiceResponse("author-clear"));
+    //}
   }
 }

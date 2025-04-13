@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "ts-node index.ts -abc --database",
     "dev": "nodemon ./index.ts -abc --database",
-    "start-server": "nodemon ./index.ts",
     "start-database": "nodemon ./index.ts -a -b -c",
-    "note-start": "ts-node index.ts",
+    "start-hello": "ts-node apps/hello.ts -a -b -c",
     "build": "tsc"
   },
   "keywords": [],

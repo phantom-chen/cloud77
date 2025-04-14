@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useMap, useMapContext, APILoader, Provider, Map, ScaleControl, ToolBarControl, ControlBarControl, HawkEyeControl, Geolocation } from '@uiw/react-amap';
-import { Checkbox, FormControl, FormControlLabel, FormGroup, InputLabel, MenuItem, Select, SelectChangeEvent, Slider } from '@mui/material';
+import { Checkbox, FormControl, FormControlLabel, FormGroup, InputLabel, MenuItem, Select, SelectChangeEvent, Slider, Stack, TextField } from '@mui/material';
 
 const mapStyle = 'amap://styles/d6c788ccbba78e3ccf5c0aa03518d264';
 
@@ -37,9 +37,10 @@ const MapPage: React.FC = () => {
 
     return (
         <div>
-            <h1>Map Page</h1>
-            <p>This is the map page.</p>
-
+            <Stack sx={{ width: '100%' }} spacing={2}>
+                <h1>Map Page</h1>
+                <TextField label="Your map key" variant="standard" component='div' value={key} />
+            </Stack>
             {
                 key.length > 0
                     ? (

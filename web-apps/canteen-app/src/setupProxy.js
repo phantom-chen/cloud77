@@ -47,7 +47,7 @@ module.exports = function(app) {
     })
   );
   app.use(
-    '/chat-ws',
+    '/canteen-ws',
     createProxyMiddleware({
       target: 'http://localhost:5648',
       changeOrigin: true

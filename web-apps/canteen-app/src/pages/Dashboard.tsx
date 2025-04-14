@@ -1,22 +1,19 @@
 import { Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Divider, Stack, Grid, styled, Paper } from '@mui/material';
-import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React, { Suspense } from 'react';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import InboxIcon from '@mui/icons-material/Inbox';
 import DraftsIcon from '@mui/icons-material/Drafts';
-import { PVData, UVData } from './data';
-import { Line, LineChart, ResponsiveContainer, BarChart, Bar, XAxis } from "recharts";
+import { Charts } from './components/Charts';
 
-const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-}));
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import StarBorder from '@mui/icons-material/StarBorder';
+
+const BasicTimeline = React.lazy(() => import("./components/TimeLine"));
+const ImageMasonry = React.lazy(() => import("./components/ImageMasonry"));
 
 const Dashboard: React.FC = () => {
     const navigate = useNavigate();
-    const location = useLocation();
 
     return (
         <div style={{ display: 'flex', height: '100vh' }}>
@@ -42,7 +39,7 @@ const Dashboard: React.FC = () => {
                         <ListItem disablePadding>
                             <ListItemButton onClick={() => navigate('/dashboard')}>
                                 <ListItemIcon>
-                                    <InboxIcon />
+                                    <StarBorder />
                                 </ListItemIcon>
                                 <ListItemText primary="Map" />
                             </ListItemButton>
@@ -50,7 +47,7 @@ const Dashboard: React.FC = () => {
                         <ListItem disablePadding>
                             <ListItemButton onClick={() => navigate('/dashboard')}>
                                 <ListItemIcon>
-                                    <InboxIcon />
+                                    <ExpandMore />
                                 </ListItemIcon>
                                 <ListItemText primary="Products" />
                             </ListItemButton>
@@ -92,48 +89,13 @@ const Dashboard: React.FC = () => {
                 <Stack sx={{ width: '100%' }} spacing={2}>
                     <h1>Dashboard</h1>
                     <p>Welcome to the Dashboard!</p>
-                    <div style={{
-                        height: '95px',
-                        padding: '5px 15px 0 15px'
-                    }}>
-                        <ResponsiveContainer>
-                            <LineChart data={PVData}>
-                                <Line
-                                    type="monotone"
-                                    dataKey="pv"
-                                    stroke="#8884d8"
-                                    strokeWidth={2} />
-                            </LineChart>
-                        </ResponsiveContainer>
-                    </div>
-                    <div style={{
-                        marginLeft: "auto",
-                        marginRight: "auto",
-                        width: "95%",
-                        height: 85
-                    }}>
-                        <ResponsiveContainer>
-                            <BarChart data={UVData}>
-                                <Bar dataKey="uv" fill={'pink'} />
-                                <XAxis dataKey="name" stroke="none" tick={{ fill: 'white' }} />
-                            </BarChart>
-                        </ResponsiveContainer>
-                    </div>
-
-                    <Grid container spacing={2}>
-                        <Grid item xs={6}>
-                            <Item>xs=6</Item>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <Item>xs=6</Item>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <Item>xs=4</Item>
-                        </Grid>
-                        <Grid item xs={8}>
-                            <Item>xs=8</Item>
-                        </Grid>
-                    </Grid>
+                    <Suspense>
+                        <Routes>
+                            <Route path='' element={<Charts />} />
+                            <Route path='/timeline' element={<BasicTimeline />} />
+                            <Route path='/images' element={<ImageMasonry />} />
+                        </Routes>
+                    </Suspense>
                 </Stack>
             </div>
         </div>

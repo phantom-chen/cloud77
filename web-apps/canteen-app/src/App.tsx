@@ -11,6 +11,8 @@ import GraphPage from './pages/Graph';
 import CompanyPage from './pages/Company';
 import MapPage from './pages/Map';
 import MessagePage from './pages/Message';
+import LiveDataPage from './pages/LiveData';
+import SamplePage from './pages/Sample';
 
 process.env.DEMO_USER = "hello";
 console.log(process.env);
@@ -61,6 +63,12 @@ function App() {
                             <li>
                                 <a href="/message">Message</a>
                             </li>
+                            <li>
+                                <a href="/live-data">Live Data</a>
+                            </li>
+                            <li>
+                                <a href="/sample">Sample</a>
+                            </li>
                         </ul>
                     </nav>
                     : undefined
@@ -96,14 +104,15 @@ function App() {
                     : undefined
             }
             <ErrorBoundary fallback={<div>Something went wrong</div>}>
-
                 <Routes>
                     <Route path="/" element={<HomePage />} />
-                    <Route path="/dashboard" element={<DashboardPage />} />
+                    <Route path="/dashboard/*" element={<DashboardPage />} />
                     <Route path="/company" element={<CompanyPage />} />
                     <Route path="/map" element={<MapPage />} />
                     <Route path="/graph" element={<GraphPage />} />
                     <Route path="/message" element={<MessagePage />} />
+                    <Route path="/live-data" element={<LiveDataPage />} />
+                    <Route path="/sample" element={<SamplePage />} />
                 </Routes>
             </ErrorBoundary>
         </>

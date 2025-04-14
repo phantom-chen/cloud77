@@ -3,7 +3,7 @@ import React from 'react';
 const Home: React.FC = () => {
     return (
         <div>
-            <h1>Welcome to the Canteen App</h1>
+            <h1>Welcome to the Canteen Portal</h1>
             <p>This is the home page.</p>
             <button onClick={() => {
                 fetch('/hottopic/browse/topicList').then(res => {
@@ -24,6 +24,10 @@ const Home: React.FC = () => {
 
             <button onClick={() => {
                 fetch('/resources/site.json').then(res => {
+                    console.log(res);
+                    // res.ok
+                    // res.status 504 or 200
+                    // res.statusText OK or Gateway Timeout
                     res.text().then(value => {
                         const obj = JSON.parse(value);
                         console.log(obj.amap);
@@ -40,6 +44,8 @@ const Home: React.FC = () => {
                             });   
                         }
                     });
+                }, err => {
+                    console.log(err)
                 });
             }}>Site</button>
         </div>

@@ -31,7 +31,7 @@ export function connectedUsers(): number {
 }
 
 export function appendConnection(id: string, username?: string): void {
-    const filePath = `data/connections.txt`;
+    const filePath = `data/canteen/connections.txt`;
     const line = `${id}${username ? ' ' + username : ''}\n`;
     console.log(line);
     appendFile(filePath, line, (err) => {
@@ -44,7 +44,7 @@ export function appendConnection(id: string, username?: string): void {
 }
 
 export function removeConnection(id: string): void {
-    const filePath = `data/connections.txt`;
+    const filePath = `data/canteen/connections.txt`;
 
     // Read the file, filter out the line, and write back
     readFile(filePath, "utf8", (err, data) => {

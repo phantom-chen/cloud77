@@ -6,6 +6,7 @@ import { lookup, resolve4 } from 'dns';
 import { parseURL } from './apps/domain';
 import { homedir, networkInterfaces, type } from 'os';
 import { getHeapStatistics } from 'v8';
+import { decrypt, encrypt, hashPassword, verifyPassword } from './apps/user';
 
 dotenv.config();
 console.log(homedir());
@@ -53,3 +54,16 @@ for (const item in interfaces) {
 }
 
 console.log(getHeapStatistics());
+
+// Example usage
+const textToEncrypt = 'Hello, World!';
+const encrypted = encrypt(textToEncrypt);
+console.log('Encrypted:', encrypted);
+
+const decrypted = decrypt(encrypted.encryptedData, encrypted.iv);
+console.log('Decrypted:', decrypted);
+
+const hashed = hashPassword('abc123#');
+console.log(hashed);
+console.log(verifyPassword('abc123#', hashed));
+console.log(verifyPassword('abc123', hashed));

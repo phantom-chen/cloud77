@@ -10,16 +10,16 @@
     <PackageReference Include="Cloud77.Service.Abstractions" Version="1.0.13" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
     <PackageReference Include="Microsoft.Playwright" Version="1.49.0" />
-    <PackageReference Include="SpecFlow.Plus.LivingDocPlugin" Version="3.9.57" />
-    <PackageReference Include="SpecFlow.MsTest" Version="3.9.40" />
-    <PackageReference Include="MSTest.TestAdapter" Version="2.2.7" />
-    <PackageReference Include="MSTest.TestFramework" Version="2.2.7" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.8.3" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.8.3" />
     <PackageReference Include="Grpc.HealthCheck" Version="2.51.0" />
     <PackageReference Include="Grpc.Net.Client" Version="2.52.0" />
     <PackageReference Include="Grpc.Tools" Version="2.51.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Reqnroll" Version="2.4.0" />
+    <PackageReference Include="Reqnroll.MsTest" Version="2.4.0" />
   </ItemGroup>
 
   <ItemGroup>

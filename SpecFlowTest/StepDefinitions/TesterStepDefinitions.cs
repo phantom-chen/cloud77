@@ -32,7 +32,7 @@ namespace SpecFlowProject.StepDefinitions
             Thread.Sleep(seconds * 1000);
         }
 
-        [Given(@"I want to open browser (msedge|chrome)")]
+        [Given(@"I want to open browser (msedge|chrome)$")]
         public async Task GivenIWantToOpenBrowser(string name)
         {
             await driver.CreateAsync(name);
@@ -157,5 +157,5 @@ namespace SpecFlowProject.StepDefinitions
             Assert.IsTrue(!string.IsNullOrEmpty(payload.Token));
             Console.WriteLine(payload.Token);
         }
-    }
+  }
 }

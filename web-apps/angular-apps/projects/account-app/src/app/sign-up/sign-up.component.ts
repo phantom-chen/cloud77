@@ -8,7 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { PasswordStrengthMeterComponent } from 'angular-password-strength-meter';
 import { MatIconModule } from '@angular/material/icon';
-import { IGatewayService } from '../../gateway.service';
+import { IGatewayService } from '../service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({

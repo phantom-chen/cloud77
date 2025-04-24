@@ -9,7 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { SNACKBAR_DURATION } from '../../../../../src/app/gateway.service';
+import { SNACKBAR_DURATION } from '../service';
 
 @Component({
   selector: 'app-setting',

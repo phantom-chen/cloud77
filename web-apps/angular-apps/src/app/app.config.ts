@@ -8,7 +8,6 @@ import { provideZxvbnServiceForPSM } from 'angular-password-strength-meter/zxcvb
 
 import { provideNuMonacoEditorConfig } from '@ng-util/monaco-editor'
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
-import { GatewayService } from './gateway.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -19,8 +18,7 @@ export const appConfig: ApplicationConfig = {
     provideZxvbnServiceForPSM(),
     
     provideNuMonacoEditorConfig({ baseUrl: '/monaco' }),
-    provideCharts(withDefaultRegisterables()),
-    { provide: 'IGatewayService', useClass: GatewayService }
+    provideCharts(withDefaultRegisterables())
   ],
 };
 
@@ -28,9 +26,6 @@ const UserLinks = [
   { label: 'Setting', link: '/user/setting' },
   { label: 'Tasks', link: '/user/tasks' },
   { label: 'Files', link: '/user/files' },
-  { label: 'Authors', link: '/user/authors' },
-  { label: 'Bookmarks', link: '/user/bookmarks' },
-  { label: 'Chart', link: '/user/chart' },
   { label: 'Chat', link: '/user/chat' },
   { label: 'Chat IO', link: '/user/chat-io' }
 ];

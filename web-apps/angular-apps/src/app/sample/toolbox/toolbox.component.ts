@@ -5,29 +5,12 @@ import { MatCommonModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 
-import { Buffer } from 'buffer';
-import { Md5 } from "md5-typescript";
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { convertFromBase64, convertToBase64, hashString } from '../../shared';
 
 export function reverseString(str: string) {
   return str.split('').reverse().join('');
-}
-
-// window.btoa();
-export function convertToBase64(value: string): string {
-  const buffer = Buffer.from(value);
-  return buffer.toString('base64');
-}
-
-// window.atob();
-export function convertFromBase64(value: string): string {
-  const buffer = Buffer.from(value, 'base64');
-  return buffer.toString();
-}
-
-export function hashString(value: string): string {
-  return Md5.init(value);
 }
 
 const codes = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

@@ -6,13 +6,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCommonModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
-import { convertFromBase64 } from '../../sample/toolbox/toolbox.component';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { SharedModule } from "../../shared/shared.module";
-import { addUserEmail, debugMode, getTokens, getUserEmails, removeUserEmail, saveTokens, syncTokens } from '../../storage';
-import { IGatewayService } from '../../gateway.service';
+import { convertFromBase64, getRemainingTime, getTokens, getUserEmail, saveTokens, SharedModule, syncTokens, timestampToDate, updateUserEmail } from "../../../../../src/app/shared";
+import { debugMode } from '../../../../../src/app/shared';
+import { IGatewayService } from '../service';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -43,6 +42,7 @@ export class LoginComponent implements OnInit {
     @Inject('IGatewayService') private gateway: IGatewayService,
     private http: HttpClient,
     private san: DomSanitizer,
+    private router: Router,
     route: ActivatedRoute) {
       this.debugMode = debugMode();
 
@@ -52,37 +52,40 @@ export class LoginComponent implements OnInit {
 
       if (route.snapshot.queryParamMap.get('message_url')) {
         this.messageUrl = convertFromBase64(route.snapshot.queryParamMap.get('message_url')|| '');
-        this.frameResourceUrl = san.bypassSecurityTrustResourceUrl(this.messageUrl);
         this.logs += `Message url: ${this.messageUrl}\n`;
-        console.log(this.messageUrl);
       }
-
+      
+      this.pageTitle = "Go to Account Dashboard";
       if (route.snapshot.queryParamMap.get('page_url')) {
         this.pageUrl = convertFromBase64(route.snapshot.queryParamMap.get('page_url')|| '');
         this.logs += `Page url: ${this.pageUrl}\n`;
-        console.log(this.pageUrl);
+        this.pageTitle = `Go to ${this.pageUrl}`;
       }
     }
 
   ngOnInit(): void {
-    const emails = getUserEmails(false);
-    this.users = emails;
-    this.authenticatedUsers =  getUserEmails(true);
-    this.account = emails.length > 0 ? emails[0] : '';
-    this.authenticatedAccount = this.authenticatedUsers.length > 0 ? this.authenticatedUsers[0] : '';
-    if (this.account) {
+    // sync local storage to session storage
+    const tokens = getTokens();
+    this.hasTokens = (tokens.access !== '' && tokens.refresh !== '');
 
+    this.authenticatedAccount = this.authenticatedUsers.length > 0 ? this.authenticatedUsers[0] : '';
+    if (getUserEmail(false)) {
+      this.account = getUserEmail(false);
     }
 
     window.addEventListener('message', function(ev) {
       if (ev.data) {
         console.log(ev.data);
-        if (ev.data.request === 'user-login-success' && ev.data.app_url) {
-          this.window.location.href = ev.data.app_url;
-        }
+        // if (ev.data.request === 'user-login-success' && ev.data.app_url) {
+        //   this.window.location.href = ev.data.app_url;
+        // }
       }
     });
   }
+
+  tokenValidity: number = 100;
+  hasValidTokens: boolean = false;
+  hasTokens: boolean = false;
   remember = true;
   account: string = '';
   authenticatedAccount: string = '';
@@ -94,10 +97,12 @@ export class LoginComponent implements OnInit {
   authenticatedUsers: string[] = [];
   logs = '';
   pageUrl = '';
+  pageTitle = '';
   messageUrl = '';
   frameResourceUrl?: SafeResourceUrl;
   debugMode: boolean = false;
   existing: boolean = true;
+
   onAccountChange() {
     this.gateway.getUser(this.account)
     .then(res => {
@@ -106,19 +111,15 @@ export class LoginComponent implements OnInit {
   }
 
   onLoginClick() {
-    if (this.account.includes('@')) {
-      sessionStorage.setItem('user_email', this.account);
-      addUserEmail(this.account);
-    }
-
     this.gateway.generateToken(this.account, this.password)
     .then(data => {
-      saveTokens(data.email, data.value, data.refreshToken);
-      syncTokens(data.email);
+      updateUserEmail(data.email, true);
+      saveTokens(data.value, data.refreshToken);
+      syncTokens();
 
-      if (this.pageUrl) {
-        window.location.href = this.pageUrl;
-      }
+      setTimeout(() => {
+        this.onNavigate();
+      }, 1000);
     });
   }
 
@@ -128,29 +129,55 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  clearLogin(): void {
-    if (this.account) {
-      removeUserEmail(this.account);
-      this.users = getUserEmails();
-      this.authenticatedUsers = getUserEmails(true);
-      this.account = this.users.length > 0 ? this.users[0] : '';
-      this.authenticatedAccount = this.authenticatedUsers.length > 0 ? this.authenticatedUsers[0] : '';
+  onCheckTokens(): void {
+    this.gateway.validateToken().then(res => {
+      this.hasValidTokens = true;
+      const exp: Date = timestampToDate(res);
+      const current: Date = new Date();
+      const diff = getRemainingTime(current, exp);
+      console.log(`Remaining: ${diff.day} days / ${diff.hour} hours / ${diff.minute} minute`);
+    });
+  }
+
+  onLogout(): void {
+    this.router.navigate(['/logout']);
+  }
+
+  onNavigate(): void {
+    if (this.pageUrl) {
+      const tokens = getTokens();
+      this.frameResourceUrl = this.san.bypassSecurityTrustResourceUrl(`${this.messageUrl}?access_token=${tokens.access}&refresh_token=${tokens.refresh}`);
+      setTimeout(() => {
+        window.location.href = this.pageUrl;
+      }, 2000);
+    } else {
+      this.router.navigate(['/dashboard']);
     }
   }
 
+  clearLogin(): void {
+    alert('wip')
+    // if (this.account) {
+    //   removeUserEmail(this.account);
+    //   this.account = this.users.length > 0 ? this.users[0] : '';
+    //   this.authenticatedAccount = this.authenticatedUsers.length > 0 ? this.authenticatedUsers[0] : '';
+    // }
+  }
+
   autoLogin(): void {
-    if (this.authenticatedAccount) {
-      if (this.messageUrl) {
-        const tokens = getTokens(this.authenticatedAccount);
-        if (tokens.access) {
-          this.frameResourceUrl = this.san.bypassSecurityTrustResourceUrl(`${this.messageUrl}?access_token=${tokens.access}&refresh_token=${tokens.refresh}`);
-        }
-      } else {
-        syncTokens(this.authenticatedAccount);
-        if (this.pageUrl) {
-          window.location.href = this.pageUrl;
-        }
-      }
-    }
+    alert('wip')
+    // if (this.authenticatedAccount) {
+    //   if (this.messageUrl) {
+    //     const tokens = getTokens(this.authenticatedAccount);
+    //     if (tokens.access) {
+
+    //     }
+    //   } else {
+    //     syncTokens(this.authenticatedAccount);
+    //     if (this.pageUrl) {
+    //       window.location.href = this.pageUrl;
+    //     }
+    //   }
+    // }
   }
 }

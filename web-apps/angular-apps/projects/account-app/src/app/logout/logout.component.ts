@@ -4,6 +4,7 @@ import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angula
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
+import { removeTokens } from '../../../../../src/app/shared';
 
 @Component({
   selector: 'app-logout',
@@ -35,21 +36,21 @@ export class LogoutComponent implements OnInit, AfterViewInit {
       ele.hidden = false;
       ele.style.width = '100%';
       ele.style.height = '300px';
-      this.container.nativeElement.append(ele);
+      // this.container.nativeElement.append(ele);
     })
   }
   
-  sites = ['http://localhost:4200', 'http://localhost:4300', 'http://localhost:4400'];
+  sites = [];
   ngOnInit(): void {
     console.log('logout');
-    console.log('remove session storage');
+    removeTokens();
     console.log('go to login page');
     console.log('read related sites from storage');
     console.log('verify logout code / token');
   }
 
-  @ViewChild('container')
-  container!: ElementRef<HTMLDivElement>;
+  // @ViewChild('container')
+  // container!: ElementRef<HTMLDivElement>;
 
   // post message to related sites
   handleLogout(): void {

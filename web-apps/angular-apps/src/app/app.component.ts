@@ -65,28 +65,17 @@ export class AppComponent implements AfterViewInit {
         this.noHeader = e.url.startsWith('/message');
       }
       if (e instanceof NavigationEnd) {
-        if (e.url.startsWith('/user')) {
-          this.links = [
-            ['My Account', '/user'],
-            ['History', '/user/history'],
-          ];
-        }
-        else if (e.url.startsWith('/dashboard')) {
-
-        } else if (e.url.startsWith('/sample')) {
+        if (e.url.startsWith('/sample')) {
           this.links = [
             ['Sample Home', '/sample'],
             ['Toolbox', '/sample/toolbox'],
             ['Tutorial', '/sample/tutorial'],
             ['Periodic Table', '/sample/periodic-table'],
             ['Material', '/sample/material']
-          ];
+          ];          
         } else {
           this.links = [
-            ['Login', '/login'],
-            ['Sign Up', '/sign-up'],
             ['Sample', '/sample'],
-            ['User', '/user']
           ];
         }
       }

@@ -10,8 +10,9 @@ import { Profile, UserAccount } from '@phantom-chen/cloud77';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ProfileDialogComponent } from '../profile-dialog/profile-dialog.component';
-import { SharedModule } from '../../shared/shared.module';
-import { SNACKBAR_DURATION } from '../../gateway.service';
+import { SNACKBAR_DURATION } from '../service';
+import { UnAuthorizedComponent } from '../un-authorized/un-authorized.component';
+import { getUserEmail } from '../../../../../src/app/shared';
 
 @Component({
   selector: 'app-account',
@@ -19,13 +20,13 @@ import { SNACKBAR_DURATION } from '../../gateway.service';
   imports: [
     CommonModule,
     FormsModule,
-    SharedModule,
     MatCommonModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
     MatDialogModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    UnAuthorizedComponent
   ],
   templateUrl: './account.component.html',
   styleUrl: './account.component.css'
@@ -54,7 +55,7 @@ export class AccountComponent implements OnInit {
     supplier: ''
   };
   ngOnInit(): void {
-    this.email = sessionStorage.getItem('user_email') ?? '';
+    this.email = getUserEmail();
     if (this.email) {
       this.isLogin = true;
       this.http.get(`/user-api/accounts/${this.email}`).subscribe((data: any) => {

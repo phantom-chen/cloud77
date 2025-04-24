@@ -12,8 +12,8 @@ export class MessageComponent implements OnInit, AfterViewInit {
   constructor(
     route: ActivatedRoute
   ) {
-    sessionStorage.setItem('user_access_token', route.snapshot.queryParamMap.get('access_token') || '');
-    sessionStorage.setItem('user_refresh_token', route.snapshot.queryParamMap.get('refresh_token') || '');
+    sessionStorage.setItem('cloud77_access_token', route.snapshot.queryParamMap.get('access_token') || '');
+    sessionStorage.setItem('cloud77_refresh_token', route.snapshot.queryParamMap.get('refresh_token') || '');
   }
   ngAfterViewInit(): void {
     if (sessionStorage.getItem('user_access_token')

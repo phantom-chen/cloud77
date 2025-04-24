@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { EventEntity } from '@phantom-chen/cloud77';
 import { CommonModule, DatePipe } from '@angular/common';
 import { MatListModule } from '@angular/material/list';
+import { getUserEmail } from '../../../../../src/app/shared';
 
 @Component({
   selector: 'app-history',
@@ -22,7 +23,7 @@ export class HistoryComponent implements OnInit {
   email: string = '';
   history: EventEntity[] = [];
   ngOnInit(): void {
-    this.email = sessionStorage.getItem('user_email') ?? '';
+    this.email = getUserEmail();
     if (this.email) {
       this.isLogin = true;
       this.http.get(`/user-api/events/${this.email}`).subscribe((data: any) => {

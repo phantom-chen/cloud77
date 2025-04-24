@@ -9,7 +9,7 @@
   </div>
   <div class="card-body content">
 
-    <div style="margin: auto;box-shadow: 3px;" class="col-lg-6">
+    <div *ngIf="!hasTokens" style="margin: auto;box-shadow: 3px;" class="col-lg-6">
       <form novalidate>
         <div class="container content">
           <ng-container *ngIf="loginRequired">
@@ -35,7 +35,7 @@
             </div>
 
             <div class="row">
-              <mat-checkbox color="primary" [(ngModel)]="remember" name="remembercheckbox">Remember Me (Auto login in other tabs)</mat-checkbox>
+              <mat-checkbox color="primary" [(ngModel)]="remember" name="remembercheckbox">Remember Me</mat-checkbox>
             </div>
             
             <div class="row">
@@ -54,6 +54,14 @@
       </form>
     </div>
 
+    <div *ngIf="hasTokens" style="margin: auto;box-shadow: 3px;" class="col-lg-6">
+      <h5>Login with tokens</h5>
+      <p>Token is valid for {{ tokenValidity }} minutes</p>
+      <button mat-button color="primary" (click)="onCheckTokens();">Check tokens</button>
+      <button mat-button color="primary" (click)="onNavigate();">{{ pageTitle }}</button>
+      <button mat-button color="accent" (click)="onLogout();">Logout</button>
+    </div>
+
     <mat-divider></mat-divider>
 
     <div *ngIf="authenticatedUsers.length > 0" style="margin: auto;" class="row col-lg-6">
@@ -69,7 +77,7 @@
       <button mat-button color="accent" (click)="autoLogin();">Auto Login as selected user above</button>
     </div>
 
-    <div *ngIf="messageUrl !==''" class="content">
+    <div *ngIf="frameResourceUrl" class="content" hidden>
       <iframe [src]="frameResourceUrl"></iframe>
     </div>
 

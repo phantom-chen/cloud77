@@ -1,18 +1,16 @@
-import { CommonModule } from '@angular/common';
-import { Component, ElementRef, ViewChild } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 
 @Component({
-  selector: 'app-posts',
+  selector: 'app-home',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule
-  ],
-  templateUrl: './posts.component.html',
-  styleUrl: './posts.component.css'
+  imports: [],
+  templateUrl: './home.component.html',
+  styleUrl: './home.component.css'
 })
-export class PostsComponent {
+export class HomeComponent implements AfterViewInit {
+
+  title = 'Internal Portal';
+
   @ViewChild("messageContainer")
   messageContainer!: ElementRef<HTMLIFrameElement>;
 

@@ -10,10 +10,14 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
 import { AccountComponent } from './account/account.component';
 import { HistoryComponent } from './history/history.component';
+import { MessageComponent } from './message/message.component';
 
 export const routes: Routes = [
     {
         path: '', component: LoginComponent
+    },
+    {
+        path: 'message', component: MessageComponent
     },
     {
         path: 'logout', component: LogoutComponent

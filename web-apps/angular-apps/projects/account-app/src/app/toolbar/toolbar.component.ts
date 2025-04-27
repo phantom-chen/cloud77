@@ -1,12 +1,23 @@
-import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-toolbar',
   standalone: true,
-  imports: [],
+  imports: [
+    CommonModule
+  ],
   templateUrl: './toolbar.component.html',
   styleUrl: './toolbar.component.css'
 })
 export class ToolbarComponent {
-
+  @Input()
+  headers: { label: string, path: string }[] = [
+    { label: 'Home', path: '/' },
+    { label: 'Account', path: '/account' },
+    { label: 'Setting', path: '/setting' },
+    { label: 'Posts', path: '/posts' },
+    { label: 'Orders', path: '/orders' },
+    { label: 'Tasks', path: '/tasks' }
+  ];
 }

@@ -23,18 +23,12 @@ export function debugMode(): boolean {
     return sessionStorage.getItem('cloud77_debug_mode') ? true : false;
 }
 
-export function getUserEmail(session?: boolean): string {
-    if (session) {
-        return sessionStorage.getItem('cloud77_user_email') ?? '';
-    }
+export function getUserEmail(): string {
     return localStorage.getItem('user_email') ?? '';
 }
 
-export function updateUserEmail(email: string, session?: boolean): void {
-    sessionStorage.setItem('cloud77_user_email', email);
-    if (!session) {
-        localStorage.setItem('user_email', email);
-    }
+export function updateUserEmail(email: string): void {
+    localStorage.setItem('user_email', email);
 }
 
 export function getUserEmails(isLogin: boolean = true): string[] {
@@ -70,14 +64,8 @@ export function removeUserEmail(email: string): void {
 }
 
 export function saveTokens(access: string, refresh: string): void {
-
     localStorage.setItem(`user_access_token`, access);
     localStorage.setItem(`user_refresh_token`, refresh);
-}
-
-export function syncTokens(): void {
-    sessionStorage.setItem('cloud77_access_token', localStorage.getItem(`user_access_token`) ?? '');
-    sessionStorage.setItem('cloud77_refresh_token', localStorage.getItem(`user_refresh_token`) ?? '');
 }
 
 export function getTokens(): { access: string, refresh: string } {

@@ -77,8 +77,8 @@
       <button mat-button color="accent" (click)="autoLogin();">Auto Login as selected user above</button>
     </div>
 
-    <div *ngIf="frameResourceUrl" class="content" hidden>
-      <iframe [src]="frameResourceUrl"></iframe>
+    <div class="content">
+      <iframe #messageContainer [src]="frameResourceUrl"></iframe>
     </div>
 
     <div *ngIf="debugMode" class="content">

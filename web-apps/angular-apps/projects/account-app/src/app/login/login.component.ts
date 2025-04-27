@@ -1,15 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { FormsModule } from "@angular/forms";
-import { Component, Inject, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCommonModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { convertFromBase64, getRemainingTime, getTokens, getUserEmail, saveTokens, SharedModule, syncTokens, timestampToDate, updateUserEmail } from "../../../../../src/app/shared";
+import { getRemainingTime, getTokens, getUserEmail, saveTokens, SharedModule, timestampToDate, updateUserEmail } from "../../../../../src/app/shared";
 import { debugMode } from '../../../../../src/app/shared';
 import { IGatewayService } from '../service';
 import { MatSelectModule } from '@angular/material/select';
@@ -40,27 +39,12 @@ export class LoginComponent implements OnInit {
 
   constructor(
     @Inject('IGatewayService') private gateway: IGatewayService,
-    private http: HttpClient,
-    private san: DomSanitizer,
-    private router: Router,
-    route: ActivatedRoute) {
+    private san: DomSanitizer) {
       this.debugMode = debugMode();
-
       if (this.debugMode) {
         this.logs += 'Debug Mode\n';
       }
-
-      if (route.snapshot.queryParamMap.get('message_url')) {
-        this.messageUrl = convertFromBase64(route.snapshot.queryParamMap.get('message_url')|| '');
-        this.logs += `Message url: ${this.messageUrl}\n`;
-      }
-      
-      this.pageTitle = "Go to Account Dashboard";
-      if (route.snapshot.queryParamMap.get('page_url')) {
-        this.pageUrl = convertFromBase64(route.snapshot.queryParamMap.get('page_url')|| '');
-        this.logs += `Page url: ${this.pageUrl}\n`;
-        this.pageTitle = `Go to ${this.pageUrl}`;
-      }
+      this.frameResourceUrl = this.san.bypassSecurityTrustResourceUrl(sessionStorage.getItem('app_message') ?? '');
     }
 
   ngOnInit(): void {
@@ -69,16 +53,20 @@ export class LoginComponent implements OnInit {
     this.hasTokens = (tokens.access !== '' && tokens.refresh !== '');
 
     this.authenticatedAccount = this.authenticatedUsers.length > 0 ? this.authenticatedUsers[0] : '';
-    if (getUserEmail(false)) {
-      this.account = getUserEmail(false);
+    if (getUserEmail()) {
+      this.account = getUserEmail();
     }
 
     window.addEventListener('message', function(ev) {
       if (ev.data) {
         console.log(ev.data);
-        // if (ev.data.request === 'user-login-success' && ev.data.app_url) {
-        //   this.window.location.href = ev.data.app_url;
-        // }
+        if (ev.data.response === 'user-login-success') {
+          const appUrl = sessionStorage.getItem('app_url') ?? '';
+          sessionStorage.removeItem('app_message');
+          sessionStorage.removeItem('app_url');
+          sessionStorage.removeItem('app_host');
+          window.location.href = appUrl;
+        }
       }
     });
   }
@@ -96,13 +84,16 @@ export class LoginComponent implements OnInit {
   users: string[] = [];
   authenticatedUsers: string[] = [];
   logs = '';
-  pageUrl = '';
+  
   pageTitle = '';
-  messageUrl = '';
+  
   frameResourceUrl?: SafeResourceUrl;
   debugMode: boolean = false;
   existing: boolean = true;
 
+  @ViewChild("messageContainer")
+  messageContainer!: ElementRef<HTMLIFrameElement>;
+  
   onAccountChange() {
     this.gateway.getUser(this.account)
     .then(res => {
@@ -113,13 +104,9 @@ export class LoginComponent implements OnInit {
   onLoginClick() {
     this.gateway.generateToken(this.account, this.password)
     .then(data => {
-      updateUserEmail(data.email, true);
+      updateUserEmail(data.email);
       saveTokens(data.value, data.refreshToken);
-      syncTokens();
-
-      setTimeout(() => {
-        this.onNavigate();
-      }, 1000);
+      this.onNavigate();
     });
   }
 
@@ -140,18 +127,26 @@ export class LoginComponent implements OnInit {
   }
 
   onLogout(): void {
-    this.router.navigate(['/logout']);
+    alert('wip')
   }
 
   onNavigate(): void {
-    if (this.pageUrl) {
+    const appUrl = sessionStorage.getItem('app_url') ?? '';
+    const messageUrl = sessionStorage.getItem('app_message') ?? '';
+    console.log('debug: navigate');
+    console.log(appUrl);
+    console.log(messageUrl);
+    if (appUrl && messageUrl) {
       const tokens = getTokens();
-      this.frameResourceUrl = this.san.bypassSecurityTrustResourceUrl(`${this.messageUrl}?access_token=${tokens.access}&refresh_token=${tokens.refresh}`);
+      console.log(tokens);
+      this.frameResourceUrl = this.san.bypassSecurityTrustResourceUrl(messageUrl);
       setTimeout(() => {
-        window.location.href = this.pageUrl;
+        this.messageContainer.nativeElement.contentWindow?.postMessage({
+          response: 'sync-tokens',
+          accessToken: tokens.access,
+          refreshToken: tokens.refresh
+        }, '*')
       }, 2000);
-    } else {
-      this.router.navigate(['/dashboard']);
     }
   }
 

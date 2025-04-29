@@ -66,12 +66,25 @@ export function removeUserEmail(email: string): void {
 export function saveTokens(access: string, refresh: string): void {
     localStorage.setItem(`user_access_token`, access);
     localStorage.setItem(`user_refresh_token`, refresh);
+    syncTokens();
 }
 
-export function getTokens(): { access: string, refresh: string } {
-    return {
-        access: sessionStorage.getItem(`cloud77_access_token`) ?? '',
-        refresh: sessionStorage.getItem(`cloud77_refresh_token`) ?? ''
+export function syncTokens(): void {
+    sessionStorage.setItem('cloud77_access_token', localStorage.getItem(`user_access_token`) ?? '');
+    sessionStorage.setItem('cloud77_refresh_token', localStorage.getItem(`user_refresh_token`) ?? '');
+}
+
+export function getTokens(session: boolean = true): { access: string, refresh: string } {
+    if (session) {
+        return {
+            access: sessionStorage.getItem(`cloud77_access_token`) ?? '',
+            refresh: sessionStorage.getItem(`cloud77_refresh_token`) ?? ''
+        }
+    } else {
+        return {
+            access: localStorage.getItem(`user_access_token`) ?? '',
+            refresh: localStorage.getItem(`user_refresh_token`) ?? ''
+        }
     }
 }
 

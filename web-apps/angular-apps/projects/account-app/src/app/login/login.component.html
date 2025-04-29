@@ -3,11 +3,14 @@
     <div class="card-header">
       <div style="display: flex;">
         <h5>User Login</h5>
+        <mat-icon>signal_cellular_alt</mat-icon>
         <span class="example-spacer"></span>
       </div>
     </div>
   </div>
   <div class="card-body content">
+
+    <!-- verify service in running -->
 
     <div *ngIf="!hasTokens" style="margin: auto;box-shadow: 3px;" class="col-lg-6">
       <form novalidate>
@@ -56,10 +59,28 @@
 
     <div *ngIf="hasTokens" style="margin: auto;box-shadow: 3px;" class="col-lg-6">
       <h5>Login with tokens</h5>
+      <p class="text-info-emphasis">login as: {{ account }}</p>
+      <div>
+        <span class="text-warning">{{ tokenValidity }}</span>
+      </div>
       <p>Token is valid for {{ tokenValidity }} minutes</p>
-      <button mat-button color="primary" (click)="onCheckTokens();">Check tokens</button>
-      <button mat-button color="primary" (click)="onNavigate();">{{ pageTitle }}</button>
+      <button mat-button color="primary" (click)="onCheckTokens();">
+        <mat-icon>refresh</mat-icon>
+        Check tokens
+      </button>
       <button mat-button color="accent" (click)="onLogout();">Logout</button>
+    </div>
+
+    <div style="margin: auto;box-shadow: 3px;" class="col-lg-6">
+      <button mat-raised-button (click)="copyToken('');">
+        <mat-icon>file_copy</mat-icon>
+        Access Token
+      </button>
+
+      <button mat-raised-button (click)="copyToken('refresh');">
+        <mat-icon>file_copy</mat-icon>
+        Refresh Token
+      </button>
     </div>
 
     <mat-divider></mat-divider>

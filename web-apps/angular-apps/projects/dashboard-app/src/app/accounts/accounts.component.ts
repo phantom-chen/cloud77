@@ -40,6 +40,12 @@ export class AccountsComponent {
     this.pageSize = e.pageSize;
     this.pageIndex = e.pageIndex;
     console.warn('to refresh data');
-    
+  }
+
+  getAccounts(): void {
+    // this.http.get('/user-api/accounts').subscribe((data: any) => {
+    //   console.log(data);
+    // });
+    //   this.accounts = data.accounts;
   }
 }

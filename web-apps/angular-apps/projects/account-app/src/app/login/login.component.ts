@@ -8,12 +8,19 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { getRemainingTime, getTokens, getUserEmail, saveTokens, SharedModule, timestampToDate, updateUserEmail } from "../../../../../src/app/shared";
+import { getRemainingTime, getTokens, getUserEmail, removeTokens, saveTokens, SharedModule, syncTokens, timestampToDate, updateUserEmail } from "../../../../../src/app/shared";
 import { debugMode } from '../../../../../src/app/shared';
-import { IGatewayService } from '../service';
+import { IGatewayService, SNACKBAR_DURATION } from '../service';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { HttpErrorResponse } from '@angular/common/http';
+
+export interface IHandleHttpError {
+  handleHttpError(response: HttpErrorResponse): void
+}
 
 @Component({
   selector: 'app-login',
@@ -25,11 +32,14 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatCommonModule,
     MatButtonModule,
     MatInputModule,
+    MatIconModule,
     MatFormFieldModule,
     MatAutocompleteModule,
     MatSelectModule,
     MatDividerModule,
     MatCheckboxModule,
+    MatSnackBarModule,
+    MatIconModule,
     SharedModule
 ],
   templateUrl: './login.component.html',
@@ -39,6 +49,7 @@ export class LoginComponent implements OnInit {
 
   constructor(
     @Inject('IGatewayService') private gateway: IGatewayService,
+    private snackbar: MatSnackBar,
     private san: DomSanitizer) {
       this.debugMode = debugMode();
       if (this.debugMode) {
@@ -49,7 +60,9 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     // sync local storage to session storage
-    const tokens = getTokens();
+    this.remember = (localStorage.getItem('remember') ?? '')?.length > 0 ? true : false;
+    // this.remember = true;
+    const tokens = getTokens(false);
     this.hasTokens = (tokens.access !== '' && tokens.refresh !== '');
 
     this.authenticatedAccount = this.authenticatedUsers.length > 0 ? this.authenticatedUsers[0] : '';
@@ -69,6 +82,23 @@ export class LoginComponent implements OnInit {
         }
       }
     });
+
+    this.gateway
+  }
+
+  handleHttpError(error: HttpErrorResponse) {
+    this.snackbar.open(
+      `${error.status} - ${error.statusText}`,
+      `${ error.error ? error.error.message : error.statusText}`,
+    {
+      duration: SNACKBAR_DURATION
+    }
+    )
+    if (error.status === 401) {
+      this.snackbar.open('Error', 'Unauthorized', { duration: SNACKBAR_DURATION });
+    } else {
+
+    }
   }
 
   tokenValidity: number = 100;
@@ -84,8 +114,6 @@ export class LoginComponent implements OnInit {
   users: string[] = [];
   authenticatedUsers: string[] = [];
   logs = '';
-  
-  pageTitle = '';
   
   frameResourceUrl?: SafeResourceUrl;
   debugMode: boolean = false;
@@ -107,6 +135,12 @@ export class LoginComponent implements OnInit {
       updateUserEmail(data.email);
       saveTokens(data.value, data.refreshToken);
       this.onNavigate();
+    })
+    .catch(err => {
+      console.log(err);
+      if (err instanceof HttpErrorResponse) {
+        this.handleHttpError(err);
+      }
     });
   }
 
@@ -117,36 +151,58 @@ export class LoginComponent implements OnInit {
   }
 
   onCheckTokens(): void {
+    syncTokens();
     this.gateway.validateToken().then(res => {
       this.hasValidTokens = true;
       const exp: Date = timestampToDate(res);
       const current: Date = new Date();
       const diff = getRemainingTime(current, exp);
       console.log(`Remaining: ${diff.day} days / ${diff.hour} hours / ${diff.minute} minute`);
+      this.snackbar.open('Info', `Remaining: ${diff.day} days / ${diff.hour} hours / ${diff.minute} minute`, { duration: SNACKBAR_DURATION });
     });
   }
 
   onLogout(): void {
-    alert('wip')
+    removeTokens();
+    this.snackbar.open('info', 'Logout successfully.', { duration: SNACKBAR_DURATION });
   }
 
   onNavigate(): void {
     const appUrl = sessionStorage.getItem('app_url') ?? '';
     const messageUrl = sessionStorage.getItem('app_message') ?? '';
     console.log('debug: navigate');
-    console.log(appUrl);
-    console.log(messageUrl);
+
     if (appUrl && messageUrl) {
-      const tokens = getTokens();
-      console.log(tokens);
+      const tokens = getTokens(false);
       this.frameResourceUrl = this.san.bypassSecurityTrustResourceUrl(messageUrl);
+
       setTimeout(() => {
         this.messageContainer.nativeElement.contentWindow?.postMessage({
           response: 'sync-tokens',
           accessToken: tokens.access,
           refreshToken: tokens.refresh
         }, '*')
-      }, 2000);
+      }, 1000);
+    }
+  }
+
+  copyToken(name: string): void {
+    const tokens = getTokens(false);
+    const access = tokens.access;
+    const refresh = tokens.refresh;
+    const token = name.length === 0 ? access : refresh;
+
+    console.log(token);
+    if (token) {
+      navigator.clipboard.writeText(token)
+      .then(() => {
+        alert(`${name.length === 0 ? 'Access' : 'Refresh'} Token copied to clipboard!`);
+      })
+      .catch(err => {
+        console.error('Failed to copy tokens: ', err);
+      });
+    } else {
+      alert('No token found!');
     }
   }
 

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-tasks',
@@ -14,6 +15,10 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
   styleUrl: './tasks.component.css'
 })
 export class TasksComponent {
+
+  constructor(private http: HttpClient) {}
+
+
   todo = [
     'Get to work',
     'Pick up groceries',
@@ -38,5 +43,11 @@ export class TasksComponent {
         event.previousIndex,
         event.currentIndex);
     }
+  }
+
+  getTasks(): void {
+    this.http.get('/user-api/tasks').subscribe((data: any) => {
+      console.log(data);
+    });
   }
 }

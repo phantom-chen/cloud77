@@ -27,5 +27,5 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrl: './layout.component.css'
 })
 export class LayoutComponent {
-
+  title = 'Sample Layout';
 }

@@ -282,7 +282,7 @@ namespace UserService.Controllers
         public IActionResult TestEmail([FromQuery] string usage)
         {
             var _collection = new SettingCollection(client, configuration);
-            var settings = _collection.Get();
+            var settings = _collection.GetSettings();
             var link = configuration["Home_url"];
             var dir = Directory.GetParent(Assembly.GetExecutingAssembly().Location).ToString();
             var content = new EmailContentEntity()

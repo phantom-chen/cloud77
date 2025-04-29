@@ -10,13 +10,13 @@ $addr = Read-Host 'Press IP address saved to localhost.txt, press Enter key to c
 Write-Output $addr
 
 if ((Test-Path "UserService\bin\Debug\net8.0")) {
-    $addr | Out-File "UserService\bin\Debug\net8.0\localhost.txt"
+    $addr | Out-File "UserService\bin\Debug\net8.0\data\localhost.txt"
 }
 
 if ((Test-Path "SuperService\bin\Debug\net8.0")) {
-    $addr | Out-File "SuperService\bin\Debug\net8.0\localhost.txt"
+    $addr | Out-File "SuperService\bin\Debug\net8.0\data\localhost.txt"
 }
 
 if ((Test-Path "SampleService\bin\Debug\net8.0")) {
-    $addr | Out-File "SampleService\bin\Debug\net8.0\localhost.txt"
+    $addr | Out-File "SampleService\bin\Debug\net8.0\data\localhost.txt"
 }

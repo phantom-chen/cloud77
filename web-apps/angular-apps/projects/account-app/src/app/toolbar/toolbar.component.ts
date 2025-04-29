@@ -14,10 +14,9 @@ export class ToolbarComponent {
   @Input()
   headers: { label: string, path: string }[] = [
     { label: 'Home', path: '/' },
-    { label: 'Account', path: '/account' },
+    { label: 'Account', path: '/dashboard' },
     { label: 'Setting', path: '/setting' },
     { label: 'Posts', path: '/posts' },
-    { label: 'Orders', path: '/orders' },
     { label: 'Tasks', path: '/tasks' }
   ];
 }

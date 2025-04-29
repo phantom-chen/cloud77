@@ -47,6 +47,23 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
+          "Port": 5294
+        }
+      ],
+      "UpstreamPathTemplate": "/sso-api/{everything}",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post",
+        "Put",
+        "Delete"
+      ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
           "Port": 5389
         }
       ],

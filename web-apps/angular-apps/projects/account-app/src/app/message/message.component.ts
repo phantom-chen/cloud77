@@ -20,7 +20,7 @@ export class MessageComponent {
     window.addEventListener('message', function (ev) {
       console.log('debug: app receives message');
       console.log(ev.data);
-
+      
       if (ev.data) {
         if (ev.data.request === 'login') {
           sessionStorage.setItem('app_host', ev.data.host);

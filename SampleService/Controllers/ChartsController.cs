@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using SampleService.Hubs;
+using CSharpVitamins;
 
 namespace SampleService.Controllers
 {
@@ -20,6 +21,20 @@ namespace SampleService.Controllers
     {
       this.hub = hub;
       this.manager = manager;
+    }
+
+    [HttpPost]
+    [Route("chat")]
+    public async Task<IActionResult> BroadcastMessage()
+    {
+      using (var reader = new StreamReader(Request.Body))
+      {
+        var content = await reader.ReadToEndAsync();
+        var guid = ShortGuid.NewGuid();
+        await hub.Clients.All.SendAsync("ReceiveMessage", $"Global message {guid.Value}: " + content);
+      }
+
+      return Ok(new ServiceResponse("broadcast-message", "", "Broadcast message"));
     }
 
     [HttpPost]

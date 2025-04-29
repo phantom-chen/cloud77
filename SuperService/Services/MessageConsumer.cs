@@ -6,6 +6,8 @@ using Newtonsoft.Json;
 using Cloud77.Service.Entity;
 using MongoDB.Driver;
 using System.Reflection;
+using SuperService.Models;
+using ServiceStack.Redis;
 
 namespace SuperService.Services
 {
@@ -23,11 +25,11 @@ namespace SuperService.Services
             this.logger = logger;
             demoMessageQueue = configuration["Demo_queue"];
             mailMessageQueue = configuration["Mail_queue"];
-            var dir = Directory.GetParent(Assembly.GetExecutingAssembly().Location).ToString();
+            
             var connection = Environment.GetEnvironmentVariable("DB_CONNECTION") ?? "localhost";
-            if (File.Exists(Path.Combine(dir, "localhost.txt")))
+            if (!string.IsNullOrEmpty(LocalDataModel.IPAddress))
             {
-                connection = connection.Replace("localhost", File.ReadAllLines(Path.Combine(dir, "localhost.txt"))[0]);
+                connection = connection.Replace("localhost", LocalDataModel.IPAddress);
             }
             var client = new MongoClient(connection);
             collection = new SettingCollection(client, configuration);
@@ -47,11 +49,10 @@ namespace SuperService.Services
 
         private async Task Execute()
         {
-            var dir = Directory.GetParent(Assembly.GetExecutingAssembly().Location).ToString();
             var hostName = Environment.GetEnvironmentVariable("MQ_HOST") ?? "localhost";
-            if (File.Exists(Path.Combine(dir, "localhost.txt")))
+            if (!string.IsNullOrEmpty(LocalDataModel.IPAddress))
             {
-              hostName = hostName.Replace("localhost", File.ReadAllLines(Path.Combine(dir, "localhost.txt"))[0]);
+              hostName = hostName.Replace("localhost", LocalDataModel.IPAddress);
             }
 
             var factory = new ConnectionFactory()
@@ -102,7 +103,19 @@ namespace SuperService.Services
             {
                 var message = Message2String(ea);
                 logger.LogInformation(message);
-                channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
+                var hostname = Environment.GetEnvironmentVariable("REDIS_HOST") ?? "localhost";
+                if (!string.IsNullOrEmpty(LocalDataModel.IPAddress))
+                {
+                  hostname.Replace("localhost", LocalDataModel.IPAddress);
+                }
+                RedisClient client = new RedisClient(
+                  hostname,
+                  6379,
+                  Environment.GetEnvironmentVariable("REDIS_PASSWORD") ?? "123456");
+
+                client.Set(demoMessageQueue, message, TimeSpan.FromMinutes(5));
+
+              channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
             };
             channel.BasicConsume(queue, autoAck: false, consumer: consumer);
         }
@@ -117,12 +130,16 @@ namespace SuperService.Services
                 var message = Message2String(ea);
                 logger.LogInformation(message);
                 EmailContentEntity content = JsonConvert.DeserializeObject<EmailContentEntity>(message);
+              
                 Task.Factory.StartNew(() =>
                 {
                     try
                     {
-                        var client = new MailClient(settings);
-                        client.Send(content);
+                    if (!content.Addresses.First().EndsWith("@example.com"))
+                    {
+                      var client = new MailClient(settings);
+                      client.Send(content);
+                    }
                     }
                     catch (Exception exception)
                     {

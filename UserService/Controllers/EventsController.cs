@@ -12,7 +12,7 @@ namespace UserService.Controllers
   /// Help manage event logs.
   /// </summary>
   [Route("api/[controller]")]
-  [Authorize]
+  //[Authorize]
   [ApiController]
   public class EventsController : ControllerBase
   {

@@ -4,6 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatCommonModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 @Component({
   selector: 'app-history',
@@ -12,6 +13,7 @@ import { MatSelectModule } from '@angular/material/select';
     CommonModule,
     FormsModule,
     MatCommonModule,
+    MatInputModule,
     MatSelectModule,
     MatFormFieldModule
   ],
@@ -20,14 +22,23 @@ import { MatSelectModule } from '@angular/material/select';
 })
 export class HistoryComponent implements OnInit {
   constructor(private http: HttpClient) {}
-  
+
   ngOnInit(): void {
-    this.http.get('/user-api/events').subscribe((data: any) => {
+    // /user-api/events/names => ['Create-User']
+    this.http.get('/user-api/events?name=Create-User&index=0&size=5').subscribe((data: any) => {
       console.log(data);
     });
   }
-  name = "Create-User";
+  name = "";
+  email = "";
   onValueChange(value: string) {
     console.log(value);
+  }
+
+  onEmailChange(event: any) {
+    console.log(this.email);
+    this.http.get(`/user-api/events/${this.email}`).subscribe((data: any) => {
+      console.log(data);
+    });
   }
 }

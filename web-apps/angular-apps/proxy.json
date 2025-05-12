@@ -29,8 +29,8 @@
     "secure": true,
     "changeOrigin": true
   },
-  "/hex-app": {
-    "target": "http://localhost:5389",
+  "/super-api": {
+    "target": "http://localhost:4359",
     "secure": true,
     "changeOrigin": true
   },

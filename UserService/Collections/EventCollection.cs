@@ -43,6 +43,7 @@ namespace UserService.Collections
     {
       return collection
         .Find(Builders<EventMongoEntity>.Filter.Eq("Name", name))
+        .Sort(Builders<EventMongoEntity>.Sort.Descending("_id"))
         .Skip(index * size)
         .Limit(size)
         .ToList();
@@ -51,13 +52,18 @@ namespace UserService.Collections
     public IEnumerable<EventEntity> GetEventLogs(string email)
     {
       // TODO event logs related to user self
-      var filter = Builders<EventMongoEntity>.Filter.And(
-          Builders<EventMongoEntity>.Filter.Eq("Email", email),
-          Builders<EventMongoEntity>.Filter.Or(
-              Builders<EventMongoEntity>.Filter.Eq("Name", "Issue-Email-Token"),
-              Builders<EventMongoEntity>.Filter.Eq("Name", "Verify-Email"),
-              Builders<EventMongoEntity>.Filter.Eq("Name", "Reset-Password")));
-      return collection.Find(filter).ToList();
+      //var filter = Builders<EventMongoEntity>.Filter.And(
+      //    Builders<EventMongoEntity>.Filter.Eq("Email", email),
+      //    Builders<EventMongoEntity>.Filter.Or(
+      //        Builders<EventMongoEntity>.Filter.Eq("Name", "Issue-Email-Token"),
+      //        Builders<EventMongoEntity>.Filter.Eq("Name", "Verify-Email"),
+      //        Builders<EventMongoEntity>.Filter.Eq("Name", "Reset-Password")));
+
+      var filter = Builders<EventMongoEntity>.Filter.Eq("Email", email);
+      return collection
+        .Find(filter)
+        .Sort(Builders<EventMongoEntity>.Sort.Descending("_id"))
+        .ToList();
     }
   }
 }

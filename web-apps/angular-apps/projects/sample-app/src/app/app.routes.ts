@@ -6,6 +6,8 @@ import { DiagramComponent } from './diagram/diagram.component';
 import { LayoutComponent } from './layout/layout.component';
 import { LiveChartComponent } from './live-chart/live-chart.component';
 import { OrdersComponent } from './orders/orders.component';
+import { AuthorsComponent } from './authors/authors.component';
+import { BookmarksComponent } from './bookmarks/bookmarks.component';
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -14,5 +16,7 @@ export const routes: Routes = [
     { path: 'diagram', component: DiagramComponent },
     { path: 'layout', component: LayoutComponent },
     { path: 'chart', component: LiveChartComponent },
-    { path: 'orders', component: OrdersComponent }
+    { path: 'orders', component: OrdersComponent },
+    { path: 'authors', component: AuthorsComponent },
+    { path: 'bookmarks', component: BookmarksComponent }
 ];

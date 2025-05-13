@@ -10,12 +10,14 @@ This document describes how to deploy the application.
 + emails
 + errors
 + logs
-+ posts
-+ reset-password.html
-+ confirm-email.html
-+ rooms.json
-
-{app}/uploads
++ posts (sample)
++ uploads (sample)
++ reset-password.html (user)
++ confirm-email.html (user)
++ canteen (canteen)
++ canteen/rooms.json (canteen)
++ users.json (super)
++ localhost.txt (all)
 
 resources
 

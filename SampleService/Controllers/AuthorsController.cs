@@ -12,19 +12,29 @@ namespace SampleService.Controllers
   public class AuthorsController : ControllerBase
   {
     private readonly ILogger<AuthorsController> logger;
-    private readonly AuthorCollection collection;
+    private readonly AuthorCollection? collection;
+    private readonly string database;
+    
     public AuthorsController(
         ILogger<AuthorsController> logger,
         MongoClient client,
         IConfiguration configuration)
     {
       this.logger = logger;
-      collection = new AuthorCollection(client, configuration);
+      database = configuration["Database"] ?? "";
+      if (!string.IsNullOrEmpty(database))
+      {
+        collection = new AuthorCollection(client, database);
+      }
     }
 
     [HttpGet]
     public IActionResult Get([FromQuery] int index, [FromQuery] int size)
     {
+      if (string.IsNullOrEmpty(database))
+      {
+        return NotFound(new ServiceResponse("database-not-found", "", "database not found"));
+      }
       if (index < 0) index = 0;
       if (size <= 0) size = 3;
       var authors = collection.GetAuthors(index, size);
@@ -46,6 +56,10 @@ namespace SampleService.Controllers
     [HttpPost]
     public IActionResult Post([FromBody] AuthorEntity body)
     {
+      if (string.IsNullOrEmpty(database))
+      {
+        return NotFound(new ServiceResponse("database-not-found", "", "database not found"));
+      }
       var id = collection.CreateAuthor(new AuthorEntity()
       {
         Name = body.Name,
@@ -60,6 +74,10 @@ namespace SampleService.Controllers
     [Route("{id}")]
     public IActionResult Put(string id, [FromBody] AuthorEntity body)
     {
+      if (string.IsNullOrEmpty(database))
+      {
+        return NotFound(new ServiceResponse("database-not-found", "", "database not found"));
+      }
       collection.UpdateAuthor(id, new AuthorEntity()
       {
         Name = body.Name,
@@ -74,6 +92,10 @@ namespace SampleService.Controllers
     [Route("{id}")]
     public IActionResult Delete(string id)
     {
+      if (string.IsNullOrEmpty(database))
+      {
+        return NotFound(new ServiceResponse("database-not-found", "", "database not found"));
+      }
       var result = collection.DeleteAuthor(id);
       if (result)
       {

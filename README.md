@@ -5,6 +5,7 @@
 ### Service
 
 + Gateway Service
++ Sample Service
 + User Service
 + Super Service
 + Canteen Service
@@ -19,4 +20,7 @@
 + Cooler (WinForm)
 + Cooler Installer
 + Cooler Plus (WPF)
+  + shortcut - assembly product: Cooler Plus
+  + location - nuget package id: Cooler_plus
+  + program - nuget title Cooler Plus
 + Cooler Plus Installer

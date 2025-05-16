@@ -12,18 +12,28 @@ namespace SampleService.Controllers
   {
     private readonly ILogger<BookmarksController> logger;
     private readonly BookmarkCollection collection;
+    private readonly string database;
+
     public BookmarksController(
         ILogger<BookmarksController> logger,
         MongoClient client,
         IConfiguration configuration)
     {
       this.logger = logger;
-      collection = new BookmarkCollection(client, configuration);
+      database = configuration["Database"] ?? "";
+      if (!string.IsNullOrEmpty(database))
+      {
+        collection = new BookmarkCollection(client, database);
+      }
     }
 
     [HttpGet]
     public IActionResult Get([FromQuery] int index, [FromQuery] int size)
     {
+      if (string.IsNullOrEmpty(database))
+      {
+        return NotFound(new ServiceResponse("database-not-found", "", "database not found"));
+      }
       if (index < 0) index = 0;
       if (size <= 0) size = 3;
       var bookmarks = collection.GetBookmarks(index, size);
@@ -45,6 +55,10 @@ namespace SampleService.Controllers
     [HttpPost]
     public IActionResult Post([FromBody] BookmarkEntity body)
     {
+      if (string.IsNullOrEmpty(database))
+      {
+        return NotFound(new ServiceResponse("database-not-found", "", "database not found"));
+      }
       var id = collection.CreateBookmark(body);
       return Created($"/bookmarks/{id}", new ServiceResponse("bookmark-created"));
     }
@@ -53,6 +67,10 @@ namespace SampleService.Controllers
     [Route("{id}")]
     public IActionResult Put(string id, [FromBody] BookmarkEntity body)
     {
+      if (string.IsNullOrEmpty(database))
+      {
+        return NotFound(new ServiceResponse("database-not-found", "", "database not found"));
+      }
       collection.UpdateBookmark(id, body);
       return Accepted($"/bookmarks/{id}", new ServiceResponse("bookmark-updated", id, ""));
     }
@@ -61,6 +79,10 @@ namespace SampleService.Controllers
     [Route("{id}")]
     public IActionResult Delete(string id)
     {
+      if (string.IsNullOrEmpty(database))
+      {
+        return NotFound(new ServiceResponse("database-not-found", "", "database not found"));
+      }
       var result = collection.DeleteBookmark(id);
       if (result)
       {

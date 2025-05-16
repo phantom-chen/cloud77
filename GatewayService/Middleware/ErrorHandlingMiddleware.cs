@@ -1,5 +1,4 @@
-﻿using Cloud77.Service;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace GatewayService.Middleware
 {

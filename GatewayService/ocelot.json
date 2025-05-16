@@ -25,6 +25,23 @@
       "UpstreamHttpMethod": [ "Get" ]
     },
     {
+      "DownstreamPathTemplate": "/api/gateway",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5294
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway-api",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post",
+        "Put",
+        "Delete"
+      ]
+    },
+    {
       "DownstreamPathTemplate": "/api/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -42,15 +59,15 @@
       ]
     },
     {
-      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamPathTemplate": "/api/users/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 5294
+          "Port": 5389
         }
       ],
-      "UpstreamPathTemplate": "/sso-api/{everything}",
+      "UpstreamPathTemplate": "/sso-api/users/{everything}",
       "UpstreamHttpMethod": [
         "Get",
         "Post",
@@ -59,6 +76,10 @@
       ]
     },
     {
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [ "MyKey" ],
+        "AllowedScopes": []
+      },
       "DownstreamPathTemplate": "/api/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [

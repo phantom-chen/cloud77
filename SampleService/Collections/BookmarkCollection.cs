@@ -25,9 +25,9 @@ namespace SampleService.Collections
   {
     private readonly IMongoCollection<BookmarkMongoEntity> collection;
 
-    public BookmarkCollection(MongoClient client, IConfiguration configuration)
+    public BookmarkCollection(MongoClient client, string name)
     {
-      var database = client.GetDatabase(configuration["Database"]);
+      var database = client.GetDatabase(name);
       collection = database.GetCollection<BookmarkMongoEntity>("Bookmarks");
     }
 

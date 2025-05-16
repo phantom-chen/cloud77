@@ -19,9 +19,9 @@ namespace SampleService.Collections
   {
     private readonly IMongoCollection<AuthorMongoEntity> collection;
 
-    public AuthorCollection(MongoClient client, IConfiguration configuration)
+    public AuthorCollection(MongoClient client, string name)
     {
-      var database = client.GetDatabase(configuration["Database"]);
+      var database = client.GetDatabase(name);
       collection = database.GetCollection<AuthorMongoEntity>(Cloud77Utility.Authors);
     }
 

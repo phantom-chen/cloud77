@@ -13,6 +13,7 @@
   - `/chart`
   - `/authors`
   - `/bookmarks`
+  - `/layout`
 
 - Account App: view user self stuffs
 
@@ -24,10 +25,18 @@
   - `/reset-password`: forget password and reset it
   - `/confirm-email`: verify user's email is able to receive
   - `/tasks`: create user tasks
+  - `/setting`
+  - `/history`
+  - `/posts`
+  - `/files`
 
 - Dashboard App: manage user stuffs
 
   - `/accounts`
+  - `/history`
+  - `/settings`
+  - `/health`
+  - `/queues`
 
 - Internal App: view the whole systems
   

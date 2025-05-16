@@ -1,8 +1,135 @@
-﻿using Cloud77.Service;
-using Microsoft.Extensions.Primitives;
+﻿using Microsoft.Extensions.Primitives;
 
 namespace GatewayService.Middleware
 {
+  public class ServiceResponse
+  {
+    public string Code { get; set; } = "";
+
+
+    public string Message { get; set; } = "";
+
+
+    public string Id { get; set; } = "";
+
+    public ServiceResponse(string code)
+    {
+      if (code == null)
+      {
+        return;
+      }
+
+      switch (code.Length)
+      {
+        case 19:
+          switch (code[0])
+          {
+            case 'e':
+              if (code == "empty-refresh-token")
+              {
+                Message = "empty refresh token";
+              }
+
+              break;
+            case 'l':
+              if (code == "logout-code-removed")
+              {
+                Message = "logout code is removed";
+              }
+
+              break;
+          }
+
+          break;
+        case 18:
+          switch (code[11])
+          {
+            case 'p':
+              if (code == "empty-user-profile")
+              {
+                Message = "empty user profile";
+              }
+
+              break;
+            case 'l':
+              if (code == "empty-user-license")
+              {
+                Message = "empty user license";
+              }
+
+              break;
+          }
+
+          break;
+        case 17:
+          switch (code[0])
+          {
+            case 'e':
+              if (code == "empty-user-device")
+              {
+                Message = "empty user device";
+              }
+
+              break;
+            case 'i':
+              if (code == "invalid-algorithm")
+              {
+                Message = "invalid algorithm";
+              }
+
+              break;
+          }
+
+          break;
+        case 13:
+          if (code == "empty-account")
+          {
+            Message = "empty email and username";
+          }
+
+          break;
+        case 14:
+          if (code == "empty-password")
+          {
+            Message = "empty password or refresh token";
+          }
+
+          break;
+        case 15:
+          if (code == "empty-algorithm")
+          {
+            Message = "empty algorithm";
+          }
+
+          break;
+        case 16:
+          break;
+      }
+    }
+
+    public ServiceResponse(string code, string email)
+    {
+      switch (code)
+      {
+        case "empty-user-entity":
+          Message = "find no existing account for " + email;
+          break;
+        case "existing-user-entity":
+          Message = "find existing account for " + email;
+          break;
+        case "invalid-password":
+          Message = "incorrect password / refresh token for " + email;
+          break;
+      }
+    }
+
+    public ServiceResponse(string code, string id, string message)
+    {
+      Code = code;
+      Message = message;
+      Id = id;
+    }
+  }
   public class KeyMiddleware
   {
     private readonly RequestDelegate _next;
@@ -42,8 +169,7 @@ namespace GatewayService.Middleware
           var whiteList = new List<string>
                     {
                         "/favicon.ico",
-                        "/api/gateway",
-                        "/sample-api"
+                        "/gateway-api"
                     };
 
           if (whiteList.ToList().Contains(context.Request.Path))

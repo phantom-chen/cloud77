@@ -36,8 +36,6 @@ namespace SampleService.Controllers
         hostname,
         machine = Environment.MachineName,
         environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "",
-        apikey = configuration["APIKey"] ?? "",
-        sso = configuration["SSO_url"] ?? ""
       });
     }
   }

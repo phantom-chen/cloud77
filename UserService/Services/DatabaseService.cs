@@ -2,9 +2,7 @@
 using Cloud77.Service;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using ServiceStack;
 using System.Reflection;
-using UserService.Controllers;
 
 namespace UserService.Services
 {

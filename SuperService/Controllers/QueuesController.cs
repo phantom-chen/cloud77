@@ -4,6 +4,7 @@ using Cloud77.Service.Queue;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RabbitMQ.Client;
+using SuperService.Models;
 using System.Text;
 
 namespace SuperService.Controllers
@@ -25,6 +26,21 @@ namespace SuperService.Controllers
       this.logger = logger;
       this.configuration = configuration;
       this.factory = factory;
+    }
+
+    [HttpGet]
+    public IActionResult Get([FromQuery] string message)
+    {
+      new LocalDataModel().AppendLog($"send message '{message}' to the queue 'super_service_demo_message'");
+      Send("super_service_demo_message", message);
+      return Ok("message is sent to the queue");
+    }
+
+    [HttpPost]
+    [Route("health")]
+    public IActionResult Post()
+    {
+      return Ok();
     }
 
     [HttpPost]

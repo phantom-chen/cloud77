@@ -12,6 +12,10 @@ namespace SuperService.Models
       {
         Directory.CreateDirectory(Root);
       }
+      if (!Directory.Exists(Path.Combine(Root, "logs")))
+      {
+        Directory.CreateDirectory(Path.Combine(Root, "logs"));
+      }
     }
 
     public readonly static string Root = "";
@@ -27,6 +31,31 @@ namespace SuperService.Models
         }
         return "";
       }
+    }
+
+    public void AppendLog(string message, bool isWarning = false)
+    {
+      var date = DateTime.Now;
+      var info = isWarning ? "warning" : "info";
+      File.AppendAllLines(Path.Combine(Root, "logs", $"{date.ToString("yyyy-MM-dd")}.txt"), new string[]
+      {
+        $"[{date.ToString("yyyy-MM-dd HH:mm:ss zzz")}] [{info}] {message}"
+      });
+    }
+
+    public bool HasEmailConfirmTemplate
+    {
+      get { return File.Exists(Path.Combine(Root, "email-confirm.html")); }
+    }
+
+    public bool HasPasswordResetTemplate
+    {
+      get { return File.Exists(Path.Combine(Root, "password-reset.html")); }
+    }
+
+    public string GenerateEmailConfirmContent(string email, string username, string link)
+    {
+      return "";
     }
   }
 

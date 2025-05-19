@@ -166,7 +166,7 @@
             <p>Congratulations! Your app is running. 🎉</p>
             <div>
                 <button (click)="sendToSSO()">Send message to SSO</button>
-            </div>            
+            </div>
         </div>
         <div class="divider" role="separator" aria-label="Divider"></div>
         <div class="right-side">
@@ -216,6 +216,9 @@
     </div>
 </main>
 
-<div>
+<main hidden>
+  <p>IFrame for http://localhost:4200/message</p>
+  <div>
     <iframe src="http://localhost:4200/message" #messageContainer></iframe>
-</div>
+  </div>
+</main>

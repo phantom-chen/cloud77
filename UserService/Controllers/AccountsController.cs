@@ -108,10 +108,22 @@ namespace UserService.Controllers
       return Ok();
     }
 
+    [HttpPost]
+    [Route("{email}/verification")]
+    public IActionResult IssueVerificationToken(string email)
+    {
+      return Ok();
+    }
+
     [HttpDelete]
     [Route("{email}")]
     public IActionResult Delete(string email)
     {
+      // need confirmed token ??
+      // posts
+      // tasks
+      // add events
+      // users
       return Ok();
     }
   }

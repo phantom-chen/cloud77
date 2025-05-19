@@ -34,6 +34,7 @@ namespace SampleService
         var client = new MongoClient(settings);
         return client;
       });
+      builder.Services.AddHealthChecks();
       builder.Services.AddControllers().AddNewtonsoftJson();
       builder.Services.AddSignalR();
 
@@ -42,6 +43,7 @@ namespace SampleService
       // Configure the HTTP request pipeline.
       app.UseRouting();
       app.UseAuthorization();
+      app.UseHealthChecks("/api/health");
       app.MapControllers();
       app.MapHub<ChatHub>("/hubs/chat");
       app.Run();

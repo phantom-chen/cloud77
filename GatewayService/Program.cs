@@ -47,7 +47,6 @@ namespace GatewayService
       //builder.Services.AddScoped<EmailFilter>();
       //builder.Services.AddScoped<RequiredQueryAttribute>();
 
-
       builder.Services.AddHealthChecks();
       builder.Services.AddOcelot(builder.Configuration);
 
@@ -66,7 +65,7 @@ namespace GatewayService
 
       app.UseMiddleware<KeyMiddleware>();
       app.UseMiddleware<LoggingMiddleware>();
-      app.UseMiddleware<ErrorHandlingMiddleware>();
+
       app.UseHealthChecks("/api/health");
       app.UseOcelot().Wait();
 

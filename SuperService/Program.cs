@@ -76,7 +76,7 @@ namespace SuperService
       });
 
       builder.Services.AddAuthorization();
-
+      builder.Services.AddHealthChecks();
       builder.Services.AddControllers();
 
       builder.Services.AddGrpcHealthChecks().AddCheck("rpc-service-health", () => HealthCheckResult.Healthy());
@@ -90,7 +90,7 @@ namespace SuperService
       app.UseRouting();
       app.UseAuthentication();
       app.UseAuthorization();
-
+      app.UseHealthChecks("/api/health");
       app.MapControllers();
 
       // rpc services

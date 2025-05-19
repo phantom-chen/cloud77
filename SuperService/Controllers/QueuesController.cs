@@ -31,8 +31,8 @@ namespace SuperService.Controllers
     [HttpGet]
     public IActionResult Get([FromQuery] string message)
     {
-      new LocalDataModel().AppendLog($"send message '{message}' to the queue 'super_service_demo_message'");
-      Send("super_service_demo_message", message);
+      new LocalDataModel().AppendLog($"send message '{message}' to the queue 'my_services_default_queue'");
+      Send("my_services_default_queue", message);
       return Ok("message is sent to the queue");
     }
 

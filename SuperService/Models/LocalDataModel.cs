@@ -6,15 +6,20 @@ namespace SuperService.Models
   {
     static LocalDataModel()
     {
-      var root = Directory.GetParent(Assembly.GetExecutingAssembly().Location).ToString();
-      Root = Path.Combine(root, "data");
-      if (!Directory.Exists(Root))
+      var location = Assembly.GetExecutingAssembly().Location;
+      var root = Directory.GetParent(location)?.ToString() ?? "";
+      if (!string.IsNullOrEmpty(root))
+      {
+        Root = Path.Combine(root, "data");
+      }
+      if (!string.IsNullOrEmpty(root) && !Directory.Exists(Root))
       {
         Directory.CreateDirectory(Root);
-      }
-      if (!Directory.Exists(Path.Combine(Root, "logs")))
-      {
-        Directory.CreateDirectory(Path.Combine(Root, "logs"));
+        
+        if (!Directory.Exists(Path.Combine(Root, "logs")))
+        {
+          Directory.CreateDirectory(Path.Combine(Root, "logs"));
+        }
       }
     }
 
@@ -53,9 +58,71 @@ namespace SuperService.Models
       get { return File.Exists(Path.Combine(Root, "password-reset.html")); }
     }
 
+    public bool HasUsers
+    {
+      get { return File.Exists(Path.Combine(Root, "users.json")); }
+    }
+
+    public string SMTPSettings
+    {
+      get
+      {
+        var path = Path.Combine(Root, "smtp.json");
+        if (File.Exists(path))
+        {
+          var content = File.ReadAllText(path);
+          return content;
+        }
+        return "";
+      }
+    }
+
+    public string HealthSettings
+    {
+      get
+      {
+        var path = Path.Combine(Root, "health.json");
+        if (File.Exists(path))
+        {
+          var content = File.ReadAllText(path);
+          return content;
+        }
+        return "";
+      }
+    }
+
+    public string EventSettings
+    {
+      get
+      {
+        var path = Path.Combine(Root, "events.json");
+        if (File.Exists(path))
+        {
+          var content = File.ReadAllText(path);
+          return content;
+        }
+        return "";
+      }
+    }
+
     public string GenerateEmailConfirmContent(string email, string username, string link)
     {
-      return "";
+      if (HasEmailConfirmTemplate)
+      {
+        var html = File.ReadAllText(Path.Combine(Root, "email-confirm.html"));
+        return html.Replace("{username}", username).Replace("{email}", email).Replace("{link}", link);
+      }
+      return $"Email: {email}\nUser Name: {username}]nLink: {link}";
+    }
+
+    public string GeneratePasswordResetContent(string link)
+    {
+      if (HasPasswordResetTemplate)
+      {
+        var html = File.ReadAllText(Path.Combine(Root, "password-reset.html"));
+        return html.Replace("{link}", link);
+      }
+      return link;
     }
   }
 

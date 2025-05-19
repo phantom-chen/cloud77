@@ -12,13 +12,16 @@ namespace SuperService.Controllers
     [HttpGet]
     public IActionResult Get()
     {
-      if (System.IO.File.Exists(Path.Combine(LocalDataModel.Root, "events.json")))
+      var content = new LocalDataModel().EventSettings;
+      if (string.IsNullOrEmpty(content))
       {
-        var content = System.IO.File.ReadAllText(Path.Combine(LocalDataModel.Root, "events.json"));
+        return NotFound();
+      }
+      else
+      {
         var names = JsonConvert.DeserializeObject<string[]>(content);
         return Ok(names);
       }
-      return NotFound();
     }
   }
 }

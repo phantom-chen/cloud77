@@ -9,14 +9,18 @@ using SuperService.Services;
 
 namespace SuperService.Backgrounds
 {
+  /// <summary>
+  /// Background service creates users.json that contains all users' emails.
+  /// It also sets up daily health check.
+  /// </summary>
   public class SimpleBackgroundService : IHostedService
   {
     private readonly ILogger<SimpleBackgroundService> logger;
     //private readonly MongoClient client;
     private readonly IMongoDatabase database;
     //private readonly IMongoCollection<UserMongoEntity> collection;
-    private readonly List<User> userList = new List<User>();
     //private Timer _timer;
+
     private Timer _healthCheckTimer;
     private int checkHour = 0;
 
@@ -27,9 +31,9 @@ namespace SuperService.Backgrounds
       {
         connection = connection.Replace("localhost", LocalDataModel.IPAddress);
       }
+
       var client = new MongoClient(connection);
       database = client.GetDatabase(configuration["Database"]);
-      
       checkHour = Convert.ToInt16(configuration["Health_check_hour_utc"] ?? "0");
 
       this.logger = logger;
@@ -38,7 +42,12 @@ namespace SuperService.Backgrounds
     public Task StartAsync(CancellationToken cancellationToken)
     {
       logger.LogInformation("start service");
-      Task.Run(FirstRun);
+
+      if (!new LocalDataModel().HasUsers)
+      {
+        Task.Run(FirstRun);
+      }
+
       Task.Run(SecondRun);
 
       return Task.CompletedTask;
@@ -60,6 +69,7 @@ namespace SuperService.Backgrounds
       var index = 0;
       var size = 100;
       var count = 0;
+      List<User> userList = new List<User>();
       logger.LogInformation("start loop");
       var collection = database.GetCollection<UserMongoEntity>(Cloud77Utility.Users);
       while (true && !File.Exists(Path.Combine(LocalDataModel.Root, "users.json")))
@@ -102,31 +112,38 @@ namespace SuperService.Backgrounds
         desired = desired.AddDays(1);
       }
 
-      var t = Task.Delay(desired.Subtract(now));
-      t.Wait();
+      await Task.Delay(desired.Subtract(now));
+      //var t = Task.Delay(desired.Subtract(now));
+      //t.Wait();
 
       //Thread.Sleep(desired.Subtract(now));
       //Health(null);
+
       _healthCheckTimer = new Timer(Health, null, TimeSpan.Zero, TimeSpan.FromDays(1));
     }
 
     private void Health(object state)
     {
       logger.LogInformation("health checking is running...");
-      var collection = database.GetCollection<SettingMongoEntity>(Cloud77Utility.Settings);
-      var settings = collection.Find(Builders<SettingMongoEntity>.Filter.Empty).ToList();
 
-      // save setting in Redis
+      var content = new LocalDataModel().HealthSettings;
+      
+      // no health setting
+      if (string.IsNullOrEmpty(content)) return;
+
+
+      var settings = JsonConvert.DeserializeObject<IEnumerable<SettingEntity>>(content);
+
       if (Convert.ToBoolean(settings.FirstOrDefault(s => s.Key == "health_check_enable").Value ?? "true"))
       {
-        EmailContentEntity content = new EmailContentEntity()
+        EmailContentEntity mail = new EmailContentEntity()
         {
           Addresses = new string[] { settings.FirstOrDefault(s => s.Key == "health_check_address").Value ?? "" },
           Subject = settings.FirstOrDefault(s => s.Key == "health_check_subject").Value ?? "",
           Body = settings.FirstOrDefault(s => s.Key == "health_check_body").Value ?? ""
         };
-        var mail = new MailClient(settings);
-        mail.Send(content);
+        var client = new MailClient();
+        client.Send(mail);
       }
     }
   }

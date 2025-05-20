@@ -3,9 +3,8 @@ using Cloud77.Service.Entity;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Newtonsoft.Json;
-using System.Drawing;
 
-namespace SuperService.Services
+namespace SuperService.Collections
 {
   public class UserMongoEntity : UserEntity
   {

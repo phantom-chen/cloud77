@@ -34,7 +34,7 @@ export class GatewayService implements IGatewayService {
         password: string
     ): Promise<DefaultResponse> {
         return lastValueFrom(
-            this.http.post<DefaultResponse>('/user-api/users', {
+            this.http.post<DefaultResponse>('/sso-api/users', {
                 email: email,
                 name: name,
                 password: password,
@@ -45,7 +45,7 @@ export class GatewayService implements IGatewayService {
     confirmEmail(email: string, token: string): Promise<DefaultResponse> {
         return lastValueFrom(
             this.http.put<DefaultResponse>(
-                `/user-api/users/verification?email=${email}`,
+                `/sso-api/users/verification?email=${email}`,
                 undefined,
                 {
                     headers: {
@@ -59,7 +59,7 @@ export class GatewayService implements IGatewayService {
     generateToken(email: string, password: string): Promise<UserToken> {
         return lastValueFrom(
             this.http.post<UserToken>(
-                `/user-api/users/token?email=${email}&password=${password}`,
+                `/sso-api/users/token?email=${email}&password=${password}`,
                 undefined
             )
         );
@@ -67,7 +67,7 @@ export class GatewayService implements IGatewayService {
 
     getUser(account: string): Promise<UserEmail> {
         return lastValueFrom(
-            this.http.get<UserEmail>(`/user-api/users?email=${account}&username=abc`)
+            this.http.get<UserEmail>(`/sso-api/users?email=${account}&username=abc`)
         )
     }
 

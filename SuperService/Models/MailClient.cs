@@ -1,10 +1,9 @@
 ﻿using Cloud77.Service.Entity;
 using Newtonsoft.Json;
-using SuperService.Models;
 using System.Net;
 using System.Net.Mail;
 
-namespace SuperService.Services
+namespace SuperService.Models
 {
   public class MailClient
   {
@@ -20,11 +19,11 @@ namespace SuperService.Services
       if (!string.IsNullOrEmpty(content))
       {
         var settings = JsonConvert.DeserializeObject<IEnumerable<SettingEntity>>(content);
-        this.host = settings.FirstOrDefault(s => s.Key == "smtp_client_host").Value ?? "";
-        this.username = settings.FirstOrDefault(s => s.Key == "smtp_client_username").Value ?? "";
-        this.password = settings.FirstOrDefault(s => s.Key == "smtp_client_password").Value ?? "";
-        this.address = settings.FirstOrDefault(s => s.Key == "email_address").Value ?? "";
-        this.display = settings.FirstOrDefault(s => s.Key == "email_display_name").Value ?? "";
+        host = settings.FirstOrDefault(s => s.Key == "smtp_client_host").Value ?? "";
+        username = settings.FirstOrDefault(s => s.Key == "smtp_client_username").Value ?? "";
+        password = settings.FirstOrDefault(s => s.Key == "smtp_client_password").Value ?? "";
+        address = settings.FirstOrDefault(s => s.Key == "email_address").Value ?? "";
+        display = settings.FirstOrDefault(s => s.Key == "email_display_name").Value ?? "";
       }
     }
 
@@ -38,7 +37,7 @@ namespace SuperService.Services
       }
 
       // save mail body locally
-      File.WriteAllText(Path.Combine(LocalDataModel.Root, $"mail2{email.Addresses.First().ToLower()}.txt"), email.Body);
+      File.WriteAllText(Path.Combine(LocalDataModel.Root, "mail-body.txt"), email.Body);
 
       // skip for empty setting
       if (string.IsNullOrEmpty(password)

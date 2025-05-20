@@ -167,6 +167,9 @@
             <div>
                 <button (click)="sendToSSO()">Send message to SSO</button>
             </div>
+            <div>
+                <button (click)="goToSSO()">Go to SSO</button>
+            </div>
         </div>
         <div class="divider" role="separator" aria-label="Divider"></div>
         <div class="right-side">
@@ -217,8 +220,8 @@
 </main>
 
 <main hidden>
-  <p>IFrame for http://localhost:4200/message</p>
-  <div>
-    <iframe src="http://localhost:4200/message" #messageContainer></iframe>
-  </div>
+    <p>IFrame for http://localhost:4200/message</p>
+    <div>
+        <iframe src="http://localhost:4200/message" #messageContainer></iframe>
+    </div>
 </main>

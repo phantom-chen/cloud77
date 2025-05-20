@@ -2,12 +2,14 @@
 using Grpc.Core;
 using Microsoft.AspNetCore.Authorization;
 using MongoDB.Driver;
+using SuperService.Collections;
+using SuperService.Models;
 using SuperService.Protos;
 using System.Security.Claims;
 
 namespace SuperService.Services
 {
-    [Authorize]
+  [Authorize]
     public class AccountService : Protos.AccountService.AccountServiceBase
     {
         private readonly ILogger<AccountService> logger;

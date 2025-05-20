@@ -40,4 +40,10 @@ export class HomeComponent implements AfterViewInit {
       url: window.location.href,
     }, '*');
   }
+
+  goToSSO(): void {
+    if (sessionStorage.getItem('cloud77_sso')) {
+      window.location.href = sessionStorage.getItem('cloud77_sso') || '';
+    }
+  }
 }

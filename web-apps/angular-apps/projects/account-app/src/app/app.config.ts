@@ -7,6 +7,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { provideNuMonacoEditorConfig } from '@ng-util/monaco-editor'
 import { GatewayService } from './service';
 import { TokenInterceptor } from './interceptors';
+import { provideZxvbnServiceForPSM } from 'angular-password-strength-meter/zxcvbn';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -15,6 +16,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([TokenInterceptor])),
     provideAnimationsAsync(),
     provideNuMonacoEditorConfig({ baseUrl: '/monaco' }),
-    { provide: 'IGatewayService', useClass: GatewayService }
+    { provide: 'IGatewayService', useClass: GatewayService },
+    provideZxvbnServiceForPSM(),
   ]
 };

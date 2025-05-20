@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Cloud77.Service;
-using MongoDB.Driver.Core.Configuration;
 
 namespace UserService.Controllers
 {

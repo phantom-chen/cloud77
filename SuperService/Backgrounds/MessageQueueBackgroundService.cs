@@ -4,23 +4,21 @@ using RabbitMQ.Client.Events;
 using System.Text;
 using Newtonsoft.Json;
 using Cloud77.Service.Entity;
-using MongoDB.Driver;
-using System.Reflection;
 using SuperService.Models;
 using ServiceStack.Redis;
 
-namespace SuperService.Services
+namespace SuperService.Backgrounds
 {
-  public class MessageConsumer : IHostedService
+  public class MessageQueueBackgroundService : IHostedService
   {
-    private readonly ILogger<MessageConsumer> logger;
+    private readonly ILogger<MessageQueueBackgroundService> logger;
 
     private readonly string defaultMessageQueue;
     private readonly string mailMessageQueue;
     private readonly string userLinkMessageQueue;
 
-    public MessageConsumer(
-            ILogger<MessageConsumer> logger,
+    public MessageQueueBackgroundService(
+            ILogger<MessageQueueBackgroundService> logger,
             IConfiguration configuration)
     {
       this.logger = logger;

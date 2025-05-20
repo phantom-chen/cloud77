@@ -30,7 +30,6 @@ export class ConfirmEmailComponent implements OnInit {
   ngOnInit(): void {
     this.email = this.route.snapshot.queryParamMap.get('email') || '';
     this.token = this.route.snapshot.queryParamMap.get('token') || '';
-    this.confirmEmail();
   }
 
   confirmEmail(): void {

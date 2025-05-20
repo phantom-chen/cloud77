@@ -4,21 +4,13 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideHttpClient } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { provideZxvbnServiceForPSM } from 'angular-password-strength-meter/zxcvbn';
-
-import { provideNuMonacoEditorConfig } from '@ng-util/monaco-editor'
-import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideAnimationsAsync(),
-    provideHttpClient(),
-    provideZxvbnServiceForPSM(),
-    
-    provideNuMonacoEditorConfig({ baseUrl: '/monaco' }),
-    provideCharts(withDefaultRegisterables())
+    provideHttpClient()
   ],
 };
 

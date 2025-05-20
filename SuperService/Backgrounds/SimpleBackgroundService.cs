@@ -4,8 +4,8 @@ using Cloud77.Service.Entity;
 using MongoDB.Driver;
 using Newtonsoft.Json;
 using ServiceStack;
+using SuperService.Collections;
 using SuperService.Models;
-using SuperService.Services;
 
 namespace SuperService.Backgrounds
 {

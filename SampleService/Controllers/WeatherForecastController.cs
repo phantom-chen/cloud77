@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
+using SampleService.Models;
 
 namespace SampleService.Controllers
 {
-    [ApiController]
+  [ApiController]
     [Route("api/[controller]")]
     public class WeatherForecastController : ControllerBase
     {

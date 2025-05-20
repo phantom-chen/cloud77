@@ -9,18 +9,23 @@
     "secure": true,
     "changeOrigin": true
   },
-  "/sample-api": {
-    "target": "http://localhost:4359",
-    "secure": true,
-    "changeOrigin": true
-  },
   "/api": {
     "target": "http://localhost:4359",
     "secure": true,
     "changeOrigin": true
   },
-  "/identity-app": {
-    "target": "http://localhost:5389",
+  "/gateway-api": {
+    "target": "http://localhost:4359",
+    "secure": true,
+    "changeOrigin": true
+  },
+  "/sample-api": {
+    "target": "http://localhost:4359",
+    "secure": true,
+    "changeOrigin": true
+  },
+  "/sso-api": {
+    "target": "http://localhost:4359",
     "secure": true,
     "changeOrigin": true
   },
@@ -31,16 +36,6 @@
   },
   "/super-api": {
     "target": "http://localhost:4359",
-    "secure": true,
-    "changeOrigin": true
-  },
-  "/canteen-app": {
-    "target": "http://localhost:5389",
-    "secure": true,
-    "changeOrigin": true
-  },
-  "/factory-app": {
-    "target": "http://localhost:5389",
     "secure": true,
     "changeOrigin": true
   },

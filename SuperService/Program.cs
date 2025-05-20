@@ -81,7 +81,7 @@ namespace SuperService
 
       builder.Services.AddGrpcHealthChecks().AddCheck("rpc-service-health", () => HealthCheckResult.Healthy());
       builder.Services.AddGrpc();
-      builder.Services.AddHostedService<MessageConsumer>();
+      builder.Services.AddHostedService<MessageQueueBackgroundService>();
       builder.Services.AddHostedService<SimpleBackgroundService>();
 
       var app = builder.Build();

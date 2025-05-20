@@ -8,6 +8,7 @@ using MongoDB.Driver;
 using System.Security.Claims;
 using System.Xml.Linq;
 using UserService.Collections;
+using UserService.Models;
 
 namespace UserService.Controllers
 {

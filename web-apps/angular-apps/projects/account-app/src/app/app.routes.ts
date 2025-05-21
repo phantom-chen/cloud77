@@ -32,8 +32,7 @@ export const routes: Routes = [
         path: 'confirm-email', component: ConfirmEmailComponent
     },
     {
-        path: 'dashboard',
-        component: AccountComponent
+        path: 'dashboard', component: AccountComponent
     },
     {
         path: 'setting', component: SettingComponent

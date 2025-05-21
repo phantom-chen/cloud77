@@ -26,7 +26,7 @@ export class HistoryComponent implements OnInit {
     this.email = getUserEmail();
     if (this.email) {
       this.isLogin = true;
-      this.http.get(`/user-api/events/${this.email}`).subscribe((data: any) => {
+      this.http.get(`/super-api/events/${this.email}`).subscribe((data: any) => {
         console.log(data);
         this.history = data.data;
       });

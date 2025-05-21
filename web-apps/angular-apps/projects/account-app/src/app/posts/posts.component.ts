@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 @Component({
@@ -13,33 +13,5 @@ import { RouterModule } from '@angular/router';
   styleUrl: './posts.component.css'
 })
 export class PostsComponent {
-  @ViewChild("messageContainer")
-  messageContainer!: ElementRef<HTMLIFrameElement>;
 
-  ngAfterViewInit(): void {
-    window.addEventListener('message', function (ev) {
-      console.log('debug: app receives message');
-      console.log(ev.data);
-
-      if (ev.data?.response === 'sync-tokens') {
-        if (ev.data.accessToken) {
-          sessionStorage.setItem('cloud77_access_token', ev.data.accessToken);
-          sessionStorage.setItem('cloud77_refresh_token', ev.data.refreshToken);
-        } else {
-          // go to sso site
-          window.location.href = 'http://localhost:4200';
-        }
-      }
-    })
-  }
-
-  // send message to child iframe
-  sendToSSO(): void {
-    this.messageContainer.nativeElement.contentWindow?.postMessage({
-      request: "login",
-      host: window.location.host,
-      message: `${window.location.protocol}//${window.location.host}/message`,
-      url: window.location.href,
-    }, '*');
-  }
 }

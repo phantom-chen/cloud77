@@ -24,8 +24,10 @@ export class HistoryComponent implements OnInit {
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
-    // /user-api/events/names => ['Create-User']
-    this.http.get('/user-api/events?name=Create-User&index=0&size=5').subscribe((data: any) => {
+    this.http.get('/super-api/events/names').subscribe((data: any) => {
+      console.log(data);
+    });
+    this.http.get('/super-api/events?name=Create-User&index=0&size=5').subscribe((data: any) => {
       console.log(data);
     });
   }
@@ -36,8 +38,7 @@ export class HistoryComponent implements OnInit {
   }
 
   onEmailChange(event: any) {
-    console.log(this.email);
-    this.http.get(`/user-api/events/${this.email}`).subscribe((data: any) => {
+    this.http.get(`/super-api/events/${this.email}`).subscribe((data: any) => {
       console.log(data);
     });
   }

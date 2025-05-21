@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { FormsModule } from "@angular/forms";
-import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCommonModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
@@ -41,26 +41,32 @@ export interface IHandleHttpError {
     MatSnackBarModule,
     MatIconModule,
     SharedModule
-],
+  ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, AfterViewInit {
 
   constructor(
     @Inject('IGatewayService') private gateway: IGatewayService,
     private snackbar: MatSnackBar,
     private san: DomSanitizer) {
-      this.debugMode = debugMode();
-      if (this.debugMode) {
-        this.logs += 'Debug Mode\n';
-      }
-      this.frameResourceUrl = this.san.bypassSecurityTrustResourceUrl(sessionStorage.getItem('app_message') ?? '');
+    this.debugMode = debugMode();
+    if (this.debugMode) {
+      this.logs += 'Debug Mode\n';
     }
+    this.frameResourceUrl = this.san.bypassSecurityTrustResourceUrl(sessionStorage.getItem('user_app_message') ?? '');
+  }
+
+  ngAfterViewInit(): void {
+    if (getTokens(false).access) {
+      this.onNavigate();
+    }
+  }
 
   ngOnInit(): void {
     // sync local storage to session storage
-    this.remember = (localStorage.getItem('remember') ?? '')?.length > 0 ? true : false;
+    this.remember = (localStorage.getItem('cloud77_remember') ?? '')?.length > 0 ? true : false;
     // this.remember = true;
     const tokens = getTokens(false);
     this.hasTokens = (tokens.access !== '' && tokens.refresh !== '');
@@ -70,15 +76,18 @@ export class LoginComponent implements OnInit {
       this.account = getUserEmail();
     }
 
-    window.addEventListener('message', function(ev) {
+    window.addEventListener('message', function (ev) {
       if (ev.data) {
-        console.log(ev.data);
-        if (ev.data.response === 'user-login-success') {
-          const appUrl = sessionStorage.getItem('app_url') ?? '';
-          sessionStorage.removeItem('app_message');
-          sessionStorage.removeItem('app_url');
-          sessionStorage.removeItem('app_host');
+        if (ev.data.name === 'tokens_saved') {
+          const appUrl = sessionStorage.getItem('user_app_url') ?? '';
+          sessionStorage.removeItem('user_app_message');
+          sessionStorage.removeItem('user_app_url');
+          sessionStorage.removeItem('user_app_host');
           window.location.href = appUrl;
+        }
+
+        if (ev.data.request === 'logout') {
+
         }
       }
     });
@@ -89,10 +98,10 @@ export class LoginComponent implements OnInit {
   handleHttpError(error: HttpErrorResponse) {
     this.snackbar.open(
       `${error.status} - ${error.statusText}`,
-      `${ error.error ? error.error.message : error.statusText}`,
-    {
-      duration: SNACKBAR_DURATION
-    }
+      `${error.error ? error.error.message : error.statusText}`,
+      {
+        duration: SNACKBAR_DURATION
+      }
     )
     if (error.status === 401) {
       this.snackbar.open('Error', 'Unauthorized', { duration: SNACKBAR_DURATION });
@@ -114,34 +123,34 @@ export class LoginComponent implements OnInit {
   users: string[] = [];
   authenticatedUsers: string[] = [];
   logs = '';
-  
+
   frameResourceUrl?: SafeResourceUrl;
   debugMode: boolean = false;
   existing: boolean = true;
 
   @ViewChild("messageContainer")
   messageContainer!: ElementRef<HTMLIFrameElement>;
-  
+
   onAccountChange() {
     this.gateway.getUser(this.account)
-    .then(res => {
-      this.existing = res.existing;
-    });
+      .then(res => {
+        this.existing = res.existing;
+      });
   }
 
   onLoginClick() {
     this.gateway.generateToken(this.account, this.password)
-    .then(data => {
-      updateUserEmail(data.email);
-      saveTokens(data.value, data.refreshToken);
-      this.onNavigate();
-    })
-    .catch(err => {
-      console.log(err);
-      if (err instanceof HttpErrorResponse) {
-        this.handleHttpError(err);
-      }
-    });
+      .then(data => {
+        updateUserEmail(data.email);
+        saveTokens(data.value, data.refreshToken);
+        this.onNavigate();
+      })
+      .catch(err => {
+        console.log(err);
+        if (err instanceof HttpErrorResponse) {
+          this.handleHttpError(err);
+        }
+      });
   }
 
   onKeyUp(event: KeyboardEvent): void {
@@ -168,9 +177,8 @@ export class LoginComponent implements OnInit {
   }
 
   onNavigate(): void {
-    const appUrl = sessionStorage.getItem('app_url') ?? '';
-    const messageUrl = sessionStorage.getItem('app_message') ?? '';
-    console.log('debug: navigate');
+    const appUrl = sessionStorage.getItem('user_app_url') ?? '';
+    const messageUrl = sessionStorage.getItem('user_app_message') ?? '';
 
     if (appUrl && messageUrl) {
       const tokens = getTokens(false);
@@ -178,7 +186,7 @@ export class LoginComponent implements OnInit {
 
       setTimeout(() => {
         this.messageContainer.nativeElement.contentWindow?.postMessage({
-          response: 'sync-tokens',
+          name: 'sync-tokens',
           accessToken: tokens.access,
           refreshToken: tokens.refresh
         }, '*')
@@ -192,15 +200,14 @@ export class LoginComponent implements OnInit {
     const refresh = tokens.refresh;
     const token = name.length === 0 ? access : refresh;
 
-    console.log(token);
     if (token) {
       navigator.clipboard.writeText(token)
-      .then(() => {
-        alert(`${name.length === 0 ? 'Access' : 'Refresh'} Token copied to clipboard!`);
-      })
-      .catch(err => {
-        console.error('Failed to copy tokens: ', err);
-      });
+        .then(() => {
+          alert(`${name.length === 0 ? 'Access' : 'Refresh'} Token copied to clipboard!`);
+        })
+        .catch(err => {
+          console.error('Failed to copy tokens: ', err);
+        });
     } else {
       alert('No token found!');
     }

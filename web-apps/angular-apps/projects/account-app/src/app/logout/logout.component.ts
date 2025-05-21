@@ -55,7 +55,7 @@ export class LogoutComponent implements OnInit, AfterViewInit {
   // post message to related sites
   handleLogout(): void {
     document.querySelectorAll('iframe').forEach(i => {
-      i.contentWindow?.postMessage({ request: 'logout' }, '*');
+      i.contentWindow?.postMessage({ name: 'logout' }, '*');
     })
   }
 }

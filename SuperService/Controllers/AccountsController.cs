@@ -1,4 +1,5 @@
 ﻿using Cloud77.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
@@ -9,6 +10,7 @@ using SuperService.Models;
 namespace SuperService.Controllers
 {
   [Route("api/[controller]")]
+  [Authorize]
   [ApiController]
   public class AccountsController : ControllerBase
   {

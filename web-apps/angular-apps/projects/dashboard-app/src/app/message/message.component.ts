@@ -9,16 +9,14 @@ import { AfterViewInit, Component } from '@angular/core';
 })
 export class MessageComponent implements AfterViewInit {
   ngAfterViewInit(): void {
-    window.addEventListener('message', function (ev) {
-      console.log('debug: app receives message');
-      console.log(ev.data);
-      
-      if (ev.data?.response === 'sync-tokens') {
+    window.addEventListener('message', function (ev) {      
+      if (ev.data?.name === 'sync-tokens') {
         if (ev.data.accessToken) {
-          sessionStorage.setItem('cloud77_access_token', ev.data.accessToken);
-          sessionStorage.setItem('cloud77_refresh_token', ev.data.refreshToken);
+          sessionStorage.setItem('user_access_token', ev.data.accessToken);
+          sessionStorage.setItem('user_refresh_token', ev.data.refreshToken);
+
           window.parent.postMessage({
-            response: 'user-login-success'
+            name: 'tokens_saved'
           }, '*')
         }
       }

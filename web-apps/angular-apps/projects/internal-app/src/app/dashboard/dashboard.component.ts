@@ -31,12 +31,12 @@ export class DashboardComponent implements OnInit {
   email: string = '';
   events: EventEntity[] = [];
   ngOnInit(): void {
-    this.http.get('/user-api/database').subscribe((data: any) => {
+    this.http.get('/super-api/database').subscribe((data: any) => {
       console.log(data);
       this.databases = data.databases;
     });
 
-    this.http.get('/user-api/database/collections').subscribe((data: any) => {
+    this.http.get('/super-api/database/collections').subscribe((data: any) => {
       console.log(data);
       this.database = data.database;
       this.collections = data.collections;
@@ -46,7 +46,7 @@ export class DashboardComponent implements OnInit {
   queryEvents(): void {
     console.log(this.email);
     if (!this.email) return;
-    this.http.get(`/user-api/events/${this.email}`).subscribe((data: any) => {
+    this.http.get(`/super-api/events/${this.email}`).subscribe((data: any) => {
       // this.events = (data.data as EventEntity[]).filter(e => !e.name.includes('License') && !e.name.includes('Device'));
       this.events = (data.data as EventEntity[]);
     });

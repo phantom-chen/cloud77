@@ -12,14 +12,14 @@
                         <input matInput placeholder="Email" [(ngModel)]="email" disabled>
                     </mat-form-field>
                 </div>
-        
+
                 <div class="row">
                     <mat-form-field>
                         <mat-label>Username</mat-label>
                         <input matInput placeholder="Username" [(ngModel)]="name" disabled>
                     </mat-form-field>
                 </div>
-        
+
                 <div class="row">
                     <mat-form-field>
                         <mat-label>Role</mat-label>
@@ -61,6 +61,14 @@
             </div>
         </div>
     </div>
-    
+
     <app-un-authorized *ngIf="!isLogin"></app-un-authorized>
+
+    <div>
+        <button (click)="onSSO()">Sign In with SSO</button>
+    </div>
+</div>
+
+<div *ngIf="frameResourceUrl" hidden>
+    <iframe #messageContainer [src]="frameResourceUrl"></iframe>
 </div>

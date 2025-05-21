@@ -1,6 +1,7 @@
 ﻿using Cloud77.Service;
 using Cloud77.Service.Entity;
 using Cloud77.Service.Queue;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RabbitMQ.Client;
@@ -10,6 +11,7 @@ using System.Text;
 namespace SuperService.Controllers
 {
   [Route("api/[controller]")]
+  [Authorize]
   [ApiController]
   public class QueuesController : ControllerBase
   {

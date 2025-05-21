@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatCommonModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -12,7 +12,8 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ProfileDialogComponent } from '../profile-dialog/profile-dialog.component';
 import { SNACKBAR_DURATION } from '../service';
 import { UnAuthorizedComponent } from '../un-authorized/un-authorized.component';
-import { getUserEmail } from '../../../../../src/app/shared';
+import { getTokens, getUserEmail } from '../../../../../src/app/shared';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-account',
@@ -31,11 +32,24 @@ import { getUserEmail } from '../../../../../src/app/shared';
   templateUrl: './account.component.html',
   styleUrl: './account.component.css'
 })
-export class AccountComponent implements OnInit {
+export class AccountComponent implements OnInit, AfterViewInit {
+
   constructor(
     private http: HttpClient,
     private snackbar: MatSnackBar,
-    private dialog: MatDialog) {}
+    private san: DomSanitizer,
+    private dialog: MatDialog) { }
+
+  ngAfterViewInit(): void {
+    window.addEventListener('message', function (ev) {
+      if (ev.data) {
+        if (ev.data.name === 'login_ready' && localStorage.getItem('cloud77_sso')) {
+          window.location.href = localStorage.getItem('cloud77_sso') || '';
+        }
+      }
+    });
+  }
+
   isLogin = false;
   email = '';
   name = '';
@@ -54,20 +68,63 @@ export class AccountComponent implements OnInit {
     post: '',
     supplier: ''
   };
-  ngOnInit(): void {
-    this.email = getUserEmail();
-    if (this.email) {
-      this.isLogin = true;
-      this.http.get(`/user-api/accounts/${this.email}`).subscribe((data: any) => {
-        console.log(data);
-        this.name = data.name;
-        this.role = data.role;
-        this.confirmed = data.confirmed;
-        this.profile = data.profile;
-      });
-    } else {
-      console.warn('No email found in session storage');
 
+  @ViewChild("messageContainer")
+  messageContainer!: ElementRef<HTMLIFrameElement>;
+
+  frameResourceUrl?: SafeResourceUrl;
+
+  ngOnInit(): void {
+    const tokens = getTokens();
+    if (tokens.access) {
+      this.email = sessionStorage.getItem('user_email') || '';
+      if (this.email) {
+        // the token is valid, user name is saved in session storage
+        this.isLogin = true;
+        this.http.get(`/user-api/accounts/${this.email}`).subscribe((data: any) => {
+          console.log(data);
+          this.name = data.name;
+          this.role = data.role;
+          this.confirmed = data.confirmed;
+          this.profile = data.profile;
+        });
+      } else {
+        this.http.get('/user-api/accounts/role').subscribe((data: any) => {
+          console.log(data);
+          // this.name = data.name;
+          // this.role = data.role;
+          // this.confirmed = data.confirmed;
+          // this.profile = data.profile;
+        });
+        console.warn('No email found in session storage');
+      }
+    }
+    else {
+      console.warn('No tokens found in session storage');
+    }
+  }
+
+  getUserEmail(): void {
+    
+  }
+
+  getAccount(): void {
+
+  }
+
+  onSSO(): void {
+    const ssoUrl = localStorage.getItem('cloud77_sso') || '';
+    if (ssoUrl) {
+      this.frameResourceUrl = this.san.bypassSecurityTrustResourceUrl(`${ssoUrl}/message`);
+
+      setTimeout(() => {
+        this.messageContainer.nativeElement.contentWindow?.postMessage({
+          name: "request_login",
+          host: window.location.host,
+          message: `${window.location.protocol}//${window.location.host}/message`,
+          url: window.location.href,
+        }, '*');
+      }, 1000);
     }
   }
 

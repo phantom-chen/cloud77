@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 @Component({
@@ -12,6 +13,11 @@ import { RouterModule } from '@angular/router';
   templateUrl: './posts.component.html',
   styleUrl: './posts.component.css'
 })
-export class PostsComponent {
-
+export class PostsComponent implements OnInit {
+  constructor(private http: HttpClient) {}
+  ngOnInit(): void {
+    this.http.get('/user-api/posts').subscribe((data: any) => {
+      console.log(data);
+    });
+  }
 }

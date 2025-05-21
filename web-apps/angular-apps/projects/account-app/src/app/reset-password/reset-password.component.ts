@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { ActivatedRoute } from '@angular/router';
 import { PasswordStrengthMeterComponent } from 'angular-password-strength-meter';
 
 @Component({
@@ -21,20 +22,30 @@ import { PasswordStrengthMeterComponent } from 'angular-password-strength-meter'
   templateUrl: './reset-password.component.html',
   styleUrl: './reset-password.component.css'
 })
-export class ResetPasswordComponent {
+export class ResetPasswordComponent implements OnInit {
   
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private route: ActivatedRoute
   ) {}
+
+  ngOnInit(): void {
+    document.title = 'Reset Password';
+    this.email = this.route.snapshot.queryParamMap.get('email') || '';
+    this.token = this.route.snapshot.queryParamMap.get('token') || '';
+
+    // token is empty, need to send email only
+  }
   
   email = '';
   token = '';
+  
   password = '';
   confirmPassword = '';
 
   sendToken(): void {
     if (this.email) {
-      this.http.post(`/user-api/users/password-token?email=${this.email}`, {})
+      this.http.post(`/sso-api/users/password-token?email=${this.email}`, {})
         .subscribe((data: any) => {
           console.log(data);
         });
@@ -43,7 +54,7 @@ export class ResetPasswordComponent {
 
   resetPassword(): void {
     if (this.email && this.password && this.token) {
-      this.http.put('/user-api/users/password', {
+      this.http.put('/sso-api/users/password', {
         email: this.email,
         password: this.password,
       }, {

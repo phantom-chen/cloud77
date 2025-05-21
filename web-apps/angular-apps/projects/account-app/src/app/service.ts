@@ -1,13 +1,13 @@
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { lastValueFrom, map } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { DefaultResponse, UserAccount, UserEmail, UserToken } from '@phantom-chen/cloud77';
+import { DefaultResponse, UserEmail, UserToken } from '@phantom-chen/cloud77';
 
 export const SNACKBAR_DURATION = 3000;
 
 export interface IGatewayService {
     getSite(): Promise<string>;
-    getUser(account: string): Promise<UserEmail>;
+    getUser(email: string, name: string): Promise<UserEmail>;
     createUser(
         email: string,
         name: string,
@@ -65,9 +65,9 @@ export class GatewayService implements IGatewayService {
         );
     }
 
-    getUser(account: string): Promise<UserEmail> {
+    getUser(email: string, name: string): Promise<UserEmail> {
         return lastValueFrom(
-            this.http.get<UserEmail>(`/sso-api/users?email=${account}&username=abc`)
+            this.http.get<UserEmail>(email ? `/sso-api/users?email=${email}` : `/sso-api/users?username=${name}`)
         )
     }
 

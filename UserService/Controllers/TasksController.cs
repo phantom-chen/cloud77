@@ -26,10 +26,9 @@ namespace UserService.Controllers
     }
 
     [HttpGet]
-    [Route("{email}")]
-    public IActionResult Get(string email)
+    public IActionResult Get()
     {
-      User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+      var email = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
       var tasks = collection.GetTasks(email, 0, 50)
           .Select(t => new UserTask()
           {
@@ -55,9 +54,9 @@ namespace UserService.Controllers
     }
 
     [HttpPost]
-    [Route("{email}")]
-    public IActionResult Post(string email, [FromBody] UserTask task)
+    public IActionResult Post([FromBody] UserTask task)
     {
+      var email = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email).Value;
       var id = collection.CreateTask(email, task.Title, task.Description);
       return Created($"/api/tasks/{id}", new ServiceResponse("user-task-created", id, "Create task"));
     }

@@ -9,14 +9,14 @@
             <div class="row col-lg-6">
                 <mat-form-field>
                     <mat-label>Email</mat-label>
-                    <input matInput placeholder="Email" [(ngModel)]="email">
+                    <input matInput placeholder="Email" [(ngModel)]="email" (change)="onEmailChange()">
                 </mat-form-field>
             </div>
 
             <div class="row col-lg-6">
                 <mat-form-field>
                     <mat-label>Username</mat-label>
-                    <input matInput placeholder="Username" [(ngModel)]="name">
+                    <input matInput placeholder="Username" [(ngModel)]="name" (change)="onNameChange()">
                 </mat-form-field>
             </div>
 

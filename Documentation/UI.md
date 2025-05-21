@@ -80,7 +80,3 @@ Post message
     app_url: 'http://localhost:3000'
 }
 ```
-
-## Message at url
-
-/message?access_token=xxx&refresh_token=xxx

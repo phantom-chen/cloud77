@@ -91,10 +91,8 @@ export class AccountComponent implements OnInit, AfterViewInit {
       } else {
         this.http.get('/user-api/accounts/role').subscribe((data: any) => {
           console.log(data);
-          // this.name = data.name;
-          // this.role = data.role;
-          // this.confirmed = data.confirmed;
-          // this.profile = data.profile;
+          sessionStorage.setItem('user_email', data.email);
+          sessionStorage.setItem('user_name', data.name);
         });
         console.warn('No email found in session storage');
       }

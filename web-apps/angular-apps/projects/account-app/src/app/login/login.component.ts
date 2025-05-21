@@ -132,7 +132,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   messageContainer!: ElementRef<HTMLIFrameElement>;
 
   onAccountChange() {
-    this.gateway.getUser(this.account)
+    this.gateway.getUser(this.account, '')
       .then(res => {
         this.existing = res.existing;
       });

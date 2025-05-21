@@ -104,6 +104,11 @@ namespace UserService.Controllers
 
       logger.LogInformation("check user is not registered yet");
 
+      // check email is not used
+      // check name is not used
+      // format email
+      // format name
+
       var id = collection.CreateUser(new UserEntity()
       {
         Email = user.Email.ToLower(),
@@ -116,8 +121,9 @@ namespace UserService.Controllers
       logger.LogInformation(token);
       logger.LogInformation("TODO send token via email");
 
-      var link = configuration["Home_url"] ?? "";
-      SendUserLink(configuration["User_link_queue"], new UserLink() { Email = "xxx@example.com", Link = link, Name = "xxx", Usage = "email" });
+      var link = $"{configuration["SSO_url"] ?? ""}/confirm-email?email={user.Email}&token={token}";  // {sso_url}/confirm-email?email=xxx&token=xxx
+      SendUserLink(configuration["User_link_queue"] ?? "", new UserLink() { Email = user.Email, Link = link, Name = user.Name, Usage = "email" });
+
       return Ok(new ServiceResponse()
       {
         Code = "user-entity-created",
@@ -213,8 +219,8 @@ namespace UserService.Controllers
       });
       logger.LogInformation(token);
 
-      var link = configuration["Home_url"] ?? "";
-      SendUserLink(configuration["User_link_queue"], new UserLink() { Link = link, Usage = "password" });
+      var link = $"{configuration["SSO_url"] ?? ""}/reset-password?email={user.Email}&token={token}";  // {sso_url}/reset-password?email=xxx&token=xxx
+      SendUserLink(configuration["User_link_queue"] ?? "", new UserLink() { Email = email, Link = link, Name = "", Usage = "password" });
 
       return Ok(new ServiceResponse("password-reset-email-sent", user.Email.ToString(), "Email is sent to you"));
     }

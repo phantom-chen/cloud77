@@ -47,8 +47,8 @@ export class DashboardComponent implements OnInit {
     console.log(this.email);
     if (!this.email) return;
     this.http.get(`/super-api/events/${this.email}`).subscribe((data: any) => {
-      // this.events = (data.data as EventEntity[]).filter(e => !e.name.includes('License') && !e.name.includes('Device'));
-      this.events = (data.data as EventEntity[]);
+      this.events = (data.data as EventEntity[]).filter(e => !e.name.includes('License') && !e.name.includes('Device'));
+      // this.events = (data.data as EventEntity[]);
     });
   }
 }

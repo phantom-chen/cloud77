@@ -22,7 +22,9 @@ export class AuthorsComponent {
 
   pageChanged(e: PageEvent): void {
     console.log(e);
-    console.warn('to refresh data');
+  }
+
+  onLoad(): void {
     this.http.get(`/sample-api/authors?index=0&size=3`).subscribe((res) => {
       console.log(res);
     });

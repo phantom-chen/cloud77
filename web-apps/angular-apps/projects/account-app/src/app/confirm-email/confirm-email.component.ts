@@ -21,13 +21,17 @@ import { IGatewayService } from '../service';
   styleUrl: './confirm-email.component.css'
 })
 export class ConfirmEmailComponent implements OnInit {
+
   constructor(
     private route: ActivatedRoute,
     @Inject('IGatewayService') private gateway: IGatewayService,
   ) {}
+  
   email = '';
   token = '';
+
   ngOnInit(): void {
+    document.title = 'Confirm Email';
     this.email = this.route.snapshot.queryParamMap.get('email') || '';
     this.token = this.route.snapshot.queryParamMap.get('token') || '';
   }

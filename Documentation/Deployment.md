@@ -18,7 +18,9 @@ This document describes how to deploy the application.
 + canteen/rooms.json (canteen)
 + users.json (super)
 + localhost.txt (all)
-+ tokens/user_email/token_expiration.json (user)
++ users/{user_email}/{token_expiration}.json (user)
++ users/{user_email}/posts (user)
++ users/{user_email}/files (user)
 
 resources
 

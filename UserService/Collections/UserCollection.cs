@@ -154,7 +154,7 @@ namespace UserService.Collections
 
     public IEnumerable<TokenPayload> GetTokenPayloads(string email)
     {
-      var logs = events.GetEventLogs(email);
+      var logs = events.GetEventLogs(email).Where(l => new string[] { "Issue-Email-Token", "Verify-Email", "Reset-Password" }.Contains(l.Name));
       var payloads = logs.Select(e => JsonConvert.DeserializeObject<TokenPayload>(e.Payload));
       return payloads;
     }

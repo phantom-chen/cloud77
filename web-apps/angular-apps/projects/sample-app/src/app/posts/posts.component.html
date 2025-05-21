@@ -1,0 +1,20 @@
+<p>posts works!</p>
+<div>
+  <input [(ngModel)]="name" type="text" placeholder="Post name">
+</div>
+
+<div>
+  <textarea [(ngModel)]="content" rows="4" cols="50"></textarea>
+</div>
+
+<button (click)="onSavePost()">Save</button>
+<button>Delete</button>
+
+<div>
+  <p>Posts</p>
+  <ul>
+    <li *ngFor="let name of names">{{name}}</li>
+  </ul>
+</div>
+
+<div markdown [data]="data"></div>

@@ -33,17 +33,21 @@ jobs:
       - name: echo docker version
         run: docker version
 
-      - if: github.event.inputs.app_name == 'landing-app'
+      - if: github.event.inputs.app_name == 'angular-apps'
         name: build image
-        run: cd ./landing-app && docker build -t registry.cn-hangzhou.aliyuncs.com/cloud_77/web-apps:${{ github.event.inputs.image_tag }} .
+        run: cd ./web-apps/angular-apps && docker build -t registry.cn-hangzhou.aliyuncs.com/cloud_77/web-apps:${{ github.event.inputs.image_tag }} .
 
       - if: github.event.inputs.app_name == 'canteen-app'
         name: build image
-        run: cd ./canteen-app && docker build -t registry.cn-hangzhou.aliyuncs.com/cloud_77/web-apps:${{ github.event.inputs.image_tag }} .
+        run: cd ./web-apps/canteen-app && docker build -t registry.cn-hangzhou.aliyuncs.com/cloud_77/web-apps:${{ github.event.inputs.image_tag }} .
 
       - if: github.event.inputs.app_name == 'factory-app'
         name: build image
-        run: cd ./factory-app && docker build -t registry.cn-hangzhou.aliyuncs.com/cloud_77/web-apps:${{ github.event.inputs.image_tag }} .
+        run: cd ./web-apps/factory-app && docker build -t registry.cn-hangzhou.aliyuncs.com/cloud_77/web-apps:${{ github.event.inputs.image_tag }} .
+
+      - if: github.event.inputs.app_name == 'web-apps'
+        name: build image
+        run: cd ./web-apps && docker build -t registry.cn-hangzhou.aliyuncs.com/cloud_77/web-apps:${{ github.event.inputs.image_tag }} .
 
       - name: list images
         run: docker images

@@ -5,10 +5,12 @@ using Cloud77.Service;
 using Cloud77.Service.Entity;
 using UserEmail = SuperService.Protos.UserEmail;
 using UserPassword = SuperService.Protos.UserPassword;
+using SuperService.Models;
+using SuperService.Collections;
 
 namespace SuperService.Services
 {
-    public class UserService : Protos.UserService.UserServiceBase
+  public class UserService : Protos.UserService.UserServiceBase
     {
         private readonly ILogger<UserService> logger;
         private readonly TokenGenerator generator;

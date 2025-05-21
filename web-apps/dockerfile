@@ -1,0 +1,30 @@
+# Stage 1: Build the Angular application
+FROM node:20-alpine3.18 as build
+WORKDIR /app
+COPY angular-apps .
+RUN yarn install
+RUN yarn run build-all
+
+# Stage 2: Build the React application
+FROM node:20-alpine3.18 as build2
+WORKDIR /app
+COPY canteen-app .
+RUN yarn install
+RUN yarn run build
+
+# Stage 3: Build the React application
+FROM node:20-alpine3.18 as build3
+WORKDIR /app
+COPY factory-app .
+RUN yarn install
+RUN yarn run build
+
+# Stage 4: Serve the application with Nginx
+FROM nginx:alpine
+COPY --from=build /app/dist/landing-app/browser /usr/share/nginx/landing-app
+COPY --from=build /app/dist/sample-app/browser /usr/share/nginx/sample-app
+COPY --from=build /app/dist/account-app/browser /usr/share/nginx/account-app
+COPY --from=build /app/dist/dashboard-app/browser /usr/share/nginx/dashboard-app
+COPY --from=build /app/dist/internal-app/browser /usr/share/nginx/internal-app
+COPY --from=build2 /app/build /usr/share/nginx/canteen-app
+COPY --from=build3 /app/build /usr/share/nginx/factory-app

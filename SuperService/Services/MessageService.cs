@@ -1,6 +1,5 @@
 ﻿using Grpc.Core;
 using RabbitMQ.Client;
-using ServiceStack.Messaging;
 using SuperService.Protos;
 using System.Text;
 

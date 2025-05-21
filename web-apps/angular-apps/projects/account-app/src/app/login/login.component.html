@@ -1,0 +1,109 @@
+<div class="container col-lg-12">
+  <div class="card">
+    <div class="card-header">
+      <div style="display: flex;">
+        <h5>User Login</h5>
+        <mat-icon>signal_cellular_alt</mat-icon>
+        <span class="example-spacer"></span>
+      </div>
+    </div>
+  </div>
+  <div class="card-body content">
+
+    <!-- verify service in running -->
+
+    <div *ngIf="!hasTokens" style="margin: auto;box-shadow: 3px;" class="col-lg-6">
+      <form novalidate>
+        <div class="container content">
+          <ng-container *ngIf="loginRequired">
+            <div class="row">
+              <mat-form-field>
+                <mat-label>Email / Username</mat-label>
+                <input matInput placeholder="Email / Username" autocomplete="off" [(ngModel)]="account"
+                  name="user-account" [matAutocomplete]="userac"
+                  (change)="onAccountChange()">
+                <mat-autocomplete #userac>
+                  <mat-option [value]="item" *ngFor="let item of users">{{ item }}</mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+
+              <p *ngIf="!existing" class="text-warning">your account is not existing.</p>
+            </div>
+            <div class="row">
+              <mat-form-field>
+                <mat-label>Password</mat-label>
+                <input matInput type="password" placeholder="Password" autocomplete="off" [(ngModel)]="password"
+                  name="user-password" (keypress)="onKeyUp($event)">
+              </mat-form-field>
+            </div>
+
+            <div class="row">
+              <mat-checkbox color="primary" [(ngModel)]="remember" name="remembercheckbox">Remember Me</mat-checkbox>
+            </div>
+            
+            <div class="row">
+              <div style="display: flex;">
+                <button type="submit" mat-raised-button color="primary" (click)="onLoginClick();">Login</button>
+                <button type="button" mat-outlined-button color="primary">
+                  <a #signup target="_blank" [routerLink]="['/sign-up']" [relativeTo]="" routerLinkActive="active">Sign
+                    Up</a>
+                </button>
+                <button type="button" mat-button (click)="clearLogin();">Clear Account Login</button>
+                <button mat-button>Forget password</button>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </form>
+    </div>
+
+    <div *ngIf="hasTokens" style="margin: auto;box-shadow: 3px;" class="col-lg-6">
+      <h5>Login with tokens</h5>
+      <p class="text-info-emphasis">login as: {{ account }}</p>
+      <div>
+        <span class="text-warning">{{ tokenValidity }}</span>
+      </div>
+      <p>Token is valid for {{ tokenValidity }} minutes</p>
+      <button mat-button color="primary" (click)="onCheckTokens();">
+        <mat-icon>refresh</mat-icon>
+        Check tokens
+      </button>
+      <button mat-button color="accent" (click)="onLogout();">Logout</button>
+    </div>
+
+    <div style="margin: auto;box-shadow: 3px;" class="col-lg-6">
+      <button mat-raised-button (click)="copyToken('');">
+        <mat-icon>file_copy</mat-icon>
+        Access Token
+      </button>
+
+      <button mat-raised-button (click)="copyToken('refresh');">
+        <mat-icon>file_copy</mat-icon>
+        Refresh Token
+      </button>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div *ngIf="authenticatedUsers.length > 0" style="margin: auto;" class="row col-lg-6">
+      <mat-form-field>
+        <mat-label>Users below login at the site</mat-label>
+        <mat-select [(ngModel)]="authenticatedAccount" name="selectedUser">
+          <mat-option [value]="item" *ngFor="let item of users">{{ item | uppercase }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="authenticatedUsers.length > 0" style="margin: auto;" class="row col-lg-6">
+      <button mat-button color="accent" (click)="autoLogin();">Auto Login as selected user above</button>
+    </div>
+
+    <div *ngIf="debugMode" class="content">
+      <app-preview [content]="logs"></app-preview>
+    </div>
+  </div>
+</div>
+
+<div hidden>
+  <iframe #messageContainer [src]="frameResourceUrl"></iframe>
+</div>

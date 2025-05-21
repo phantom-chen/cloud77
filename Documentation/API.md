@@ -8,6 +8,93 @@
 - empty-user-entity
 - internal-server-error
 
+## Gateway Service
+
+- Provide entry for services.
+- API key protection (skip in development)
+- Use JWT token
+- Logging for PUT/POST/DELETE, status code (50x, internal error)
+
+## Sample Service
+
+Error handling middleware (catch exception, save in data/errors)
+
+Controllers:
+
+- /gateway
+- /agent
+- /authors
+- /bookmarks
+- /posts
+- /files
+- /charts (live chart data)
+- /products
+- /weather forecast
+
+Hubs:
+
+- chat (send back message, start or stop chart data updating, broadcast chart data)
+
+## User Service
+
+Controllers
+
+- /agent
+- /users
+  - /users (GET/POST)
+  - /users/token
+  - /users/password-token
+  - /users/password
+  - /users/verification
+- /accounts
+  - /accounts/role
+  - /accounts/xxx (GET/DELETE)
+  - /accounts/xxx/name
+  - /accounts/xxx/role
+  - /accounts/xxx/profile
+- /posts
+- /tasks
+  - /tasks/xxx (GET/POST)
+  - /tasks (PUT)
+  - /tasks/xxx (DELETE)
+- /settings
+  - /settings (GET/POST/PUT)
+  - /settings/{key} (GET/DELETE)
+- /events
+  - /events (GET)
+  - /events/{email} (GET)
+- /database
+  - /database (GET)
+  - /database/collections (GET)
+
+Hubs:
+
+- chat (ping, send back message, broadcast message)
+
+## Super Service
+
+Controllers:
+
+- /agent
+- /accounts
+  - /accounts
+  - /accounts/emails
+- /logs
+- /events
+- /queues
+  - /queues/messages
+  - /queues/mails
+- /values
+- /caches
+- /caches/xxx
+
+Queues:
+
+- demo
+- mail
+
+## Canteen Service
+
 ## Http Service
 
 - Service

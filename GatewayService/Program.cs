@@ -1,31 +1,75 @@
 using Ocelot.Middleware;
 using Ocelot.DependencyInjection;
+using GatewayService.Middleware;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.Security.Claims;
 
 namespace GatewayService
 {
-    public class Program
+  public class Program
+  {
+    public static void Main(string[] args)
     {
-        public static void Main(string[] args)
+      var builder = WebApplication.CreateBuilder(args);
+      IConfiguration configuration = builder.Configuration;
+      builder.Configuration.AddJsonFile("ocelot.json");
+
+      Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+      var AuthenticationProviderKey = "MyKey";
+
+      // Add services to the container.
+
+      builder.Services.AddAuthentication()
+        .AddJwtBearer(AuthenticationProviderKey,options =>
+      {
+        // Add JWT authentication
+        options.RequireHttpsMetadata = false;
+        options.SaveToken = true;
+
+        options.TokenValidationParameters = new TokenValidationParameters()
         {
-            var builder = WebApplication.CreateBuilder(args);
-            IConfiguration configuration = builder.Configuration;
-            // Add services to the container.
+          NameClaimType = ClaimTypes.Name,
+          RoleClaimType = ClaimTypes.Role,
+          ValidateIssuerSigningKey = true,
+          ValidateIssuer = true,
+          ValidateAudience = true,
+          ValidateLifetime = true,
+          IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["SecurityKey"])),
+          ValidIssuer = configuration["Issuer"],
+          ValidAudience = configuration["Audience"],
+          ClockSkew = TimeSpan.FromSeconds(30),
+          RequireExpirationTime = true,
+        };
+      });
 
-            // Add JWT authentication
-            builder.Services.AddControllers();
-            builder.Services.AddHealthChecks();
-            builder.Services.AddOcelot(configuration);
+      //builder.Services.AddAuthorization();
+      //builder.Services.AddScoped<EmailFilter>();
+      //builder.Services.AddScoped<RequiredQueryAttribute>();
 
-            var app = builder.Build();
+      builder.Services.AddHealthChecks();
+      builder.Services.AddOcelot(builder.Configuration);
 
-            // Configure the HTTP request pipeline.
+      var app = builder.Build();
 
-            app.UseAuthorization();
+      // Configure the HTTP request pipeline.
+      //app.UseAuthentication();
+      app.UseRouting();
+      //app.UseAuthorization();
 
-            app.UseHealthChecks("/api/health");
-            app.MapControllers();
-            app.UseOcelot();
-            app.Run();
-        }
+      // Add a default route for "/"
+      //app.MapGet("/", () => "Welcome to the default route!");
+
+      // Add other routes if needed
+      //app.MapGet("/about", () => "About Page");
+
+      app.UseMiddleware<KeyMiddleware>();
+      app.UseMiddleware<LoggingMiddleware>();
+
+      app.UseHealthChecks("/api/health");
+      app.UseOcelot().Wait();
+
+      app.Run();
     }
+  }
 }

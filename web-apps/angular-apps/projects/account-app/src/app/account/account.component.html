@@ -1,0 +1,74 @@
+<div class="container">
+    <div *ngIf="isLogin" class="card">
+        <div class="card-header">
+            <p style="font-weight: bold;">Account Info</p>
+        </div>
+
+        <div class="card-body">
+            <div class="content">
+                <div class="row">
+                    <mat-form-field>
+                        <mat-label>Email</mat-label>
+                        <input matInput placeholder="Email" [(ngModel)]="email" disabled>
+                    </mat-form-field>
+                </div>
+
+                <div class="row">
+                    <mat-form-field>
+                        <mat-label>Username</mat-label>
+                        <input matInput placeholder="Username" [(ngModel)]="name" disabled>
+                    </mat-form-field>
+                </div>
+
+                <div class="row">
+                    <mat-form-field>
+                        <mat-label>Role</mat-label>
+                        <input matInput placeholder="Role" [(ngModel)]="role" disabled>
+                    </mat-form-field>
+                </div>
+
+                <div *ngIf="confirmed" class="row">
+                    <p class="text-info">You are confirmed.</p>
+                </div>
+
+                <div *ngIf="!confirmed" class="row" style="display: flex;">
+                    <p class="text-danger">You are not confirmed.</p>
+                    <button mat-raised-button color="primary">
+                        Send me the email to confirm.
+                    </button>
+                </div>
+
+                <div class="row">
+                    <button mat-raised-button color="primary" (click)="updateProfile()">My Profile</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <p style="font-weight: bold;">Profile Info</p>
+            </div>
+            <div class="card-body">
+                <div *ngIf="profile" class="row">
+                    <p class="text-info">You have a profile.</p>
+                </div>
+                <div *ngIf="!profile" class="row">
+                    <p class="text-danger">You don't have a profile.</p>
+                    <button mat-raised-button color="primary">
+                        Create a profile.
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <app-un-authorized *ngIf="!isLogin"></app-un-authorized>
+
+    <div>
+        <button (click)="onSSO()">Sign In with SSO</button>
+    </div>
+</div>
+
+<div *ngIf="frameResourceUrl" hidden>
+    <iframe #messageContainer [src]="frameResourceUrl"></iframe>
+</div>

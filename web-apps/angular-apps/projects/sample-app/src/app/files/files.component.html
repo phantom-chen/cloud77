@@ -1,0 +1,13 @@
+<p>files works!</p>
+<input type="file" (change)="onFileSelected($event)" />
+<button (click)="uploadFile()">Upload</button>
+<span *ngIf="progress" style="font-weight: bold;">{{ progress }}</span>
+<button (click)="getFileList()">Files</button>
+
+<ul>
+    <li (click)="selectFile(item)" *ngFor="let item of files">{{ item }}</li>
+</ul>
+
+
+<p *ngIf="file">Selected file: {{ file }}</p>
+<button *ngIf="file" (click)="deleteFile(file)">Delete selected file</button>

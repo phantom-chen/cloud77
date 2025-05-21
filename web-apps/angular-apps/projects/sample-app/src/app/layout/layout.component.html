@@ -1,0 +1,37 @@
+<mat-toolbar color="primary">
+    <mat-toolbar-row>
+        <span>{{ title }}</span>
+        <button mat-icon-button (click)="sidenav.toggle()">
+            <mat-icon>menu</mat-icon>
+        </button>
+    
+        <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
+            <mat-icon>favorite</mat-icon>
+        </button>
+        <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
+            <mat-icon>share</mat-icon>
+        </button>
+        <mat-icon>signal_cellular_alt</mat-icon>
+        <mat-icon>signal_cellular_connected_no_internet_4_bar</mat-icon>
+        <mat-icon class="example-icon" aria-hidden="false" aria-label="Example user verified icon">verified_user</mat-icon>
+    </mat-toolbar-row>
+    
+</mat-toolbar>
+
+<mat-sidenav-container style="min-height: 600px;">
+    <mat-sidenav #sidenav mode="side" opened="true" align="start">
+        <mat-nav-list>
+            <a mat-list-item routerLink="/sample/layout" routerLinkActive="active">
+                <mat-icon mat-list-icon>home</mat-icon>
+                <span mat-line style="color: green;font-weight: bold;">Home</span>
+            </a>
+            <a mat-list-item routerLink="/sample/layout/sidenav" routerLinkActive="active">Sidenav</a>
+            <a mat-list-item routerLink="/sample/layout/toolbar" routerLinkActive="active">Toolbar</a>
+        </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <div>
+            <p>layout works!</p>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

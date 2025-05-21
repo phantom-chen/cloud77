@@ -1,0 +1,52 @@
+{
+  "/version": {
+    "target": "http://localhost:5389",
+    "secure": true,
+    "changeOrigin": true
+  },
+  "/resources": {
+    "target": "https://www.cloud77.top",
+    "secure": true,
+    "changeOrigin": true
+  },
+  "/api": {
+    "target": "http://localhost:4359",
+    "secure": true,
+    "changeOrigin": true
+  },
+  "/gateway-api": {
+    "target": "http://localhost:4359",
+    "secure": true,
+    "changeOrigin": true
+  },
+  "/sample-api": {
+    "target": "http://localhost:4359",
+    "secure": true,
+    "changeOrigin": true
+  },
+  "/sso-api": {
+    "target": "http://localhost:4359",
+    "secure": true,
+    "changeOrigin": true
+  },
+  "/user-api": {
+    "target": "http://localhost:4359",
+    "secure": true,
+    "changeOrigin": true
+  },
+  "/super-api": {
+    "target": "http://localhost:4359",
+    "secure": true,
+    "changeOrigin": true
+  },
+  "/hubs": {
+    "target": "http://localhost:5389",
+    "ws": true,
+    "secure": false
+  },
+  "/chat-ws": {
+    "target": "http://localhost:5389",
+    "ws": true,
+    "secure": false
+  }
+}

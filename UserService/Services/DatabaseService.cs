@@ -2,9 +2,7 @@
 using Cloud77.Service;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using ServiceStack;
 using System.Reflection;
-using UserService.Controllers;
 
 namespace UserService.Services
 {
@@ -20,9 +18,9 @@ namespace UserService.Services
 
             var connection = Environment.GetEnvironmentVariable("DB_CONNECTION") ?? "localhost";
             var dir = Directory.GetParent(Assembly.GetExecutingAssembly().Location).ToString();
-            if (File.Exists(Path.Combine(dir, "localhost.txt")))
+            if (File.Exists(Path.Combine(dir, "data", "localhost.txt")))
             {
-                connection = connection.Replace("localhost", File.ReadAllLines(Path.Combine(dir, "localhost.txt"))[0]);
+                connection = connection.Replace("localhost", File.ReadAllLines(Path.Combine(dir, "data", "localhost.txt"))[0]);
             }
             logger.LogInformation($"Connecting to: {connection}");
             var settings = MongoClientSettings.FromConnectionString(connection);

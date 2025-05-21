@@ -2,11 +2,12 @@
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using MongoDB.Driver;
+using SuperService.Collections;
 using SuperService.Protos;
 
 namespace SuperService.Services
 {
-    public class SettingService : Protos.SettingService.SettingServiceBase
+  public class SettingService : Protos.SettingService.SettingServiceBase
     {
         private readonly SettingCollection collection;
         public SettingService(MongoClient client, IConfiguration configuration)

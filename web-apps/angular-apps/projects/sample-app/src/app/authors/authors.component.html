@@ -1,0 +1,28 @@
+<button (click)="onLoad()">Load Authors</button>
+
+<table class="table table-sm table-striped table-bordered table-hover">
+  <tr>
+    <th>Name</th>
+    <th>Confirmed</th>
+    <th>Email</th>
+    <th style="width: 100px;">Actions</th>
+  </tr>
+  <tr *ngFor="let a of authors">
+    <td>{{ a || 'Null' }}</td>
+    <td>{{ a }}</td>
+    <td>{{ a }}</td>
+    <td style="display:flex;padding: 2px;margin: 2px;">
+      <button type="button"
+          class="btn btn-outline-primary btn-sm" style="margin-right:6px;"><i
+          class="material-icons">edit</i></button>
+      <button type="button"
+          class="btn btn-outline-danger btn-sm"><i class="material-icons">delete</i></button>
+    </td>
+  </tr>
+</table>
+<mat-paginator
+  [length]="length"
+  [pageSize]="size"
+  [pageSizeOptions]="[5]"
+  showFirstLastButtons=true
+  (page)="pageChanged($event)"></mat-paginator>

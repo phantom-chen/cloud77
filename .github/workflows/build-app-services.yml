@@ -32,7 +32,15 @@ jobs:
 
       - name: echo docker version
         run: docker version
-      
+
+      - if: github.event.inputs.service_name == 'gateway-service'
+        name: build image
+        run: cd ./GatewayService && docker build -t registry.cn-hangzhou.aliyuncs.com/cloud_77/${{ github.event.inputs.service_name }}:${{ github.event.inputs.image_tag }} .
+
+      - if: github.event.inputs.service_name == 'sample-service'
+        name: build image
+        run: cd ./SampleService && docker build -t registry.cn-hangzhou.aliyuncs.com/cloud_77/${{ github.event.inputs.service_name }}:${{ github.event.inputs.image_tag }} .
+
       - if: github.event.inputs.service_name == 'user-service'
         name: build image
         run: cd ./UserService && docker build -t registry.cn-hangzhou.aliyuncs.com/cloud_77/${{ github.event.inputs.service_name }}:${{ github.event.inputs.image_tag }} .

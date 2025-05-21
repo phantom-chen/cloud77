@@ -1,0 +1,21 @@
+<p>history works!</p>
+<div class="row">
+    <mat-form-field>
+        <mat-label>Event Name</mat-label>
+        <mat-select [value]="name" (valueChange)="onValueChange($event)">
+            <mat-option value="">None</mat-option>
+            <mat-option value="Create-User">Create User</mat-option>
+            <mat-option value="Verify-Email">Verify Email</mat-option>
+            <mat-option value="Issue-Email-Token">Issue Email Token</mat-option>
+            <mat-option value="Update-Role">Update Role</mat-option>
+        </mat-select>
+    </mat-form-field>
+</div>
+
+<div class="row">
+    <mat-form-field>
+        <mat-label>User Email</mat-label>
+        <input matInput placeholder="User Email" autocomplete="off" [(ngModel)]="email" name="user-email"
+            (change)="onEmailChange($event)">
+    </mat-form-field>
+</div>

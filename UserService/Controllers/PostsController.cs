@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using System.Security.Claims;
 using UserService.Collections;
+using UserService.Models;
 
 namespace UserService.Controllers
 {
@@ -60,7 +61,7 @@ namespace UserService.Controllers
       return Ok();
     }
 
-    [HttpPost]
+    [HttpPut]
     public IActionResult Put()
     {
       return Ok();
@@ -70,18 +71,41 @@ namespace UserService.Controllers
     [Route("{id}")]
     public IActionResult GetContent(string id)
     {
+      var email = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+      var posts = collection.GetPosts(email.Value, 0, 50);
+
       // check post id exists
       // check post content exists, if not, create empty
-      return Ok();
+
+      if (posts.Any(p => p.Id.ToString() == id))
+      {
+        return Content(new LocalUserDataModel(email.Value).GetPost(id), "text/plain");
+      }
+
+      return NotFound();      
     }
 
     [HttpPut]
     [Route("{id}")]
-    public IActionResult PutContent(string id)
+    public async Task<IActionResult> PutContent(string id)
     {
+      var email = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+      var posts = collection.GetPosts(email.Value, 0, 50);
+
       // check post id exists
       // check post content exists, if not, create empty
-      return Ok();
+
+      if (posts.Any(p => p.Id.ToString() == id))
+      {
+        using (var reader = new StreamReader(Request.Body))
+        {
+          var content = await reader.ReadToEndAsync();
+          new LocalUserDataModel(email.Value).UpdatePost(id, content);
+        }
+        return Ok();
+      }
+
+      return NotFound();
     }
 
     [HttpDelete]

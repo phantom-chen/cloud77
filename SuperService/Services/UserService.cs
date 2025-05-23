@@ -23,7 +23,7 @@ namespace SuperService.Services
             ILogger<UserService> logger,
             TokenGenerator generator)
         {
-            this.defaultRole = configuration["Role_default"] ?? "";
+            this.defaultRole = configuration["Default_role"] ?? "";
             this.logger = logger;
             this.generator = generator;
             this.database = new UserCollection(client, configuration);

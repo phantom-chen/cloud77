@@ -20,6 +20,11 @@ namespace UserService.Models
         {
           Directory.CreateDirectory(Path.Combine(Root, "logs"));
         }
+
+        if (!Directory.Exists(Path.Combine(Root, "users")))
+        {
+          Directory.CreateDirectory(Path.Combine(Root, "users"));
+        }
       }
     }
 
@@ -35,6 +40,66 @@ namespace UserService.Models
           return File.ReadAllLines(path)[0].Trim();
         }
         return "";
+      }
+    }
+  }
+
+  public class LocalUserDataModel
+  {
+    public LocalUserDataModel(string email)
+    {
+      email = email.Trim().ToLower();
+
+      this.email = email;
+
+      if (!Directory.Exists(LocalDataModel.Root))
+      {
+        Directory.CreateDirectory(LocalDataModel.Root);
+      }
+
+      if (!Directory.Exists(Path.Combine(LocalDataModel.Root, "users")))
+      {
+        Directory.CreateDirectory(Path.Combine(LocalDataModel.Root, "users"));
+      }
+
+      if (!Directory.Exists(Path.Combine(LocalDataModel.Root, "users", email)))
+      {
+        Directory.CreateDirectory(Path.Combine(LocalDataModel.Root, "users", email));
+      }
+
+      if (!Directory.Exists(Path.Combine(LocalDataModel.Root, "users", email, "posts")))
+      {
+        Directory.CreateDirectory(Path.Combine(LocalDataModel.Root, "users", email, "posts"));
+      }
+    }
+
+    private readonly string email;
+
+    public string GetPost(string id)
+    {
+      if (File.Exists(Path.Combine(LocalDataModel.Root, "users", email, "posts", id)))
+      {
+        return File.ReadAllText(Path.Combine(LocalDataModel.Root, "users", email, "posts", id));
+      }
+      return "";
+    }
+
+    public void UpdatePost(string id, string content)
+    {
+      var filePath = Path.Combine(LocalDataModel.Root, "users", email, "posts", id);
+      if (File.Exists(filePath))
+      {
+        File.Delete(filePath);
+      }
+      File.WriteAllText(filePath, content);
+    }
+
+    public void DeletePost(string id)
+    {
+      var filePath = Path.Combine(LocalDataModel.Root, "users", email, "posts", id);
+      if (File.Exists(filePath))
+      {
+        File.Delete(filePath);
       }
     }
   }

@@ -1,2 +1,21 @@
-<p>posts works!</p>
-<a routerLink="123">123</a>
+<div class="container">
+    <p>posts works!</p>
+    <a routerLink="123">123</a>
+
+    <div class="row">
+        <mat-form-field>
+            <mat-label>Post Id</mat-label>
+            <mat-select [value]="id" (valueChange)="onValueChange($event)">
+                <mat-option value="">Empty</mat-option>
+
+                <mat-option *ngFor="let item of posts" [value]="item">{{ item }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+
+    <div class="row">
+        <textarea [(ngModel)]="content" rows="4" cols="50"></textarea>
+    </div>
+
+    <button (click)="update();">Submit</button>
+</div>

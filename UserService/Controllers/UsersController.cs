@@ -35,7 +35,7 @@ namespace UserService.Controllers
         ConnectionFactory factory
         )
     {
-      this.defaultRole = configuration["Role_default"] ?? "";
+      this.defaultRole = configuration["Default_role"] ?? "";
       this.logger = logger;
       this.configuration = configuration;
       this.client = client;

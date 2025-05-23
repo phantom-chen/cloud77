@@ -31,7 +31,7 @@ namespace SampleService.Controllers
       {
         var content = await reader.ReadToEndAsync();
         var guid = ShortGuid.NewGuid();
-        await hub.Clients.All.SendAsync("ReceiveMessage", $"Global message {guid.Value}: " + content);
+        await hub.Clients.All.SendAsync("global-message", $"Global message {guid.Value}: " + content);
       }
 
       return Ok(new ServiceResponse("broadcast-message", "", "Broadcast message"));

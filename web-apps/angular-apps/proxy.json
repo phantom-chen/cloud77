@@ -40,12 +40,12 @@
     "changeOrigin": true
   },
   "/hubs": {
-    "target": "http://localhost:5389",
+    "target": "http://localhost:5294",
     "ws": true,
     "secure": false
   },
-  "/chat-ws": {
-    "target": "http://localhost:5389",
+  "/canteen-ws": {
+    "target": "http://localhost:5648",
     "ws": true,
     "secure": false
   }

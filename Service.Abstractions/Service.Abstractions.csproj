@@ -2,11 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <RootNamespace>Cloud77.Service</RootNamespace>
-    <Title>Cloud77 Service Abstractions</Title>
+    <RootNamespace>Cloud77.Abstractions</RootNamespace>
+    <Title>Cloud77 Abstractions</Title>
     <Authors>Cloud77</Authors>
     <Company>Cloud77</Company>
-    <Description>Cloud77 Service</Description>
+    <Description>Cloud77 model definitions and utilities</Description>
     <PackageIcon>cloud77.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>

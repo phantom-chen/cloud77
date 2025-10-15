@@ -24,6 +24,8 @@ jobs:
 
     strategy:
       fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
 
     steps:
       - uses: actions/checkout@v4
@@ -41,16 +43,16 @@ jobs:
           dotnet-version: '8.0.x'  # Specify the .NET version you are using
 
       - name: Restore dependencies
-        run: cd ./Cloud77.Service.Abstractions && dotnet restore
+        run: cd ./Service.Abstractions && dotnet restore
 
       - name: Build
-        run: cd ./Cloud77.Service.Abstractions && dotnet build --configuration Debug --no-restore
+        run: cd ./Service.Abstractions && dotnet build --configuration Debug --no-restore
 
       - name: Pack
-        run: cd ./Cloud77.Service.Abstractions && dotnet pack -p:PackageVersion=${{ github.event.inputs.pkg_version }} -o bin
+        run: cd ./Service.Abstractions && dotnet pack -p:PackageVersion=${{ github.event.inputs.pkg_version }} -o bin
 
       - name: Publish the package to nuget.org
-        run: cd ./Cloud77.Service.Abstractions && dotnet nuget push ./bin/*.nupkg -k $NUGET_AUTH_TOKEN -s https://api.nuget.org/v3/index.json
+        run: cd ./Service.Abstractions && dotnet nuget push ./bin/*.nupkg -k $NUGET_AUTH_TOKEN -s https://api.nuget.org/v3/index.json
         env:
           NUGET_AUTH_TOKEN: ${{ secrets.NUGET_AUTH_TOKEN }}
 

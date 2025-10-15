@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Cloud77.Service.Entity
+namespace Cloud77.Abstractions.Entity
 {
     public class ProfileEntity
     {

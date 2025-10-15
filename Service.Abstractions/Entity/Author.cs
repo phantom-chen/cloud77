@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cloud77.Service.Entity
+namespace Cloud77.Abstractions.Entity
 {
     public class AuthorEntity
     {
@@ -14,13 +14,5 @@ namespace Cloud77.Service.Entity
         public string Address { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
-    }
-
-    public class BookmarkEntity
-    {
-        public string Title { get; set; }
-        public string Href { get; set; }
-        public string Tags { get; set; }
-        public string Collection { get; set; }
     }
 }

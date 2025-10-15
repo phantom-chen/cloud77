@@ -4,14 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cloud77.Service.Entity
+namespace Cloud77.Abstractions.Entity
 {
-    public class MessageEntity
-    {
-        public string Email { get; set; }
-        public string Message { get; set; }
-    }
-
     public class SettingEntity
     {
         public string Key { get; set; }

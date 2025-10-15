@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Cloud77.Service.Entity
+namespace Cloud77.Abstractions.Entity
 {
     public class EventEntity
     {
@@ -12,5 +12,12 @@ namespace Cloud77.Service.Entity
         public string UserName { get; set; }
         public string Email { get; set; }
         public string Payload { get; set; }
+    }
+
+    public class TokenPayload
+    {
+        public string Usage { get; set; } = "";
+        public string Token { get; set; } = "";
+        public DateTime Exp { get; set; }
     }
 }

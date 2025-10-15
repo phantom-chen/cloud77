@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cloud77.Service.Abstractions", "Cloud77.Service.Abstractions\Cloud77.Service.Abstractions.csproj", "{9ADA7ADF-61B1-4E98-89B1-CBCD702A1C1D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service.Abstractions", "Service.Abstractions\Service.Abstractions.csproj", "{9ADA7ADF-61B1-4E98-89B1-CBCD702A1C1D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserService", "UserService\UserService.csproj", "{44B98E17-0941-4EDE-A524-9503D0835663}"
 EndProject

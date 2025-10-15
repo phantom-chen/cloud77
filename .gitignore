@@ -412,7 +412,12 @@ FodyWeavers.xsd
 **/*-service/www
 **/*-service/tester.ts
 **/*-app/src/styles
-**/*-app/*.prod.json
+**/*-app/proxy.prod.json
 
 **/*.feature.cs
 **/*.runsettings
+**/server/production
+**/Docker/**/data
+**/.npmrc
+**/*.tgz
+ExpressService/data

@@ -47,33 +47,33 @@ jobs:
           pwd
 
       - name: Install package
-        run: cd ./cloud77-typescript && yarn install
+        run: cd ./service-typescript && yarn install
   
       - name: ESLint Check
-        run: cd ./cloud77-typescript && yarn lint
+        run: cd ./service-typescript && yarn lint
 
       - name: Unit Test Check
-        run: cd ./cloud77-typescript && yarn test-cc
+        run: cd ./service-typescript && yarn test-cc
       
       - name: 'Change version'
         uses: reedyuk/npm-version@1.1.1
         with:
           version: ${{ github.event.inputs.pkg_version }}
-          package: 'cloud77-typescript/'
+          package: 'service-typescript/'
 
       - name: 'Print version'
-        run: cd ./cloud77-typescript && cat package.json
+        run: cd ./service-typescript && cat package.json
 
       - name: Build and Bubble Package
-        run: cd ./cloud77-typescript && yarn release
+        run: cd ./service-typescript && yarn release
 
       - name: Prepare tar file
-        run: cd ./cloud77-typescript/dist && npm pack
+        run: cd ./service-typescript/dist && npm pack
 
       - name: List files
-        run: ls ./cloud77-typescript/dist
+        run: ls ./service-typescript/dist
 
       - name: Publish package
-        run: cd ./cloud77-typescript/dist && npm publish --access public
+        run: cd ./service-typescript/dist && npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}} 

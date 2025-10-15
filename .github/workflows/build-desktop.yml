@@ -99,15 +99,10 @@ jobs:
         uses: ArthurYdalgo/github-action-scp@0.7.5
         with:
           local: CoolerApps/release
-          remote: /cloud77/resources/releases/temp
+          remote: /tmp/releases
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
-
-
-          runs-on: ubuntu-latest
-    
-          steps:
 
   release-desktop:
     needs: build-desktop
@@ -130,10 +125,10 @@ jobs:
             # execute commands on ssh
             script: |
                 pwd
-                echo '# cooler plus release starts' >> /cloud77/resources/releases/logs.txt
-                mv /cloud77/resources/releases/temp/*.nupkg /cloud77/resources/releases/cooler-plus
-                mv -f /cloud77/resources/releases/temp/RELEASES /cloud77/resources/releases/cooler-plus/RELEASES
-                rm -f -r /cloud77/resources/releases/temp
-                echo $PKGVERSION >> /cloud77/resources/releases/logs.txt
-                date +"%A, %B %d, %Y %H:%M:%S" >> /cloud77/resources/releases/logs.txt
-                echo '# cooler plus release ends' >> /cloud77/resources/releases/logs.txt
+                echo '# cooler plus release starts' >> /home/cloud77/resources/releases/logs.txt
+                mv /tmp/releases/*.nupkg /home/cloud77/resources/releases/cooler-plus
+                mv -f /tmp/releases/RELEASES /home/cloud77/resources/releases/cooler-plus/RELEASES
+                rm -f -r /tmp/releases
+                echo $PKGVERSION >> /home/cloud77/resources/releases/logs.txt
+                date +"%A, %B %d, %Y %H:%M:%S" >> /home/cloud77/resources/releases/logs.txt
+                echo '# cooler plus release ends' >> /home/cloud77/resources/releases/logs.txt

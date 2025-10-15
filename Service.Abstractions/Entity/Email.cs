@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Cloud77.Service.Entity
+namespace Cloud77.Abstractions.Entity
 {
-    public class EmailContentEntity
+    public class EmailEntity
     {
         public IEnumerable<string> Addresses { get; set; }
         public string Subject { get; set; }

@@ -1,168 +1,109 @@
-﻿using Cloud77.Service;
-using Cloud77.Service.Entity;
-using Consul;
+﻿using Cloud77.Abstractions.Collection;
+using Cloud77.Abstractions.Entity;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using Newtonsoft.Json;
-using System.Xml.Linq;
 
 namespace UserService.Collections
 {
-  public class UserMongoEntity : UserEntity
-  {
-    public ObjectId Id { get; set; }
-    public string License { get; set; }
-    public string Devices { get; set; }
-  }
-
-  public class UserCollection
-  {
-    private readonly IMongoCollection<UserMongoEntity> collection;
-    private readonly EventCollection events;
-
-    public UserCollection(IMongoDatabase database)
+    public class UserMongoEntity : UserEntity
     {
-      collection = database.GetCollection<UserMongoEntity>(Cloud77Utility.Users);
-      events = new EventCollection(database);
+        public ObjectId Id { get; set; }
     }
 
-    public UserCollection(MongoClient client, IConfiguration configuration)
+    public class UserCollection : IUserCollection
     {
-      var database = client.GetDatabase(configuration["Database"]);
-      collection = database.GetCollection<UserMongoEntity>(Cloud77Utility.Users);
-      events = new EventCollection(client, configuration);
-    }
+        private readonly IMongoCollection<UserMongoEntity> collection;
 
-    public string CreateUser(UserEntity user)
-    {
-      var document = new UserMongoEntity()
-      {
-        Email = user.Email,
-        Role = user.Role,
-        Name = user.Name,
-        Password = user.Password,
-      };
-      collection.InsertOne(document);
-
-      var date = DateTime.UtcNow;
-      var log = new EventEntity()
-      {
-        Name = "Create-User",
-        UserEmail = user.Email,
-        Email = user.Email,
-        Date = date,
-      };
-      events.AppendEventLog(log);
-
-      return document.Id.ToString();
-    }
-
-    public UserEntity GetUser(string email, string username = "")
-    {
-      if (string.IsNullOrEmpty(email))
-      {
-        return collection.Find(Builders<UserMongoEntity>.Filter.Eq("Name", username)).FirstOrDefault();
-      }
-      return collection.Find(Builders<UserMongoEntity>.Filter.Eq("Email", email)).FirstOrDefault();
-    }
-
-    public string CreateVerificationCode(string email)
-    {
-      var date = DateTime.UtcNow;
-      string token = CodeGenerator.HashString(email.ToLower() + date.Millisecond.ToString() + CodeGenerator.GenerateDigitalCode(6));
-      var usage = "verify-email";
-      var payload = new TokenPayload()
-      {
-        Usage = usage,
-        Token = token,
-        Exp = date.AddHours(1)
-      };
-      events.AppendEventLog(new EventEntity()
-      {
-        Name = "Issue-Email-Token",
-        UserEmail = email,
-        Email = email,
-        Payload = JsonConvert.SerializeObject(payload),
-        Date = date,
-      });
-      return token;
-    }
-
-    // update user.confirmed
-    public bool UpdateUser(string email, bool confirmed, string token)
-    {
-      var filter = Builders<UserMongoEntity>.Filter.Eq("Email", email);
-      var update = Builders<UserMongoEntity>.Update.Set("Confirmed", confirmed);
-      var ack = collection.UpdateOne(filter, update).IsAcknowledged;
-
-      if (ack)
-      {
-        events.AppendEventLog(new EventEntity()
+        public UserCollection(IMongoDatabase database)
         {
-          Name = "Verify-Email",
-          UserEmail = email,
-          Email = email,
-          Payload = JsonConvert.SerializeObject(new TokenPayload()
-          {
-            Token = token,
-            Usage = "verify-email",
-          }),
-          Date = DateTime.UtcNow
-        });
-      }
+            collection = database.GetCollection<UserMongoEntity>("Users");
+        }
 
-      return ack;
-    }
-
-    // update user.profile
-    public bool UpdateUser(string email, ProfileEntity profile)
-    {
-      var filter = Builders<UserMongoEntity>.Filter.Eq("Email", email);
-      var update = Builders<UserMongoEntity>.Update.Set("Profile", profile);
-      return collection.UpdateOne(filter, update).IsAcknowledged;
-    }
-
-    // update user.password
-    public bool UpdateUser(string email, string password, string token)
-    {
-      var filter = Builders<UserMongoEntity>.Filter.Eq("Email", email);
-      var update = Builders<UserMongoEntity>.Update.Set("Password", password);
-      var ack = collection.UpdateOne(filter, update).IsAcknowledged;
-
-      if (ack)
-      {
-        events.AppendEventLog(new EventEntity()
+        public UserCollection(MongoClient client, IConfiguration configuration)
         {
-          Name = "Reset-Password",
-          UserEmail = email,
-          Email = email,
-          Payload = JsonConvert.SerializeObject(new TokenPayload()
-          {
-            Token = token,
-            Usage = "reset-password",
-          }),
-          Date = DateTime.UtcNow
-        });
-      }
+            var database = client.GetDatabase(configuration["Database"]);
+            collection = database.GetCollection<UserMongoEntity>("Users");
+        }
 
-      return ack;
+        public string CreateUser(UserEntity user)
+        {
+            var document = new UserMongoEntity()
+            {
+                Email = user.Email,
+                Role = user.Role,
+                Name = user.Name,
+                Password = user.Password,
+            };
+            collection.InsertOne(document);
+
+            return document.Id.ToString();
+        }
+
+        public IEnumerable<UserEntity> GetUsers(int index, int size, string sort)
+        {
+            throw new NotImplementedException();
+        }
+
+        public UserEntity GetUser(string email)
+        {
+            return collection.Find(Builders<UserMongoEntity>.Filter.Eq("Email", email)).FirstOrDefault();
+        }
+
+        public UserEntity GetUserByName(string name)
+        {
+            return collection.Find(Builders<UserMongoEntity>.Filter.Eq("Name", name)).FirstOrDefault();
+        }
+
+        // update user.confirmed
+        public bool ConfirmUser(string email, bool confirmed)
+        {
+            var filter = Builders<UserMongoEntity>.Filter.Eq("Email", email);
+            var update = Builders<UserMongoEntity>.Update.Set("Confirmed", confirmed);
+            var ack = collection.UpdateOne(filter, update).IsAcknowledged;
+
+            return ack;
+        }
+
+        // update user.profile
+        public bool UpdateProfile(string email, ProfileEntity profile)
+        {
+            var filter = Builders<UserMongoEntity>.Filter.Eq("Email", email);
+            var update = Builders<UserMongoEntity>.Update.Set("Profile", profile);
+            return collection.UpdateOne(filter, update).IsAcknowledged;
+        }
+
+        // update user.password
+        public bool UpdatePassword(string email, string password)
+        {
+            var filter = Builders<UserMongoEntity>.Filter.Eq("Email", email);
+            var update = Builders<UserMongoEntity>.Update.Set("Password", password);
+            var ack = collection.UpdateOne(filter, update).IsAcknowledged;
+
+            return ack;
+        }
+
+        // update user.role
+        public bool UpdateRole(string email, string role)
+        {
+            var filter = Builders<UserMongoEntity>.Filter.Eq("Email", email);
+            var update = Builders<UserMongoEntity>.Update.Set("Role", role);
+            var ack = collection.UpdateOne(filter, update).IsAcknowledged;
+            return ack;
+        }
+
+        // update user.name
+        public bool UpdateName(string email, string name)
+        {
+            var filter = Builders<UserMongoEntity>.Filter.Eq("Email", email);
+            var update = Builders<UserMongoEntity>.Update.Set("Name", name);
+            var ack = collection.UpdateOne(filter, update).IsAcknowledged;
+            return ack;
+        }
+
+        public bool DeleteUser(string email)
+        {
+            var filter = Builders<UserMongoEntity>.Filter.Eq("Email", email);
+            return collection.DeleteOne(filter).IsAcknowledged;
+        }
     }
-
-    // update user.role
-
-    // update user.name
-
-    public IEnumerable<TokenPayload> GetTokenPayloads(string email)
-    {
-      var logs = events.GetEventLogs(email).Where(l => new string[] { "Issue-Email-Token", "Verify-Email", "Reset-Password" }.Contains(l.Name));
-      var payloads = logs.Select(e => JsonConvert.DeserializeObject<TokenPayload>(e.Payload));
-      return payloads;
-    }
-
-    public bool DeleteUser(string email)
-    {
-      var filter = Builders<UserMongoEntity>.Filter.Eq("Email", email);
-      return collection.DeleteOne(filter).IsAcknowledged;
-    }
-  }
 }

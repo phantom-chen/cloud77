@@ -1,5 +1,4 @@
-﻿using Cloud77.Service;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace UserService.Collections
@@ -22,13 +21,46 @@ namespace UserService.Collections
             collection = database.GetCollection<PostMongoEntity>("Posts");
         }
 
-        public IList<PostMongoEntity> GetPosts(string email, int index, int size)
+        public PostCollection(IMongoDatabase database)
+        {
+            collection = database.GetCollection<PostMongoEntity>("Posts");
+        }
+
+        public IList<PostMongoEntity> Get(string email)
         {
             return collection
                 .Find(Builders<PostMongoEntity>.Filter.Eq("Email", email))
-                .Skip(index * size)
-                .Limit(size)
                 .ToList();
+        }
+
+        public string Create(string email, string title, string description)
+        {
+            var doc = new PostMongoEntity()
+            {
+                Email = email,
+                Title = title,
+                Description = description,
+            };
+            collection.InsertOne(doc);
+            return doc.Id.ToString();
+        }
+
+        public bool DeleteSome(string email)
+        {
+            var filter = Builders<PostMongoEntity>.Filter.Eq("Email", email);
+            return collection.DeleteMany(filter).IsAcknowledged;
+        }
+
+        public bool Delete(string id)
+        {
+            var filter = Builders<PostMongoEntity>.Filter.Eq("_id", new ObjectId(id));
+            return collection.DeleteOne(filter).IsAcknowledged;
+        }
+
+        public int Count()
+        {
+            var count = collection.CountDocuments(Builders<PostMongoEntity>.Filter.Empty);
+            return Convert.ToInt32(count);
         }
     }
 }

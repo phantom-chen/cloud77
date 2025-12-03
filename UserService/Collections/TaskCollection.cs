@@ -1,5 +1,4 @@
-﻿using Cloud77.Service;
-using Cloud77.Service.Entity;
+﻿using Cloud77.Abstractions.Entity;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -17,19 +16,22 @@ namespace UserService.Collections
         public TaskCollection(MongoClient client, IConfiguration configuration)
         {
             var database = client.GetDatabase(configuration["Database"]);
-            collection = database.GetCollection<TaskMongoEntity>(Cloud77Utility.Tasks);
+            collection = database.GetCollection<TaskMongoEntity>("Tasks");
         }
 
-        public IList<TaskMongoEntity> GetTasks(string email, int index, int size)
+        public TaskCollection(IMongoDatabase database)
+        {
+            collection = database.GetCollection<TaskMongoEntity>("Tasks");
+        }
+
+        public IList<TaskMongoEntity> Get(string email)
         {
             return collection
                 .Find(Builders<TaskMongoEntity>.Filter.Eq("Email", email))
-                .Skip(index * size)
-                .Limit(size)
                 .ToList();
         }
 
-        public string CreateTask(string email, string title, string description)
+        public string Create(string email, string title, string description)
         {
             var doc = new TaskMongoEntity()
             {
@@ -42,7 +44,7 @@ namespace UserService.Collections
             return doc.Id.ToString();
         }
 
-        public bool UpdateTask(string id, string title, string description, int completed)
+        public bool Update(string id, string title, string description, int completed)
         {
             var filter = Builders<TaskMongoEntity>.Filter.Eq("_id", new ObjectId(id));
             var update = Builders<TaskMongoEntity>.Update
@@ -52,12 +54,19 @@ namespace UserService.Collections
             return collection.UpdateOne(filter, update).IsAcknowledged;
         }
 
-        public bool DeleteTask(string id)
+        public bool Delete(string id)
         {
-            return collection.DeleteOne(Builders<TaskMongoEntity>.Filter.Eq("_id", new ObjectId(id))).IsAcknowledged;
+            var filter = Builders<TaskMongoEntity>.Filter.Eq("_id", new ObjectId(id));
+            return collection.DeleteOne(filter).IsAcknowledged;
         }
 
-        public int CountTasks()
+        public bool DeleteSome(string email)
+        {
+            var filter = Builders<TaskMongoEntity>.Filter.Eq("Email", email);
+            return collection.DeleteMany(filter).IsAcknowledged;
+        }
+
+        public int Count()
         {
             var count = collection.CountDocuments(Builders<TaskMongoEntity>.Filter.Empty);
             return Convert.ToInt32(count);

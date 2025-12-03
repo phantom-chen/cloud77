@@ -1,8 +1,10 @@
 ﻿
-using Cloud77.Service;
+using Cloud77.Abstractions.Entity;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using System.Reflection;
+using UserService.Collections;
+using UserService.Models;
+using Cloud77.Abstractions.Service;
 
 namespace UserService.Services
 {
@@ -17,26 +19,22 @@ namespace UserService.Services
             this.logger = logger;
 
             var connection = Environment.GetEnvironmentVariable("DB_CONNECTION") ?? "localhost";
-            var dir = Directory.GetParent(Assembly.GetExecutingAssembly().Location).ToString();
-            if (File.Exists(Path.Combine(dir, "data", "localhost.txt")))
+            if (!string.IsNullOrEmpty(LocalDataModel.IPAddress))
             {
-                connection = connection.Replace("localhost", File.ReadAllLines(Path.Combine(dir, "data", "localhost.txt"))[0]);
+                connection = connection.Replace("localhost", LocalDataModel.IPAddress);
             }
-            logger.LogInformation($"Connecting to: {connection}");
+
             var settings = MongoClientSettings.FromConnectionString(connection);
             settings.ConnectTimeout = TimeSpan.FromSeconds(5);
             settings.ServerSelectionTimeout = TimeSpan.FromSeconds(5);
             var client = new MongoClient(settings);
             database = client.GetDatabase(configuration["Database"]);
-            logger.LogInformation($"Database: {configuration["Database"]}");
-
         }
 
         private IMongoDatabase database;
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            logger.LogInformation("Database service started.");
             Task.Run(Execute);
             return Task.CompletedTask;
         }
@@ -48,33 +46,102 @@ namespace UserService.Services
 
         private async Task Execute()
         {
+            int index = -1;
+
+            while (true)
+            {
+                await Task.Delay(5000);
+                switch (index)
+                {
+                    case 0:
+                        // remove field name
+                        logger.LogInformation("Checking for field to unset...");
+                        await UnsetFieldAsync();
+                        break;
+                    case 1:
+                        logger.LogInformation("fix event create user");
+                        break;
+                    case 2:
+                        logger.LogInformation("fix event verify email");
+                        await FixVerifyEmailAsync();
+                        break;
+                    case 3:
+                        logger.LogInformation("fix event reset password");
+                        break;
+                    default:
+                        index = -1;
+                        break;
+                }
+                index++;
+            }
+        }
+
+        private async Task UnsetFieldAsync()
+        {
             var field = Environment.GetEnvironmentVariable("DB_UNSET_FIELD") ?? "";
-            
+
             if (string.IsNullOrEmpty(field))
             {
                 return;
             }
+
             logger.LogInformation($"Unsetting field: {field}");
-            var collection = database.GetCollection<BsonDocument>(Cloud77Utility.Users);
-            long count = 1;
+            var collection = database.GetCollection<BsonDocument>("Users");
+            var filter = Builders<BsonDocument>.Filter.Exists(field, true);
+            var update = Builders<BsonDocument>.Update.Unset(field);
 
-            // remove field name
-            while (count > 0)
+            var result = await collection.UpdateOneAsync(filter, update);
+
+            if (result.MatchedCount > 0)
             {
-                var filter = Builders<BsonDocument>.Filter.Exists(field, true);
-                var update = Builders<BsonDocument>.Update.Unset(field);
+                logger.LogInformation($"{result.ModifiedCount} documents updated.");
+            }
+            else
+            {
+                logger.LogInformation("No documents updated.");
+            }
+        }
 
-                var result = await collection.UpdateOneAsync(filter, update);
-                count = result.ModifiedCount;
-                if (result.MatchedCount > 0)
+        private int skippedEvent = 0;
+
+        private async Task FixVerifyEmailAsync()
+        {
+            var collection = database.GetCollection<EventMongoEntity>("Events");
+            var filter = Builders<EventMongoEntity>.Filter.Eq("Name", "Verify-Email");
+            var events = await collection.Find(filter).Skip(skippedEvent).Limit(1).ToListAsync();
+            if (events.Any())
+            {
+                try
                 {
-                    logger.LogInformation($"{result.ModifiedCount} documents updated.");
+                    if (events[0].Payload.Contains("Email"))
+                    {
+                        // not updated
+                        var payload = Newtonsoft.Json.JsonConvert.DeserializeObject<TokenPayload>(events[0].Payload);
+                        var newPayload = new TokenPayloadBase() { Token = payload.Token };
+                        var update = Builders<EventMongoEntity>.Update.Set("Payload", Newtonsoft.Json.JsonConvert.SerializeObject(newPayload));
+                        var eventFilter = Builders<EventMongoEntity>.Filter.Eq("_id", events[0].Id);
+                        var ack = await collection.UpdateOneAsync(eventFilter, update);
+                        if (ack.IsAcknowledged)
+                        {
+                            logger.LogInformation($"Event ID {events[0].Id} updated. index {skippedEvent}");
+                        }
+                        await Task.Delay(5000);
+                    }
+                    else
+                    {
+                        // already updated
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    logger.LogInformation("No documents updated.");
+                    logger.LogError(ex, "Error processing event ID");
                 }
-                await Task.Delay(2000);
+                skippedEvent++;
+            }
+            else
+            {
+                logger.LogInformation("No more events to process.");
+                return;
             }
         }
     }

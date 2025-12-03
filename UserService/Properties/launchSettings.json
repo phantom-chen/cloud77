@@ -10,9 +10,10 @@
         "REDIS_PASSWORD": "123456",
         "MQ_HOST": "localhost",
         "MQ_USERNAME": "admin",
-        "MQ_PASSWORD": "123456"
+        "MQ_PASSWORD": "123456",
+        "CUSTOM_LOGGING": "txt"
       },
-      "applicationUrl": "http://localhost:5389"
+      "applicationUrl": "http://localhost:7713"
     }
   }
 }

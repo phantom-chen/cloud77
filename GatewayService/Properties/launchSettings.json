@@ -4,9 +4,10 @@
     "http": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "applicationUrl": "http://localhost:4359",
+      "applicationUrl": "http://localhost:7710",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "CUSTOM_LOGGING": "txt"
       }
     }
   }

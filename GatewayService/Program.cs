@@ -4,6 +4,7 @@ using GatewayService.Middleware;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Security.Claims;
+using GatewayService.Models;
 
 namespace GatewayService
 {
@@ -11,12 +12,20 @@ namespace GatewayService
   {
     public static void Main(string[] args)
     {
+      new LocalDataModel().AppendLog("Gateway service starts");
       var builder = WebApplication.CreateBuilder(args);
       IConfiguration configuration = builder.Configuration;
-      builder.Configuration.AddJsonFile("ocelot.json");
 
-      Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-      var AuthenticationProviderKey = "MyKey";
+      var path = "ocelot.json";
+      if (File.Exists(Path.Combine(LocalDataModel.Root, "ocelot.json")))
+      {
+        path = Path.Combine(LocalDataModel.Root, "ocelot.json");
+      }
+
+      builder.Configuration.AddJsonFile(path);
+
+
+      var AuthenticationProviderKey = configuration["AuthenticationScheme"] ?? "SomeKey";
 
       // Add services to the container.
 
@@ -35,9 +44,9 @@ namespace GatewayService
           ValidateIssuer = true,
           ValidateAudience = true,
           ValidateLifetime = true,
-          IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["SecurityKey"])),
-          ValidIssuer = configuration["Issuer"],
-          ValidAudience = configuration["Audience"],
+          IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["SecurityKey"] ?? "abcdefghijklmnopqrstuvwzxyabcdefgh")),
+          ValidIssuer = configuration["Issuer"] ?? "issuer",
+          ValidAudience = configuration["Audience"] ?? "audience",
           ClockSkew = TimeSpan.FromSeconds(30),
           RequireExpirationTime = true,
         };

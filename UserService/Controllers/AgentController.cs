@@ -1,4 +1,4 @@
-﻿using Cloud77.Service;
+﻿using Cloud77.Abstractions.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -27,13 +27,19 @@ namespace UserService.Controllers
         if (addr != null) ip = addr.ToString();
       }
 
-      var result = new ServiceApp()
+      var tag1 = $"ENVIRONMENT={Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? ""}";
+      var tag2 = $"CUSTOM_LOGGING={Environment.GetEnvironmentVariable("CUSTOM_LOGGING") ?? ""}";
+
+      var result = new ServiceAgent()
       {
         Version = fileVersionInfo.FileVersion,
         Hostname = hostname,
+        Machine = Environment.MachineName,
         IP = ip,
-        Name = "service_name",
-        Tags = new[] { "service_tag1", "service_tag2", "service_tag3" }
+        Service = "user_service",
+        Tags = new[] { tag1, tag2 },
+        Environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "",
+        Logging = Environment.GetEnvironmentVariable("CUSTOM_LOGGING") ?? ""
       };
 
       Response.Headers.Append("X-Response-Data", "Controller");

@@ -1,0 +1,7 @@
+{
+    "service": "canteen_service",
+    "database": "dev_db",
+    "issuer": "issuer",
+    "audience": "audience",
+    "secretKey": "abcdefghijklmnopqrstuvwzxyabcdefgh"
+}

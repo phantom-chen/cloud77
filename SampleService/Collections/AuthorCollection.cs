@@ -1,5 +1,5 @@
-﻿using Cloud77.Service;
-using Cloud77.Service.Entity;
+﻿using Cloud77.Abstractions.Entity;
+using Cloud77.Abstractions.Service;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -10,11 +10,6 @@ namespace SampleService.Collections
     public ObjectId Id { get; set; }
   }
 
-  public class AuthorsResult : QueryResults
-  {
-    public AuthorMongoEntity[] Data = Array.Empty<AuthorMongoEntity>();
-  }
-
   public class AuthorCollection
   {
     private readonly IMongoCollection<AuthorMongoEntity> collection;
@@ -22,16 +17,30 @@ namespace SampleService.Collections
     public AuthorCollection(MongoClient client, string name)
     {
       var database = client.GetDatabase(name);
-      collection = database.GetCollection<AuthorMongoEntity>(Cloud77Utility.Authors);
+      collection = database.GetCollection<AuthorMongoEntity>("Authors");
     }
 
-    public IList<AuthorMongoEntity> GetAuthors(int index, int size)
+    public IList<Author> GetAuthors(int index, int size)
     {
       return collection
           .Find(Builders<AuthorMongoEntity>.Filter.Empty)
           .Skip(index * size)
           .Limit(size)
-          .ToList();
+          .ToList()
+          .Select(a =>
+          {
+            return new Author()
+            {
+              Id = a.Id.ToString(),
+              Name = a.Name,
+              Title = a.Title,
+              Region = a.Region,
+              Address = a.Address,
+              CreatedAt = a.CreatedAt,
+
+              UpdatedAt = a.UpdatedAt
+            };
+          }).ToList();
     }
 
     public string CreateAuthor(AuthorEntity entity)
@@ -79,7 +88,7 @@ namespace SampleService.Collections
 
     public bool Clear()
     {
-      collection.Database.DropCollection(Cloud77Utility.Authors);
+      collection.Database.DropCollection("Authors");
       return true;
     }
   }

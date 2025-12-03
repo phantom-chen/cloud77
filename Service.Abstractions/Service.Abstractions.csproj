@@ -7,18 +7,21 @@
     <Authors>Cloud77</Authors>
     <Company>Cloud77</Company>
     <Description>Cloud77 model definitions and utilities</Description>
-    <PackageIcon>cloud77.png</PackageIcon>
+    <PackageIcon>favicon.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <AssemblyName>Cloud77.Abstractions</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Update="cloud77.png">
+    <None Update="favicon.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   

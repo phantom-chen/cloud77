@@ -1,4 +1,5 @@
-﻿using Cloud77.Service;
+﻿using Cloud77.Abstractions.Service;
+using Cloud77.Abstractions.Entity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
@@ -32,17 +33,17 @@ namespace SampleService.Controllers
     {
       if (string.IsNullOrEmpty(database))
       {
-        return NotFound(new ServiceResponse("database-not-found", "", "database not found"));
+        return NotFound(new NotFoundDatabase());
       }
       if (index < 0) index = 0;
       if (size <= 0) size = 3;
       var bookmarks = collection.GetBookmarks(index, size);
       if (bookmarks == null)
       {
-        return NotFound(new ServiceResponse("empty-bookmark", "", "empty bookmark"));
+        return NotFound(new EmptyBookmark());
       }
       var count = collection.Count();
-      return Ok(new Collections.BookmarksResult()
+      return Ok(new BookmarksResult()
       {
         Index = index,
         Size = size,
@@ -57,10 +58,10 @@ namespace SampleService.Controllers
     {
       if (string.IsNullOrEmpty(database))
       {
-        return NotFound(new ServiceResponse("database-not-found", "", "database not found"));
+        return NotFound(new NotFoundDatabase());
       }
       var id = collection.CreateBookmark(body);
-      return Created($"/bookmarks/{id}", new ServiceResponse("bookmark-created"));
+      return Created($"/bookmarks/{id}", new BookmarkCreated(id));
     }
 
     [HttpPut]
@@ -69,10 +70,10 @@ namespace SampleService.Controllers
     {
       if (string.IsNullOrEmpty(database))
       {
-        return NotFound(new ServiceResponse("database-not-found", "", "database not found"));
+        return NotFound(new NotFoundDatabase());
       }
       collection.UpdateBookmark(id, body);
-      return Accepted($"/bookmarks/{id}", new ServiceResponse("bookmark-updated", id, ""));
+      return Accepted($"/bookmarks/{id}", new BookmarkUpdated(id));
     }
 
     [HttpDelete]
@@ -81,16 +82,16 @@ namespace SampleService.Controllers
     {
       if (string.IsNullOrEmpty(database))
       {
-        return NotFound(new ServiceResponse("database-not-found", "", "database not found"));
+        return NotFound(new NotFoundDatabase());
       }
       var result = collection.DeleteBookmark(id);
       if (result)
       {
-        return Ok(new ServiceResponse("bookmark-deleted", id, ""));
+        return Ok(new BookmarkDeleted(id));
       }
       else
       {
-        return StatusCode(StatusCodes.Status500InternalServerError, new ServiceResponse("update-database-error", id, "fail to update author"));
+        return StatusCode(StatusCodes.Status500InternalServerError, new DatabaseError("fail to update bookmark"));
       }
     }
   }

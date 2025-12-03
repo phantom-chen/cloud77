@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.ts",
-    "start-tester": "nodemon tester.ts",
+    "start-dev": "nodemon index-dev.ts",
+    "start-tester": "nodemon index-tester.ts",
     "start-sample": "nodemon sample/index.ts",
     "start-consumer": "nodemon queue.ts server",
     "start-producer": "nodemon queue.ts client",

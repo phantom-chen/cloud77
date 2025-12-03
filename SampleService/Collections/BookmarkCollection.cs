@@ -1,24 +1,13 @@
-﻿using Cloud77.Service;
+﻿using Cloud77.Abstractions.Entity;
+using Cloud77.Abstractions.Service;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace SampleService.Collections
 {
-  public class BookmarkEntity
-  {
-    public string Title { get; set; }
-    public string Href { get; set; }
-    public string Tags { get; set; }
-    public string Collection { get; set; }
-  }
   public class BookmarkMongoEntity : BookmarkEntity
   {
     public ObjectId Id { get; set; }
-  }
-
-  public class BookmarksResult : QueryResults
-  {
-    public BookmarkMongoEntity[] Data = Array.Empty<BookmarkMongoEntity>();
   }
 
   public class BookmarkCollection
@@ -31,13 +20,24 @@ namespace SampleService.Collections
       collection = database.GetCollection<BookmarkMongoEntity>("Bookmarks");
     }
 
-    public IList<BookmarkMongoEntity> GetBookmarks(int index, int size)
+    public IList<Bookmark> GetBookmarks(int index, int size)
     {
       return collection
           .Find(Builders<BookmarkMongoEntity>.Filter.Empty)
           .Skip(index * size)
           .Limit(size)
-          .ToList();
+          .ToList()
+          .Select(b =>
+          {
+            return new Bookmark()
+            {
+              Id = b.Id.ToString(),
+              Title = b.Title,
+              Href = b.Href,
+              Tags = b.Tags,
+              Collection = b.Collection
+            };
+          }).ToList();
     }
 
     public string CreateBookmark(BookmarkEntity entity)

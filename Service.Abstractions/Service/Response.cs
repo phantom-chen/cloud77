@@ -64,11 +64,6 @@
         }
     }
 
-    public class SettingCreated : ServiceResponse
-    {
-        public SettingCreated(string id) : base("setting-created", id, "setting created") { }
-    }
-
     public class ProductResponse : ServiceResponse
     {
         public ProductResponse(string code, string id, string message)

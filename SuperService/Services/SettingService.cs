@@ -1,4 +1,5 @@
-﻿using Google.Protobuf.Collections;
+﻿using Cloud77.Abstractions.Entity;
+using Google.Protobuf.Collections;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using MongoDB.Driver;
@@ -24,7 +25,7 @@ namespace SuperService.Services
             }
 
             // check if key exists
-            var id = collection.Create(new Cloud77.Service.Entity.SettingEntity()
+            var id = collection.Create(new SettingEntity()
             {
                 Key = request.Key,
                 Value = request.Value,

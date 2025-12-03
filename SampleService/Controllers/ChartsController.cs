@@ -1,5 +1,6 @@
-﻿using Cloud77.Service;
-using Cloud77.Service.Entity;
+﻿using Cloud77.Abstractions.Service;
+using Cloud77.Abstractions.Entity;
+using Cloud77.Abstractions.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -31,10 +32,10 @@ namespace SampleService.Controllers
       {
         var content = await reader.ReadToEndAsync();
         var guid = ShortGuid.NewGuid();
-        await hub.Clients.All.SendAsync("ReceiveMessage", $"Global message {guid.Value}: " + content);
+        await hub.Clients.All.SendAsync("global-message", $"Global message {guid.Value}: " + content);
       }
 
-      return Ok(new ServiceResponse("broadcast-message", "", "Broadcast message"));
+      return Ok(new MessageBroadcasted());
     }
 
     [HttpPost]
@@ -53,7 +54,7 @@ namespace SampleService.Controllers
             });
         hub.Clients.All.SendAsync("live-chart-status", "live chart starts");
       }
-      return Ok(new ServiceResponse("chart-data-updated", "", "Start live chart data"));
+            return Ok(new LiveChartDataResponse("live chart data start"));
     }
 
     [HttpDelete]
@@ -64,7 +65,7 @@ namespace SampleService.Controllers
         manager.StopTimer();
       }
       hub.Clients.All.SendAsync("live-chart-status", "live chart stops");
-      return Ok(new ServiceResponse("chart-data-updated", "", "Stop live chart data"));
+      return Ok(new LiveChartDataResponse("live chart data stops"));
     }
 
     private List<ChartEntity> GetCharts()

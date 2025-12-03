@@ -1,0 +1,21 @@
+version: '3.6'
+
+services:
+
+  canteen_service:
+      build: .
+      volumes:
+          - ./data:/app/data
+      environment:
+          - "PORT=80"
+          - "CANTEEN_SERVICE_SOCKET_PATH=/canteen-ws"
+          - "CUSTOM_LOGGING=txt"
+    #   expose:
+    #       - "80"
+      ports:
+          - "7715:80"
+
+networks:
+  default:
+      external:
+          name: my_dev_apps

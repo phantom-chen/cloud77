@@ -1,6 +1,8 @@
 // data
 
 import { appendFile, readFile, writeFile } from "fs";
+import { localData } from "./local-data";
+import { join } from "path";
 
 // data/users.txt
 
@@ -30,10 +32,10 @@ export function connectedUsers(): number {
     return count;
 }
 
+const filePath = join(localData(), 'connections.txt');
+
 export function appendConnection(id: string, username?: string): void {
-    const filePath = `data/canteen/connections.txt`;
     const line = `${id}${username ? ' ' + username : ''}\n`;
-    console.log(line);
     appendFile(filePath, line, (err) => {
         if (err) {
             console.error("Error appending to file:", err);
@@ -44,8 +46,6 @@ export function appendConnection(id: string, username?: string): void {
 }
 
 export function removeConnection(id: string): void {
-    const filePath = `data/canteen/connections.txt`;
-
     // Read the file, filter out the line, and write back
     readFile(filePath, "utf8", (err, data) => {
         if (err) {

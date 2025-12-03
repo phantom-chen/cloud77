@@ -1,5 +1,5 @@
-﻿using Cloud77.Service;
-using Cloud77.Service.Entity;
+﻿using Cloud77.Abstractions.Utility;
+using Cloud77.Abstractions.Entity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;

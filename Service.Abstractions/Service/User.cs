@@ -52,12 +52,26 @@ namespace Cloud77.Abstractions.Service
         }
     }
 
+    public class InValidAccount
+    {
+
+    }
+
     public class EmptyPassword : ServiceResponse
     {
         public EmptyPassword()
         {
             Code = "empty-password";
             Message = "your password is empty, please put that in the request";
+        }
+    }
+
+    public class WeakPassword : ServiceResponse
+    {
+        public WeakPassword()
+        {
+            Code = "weak-password";
+            Message = "your password is too weak, please use a stronger password";
         }
     }
 
@@ -288,6 +302,46 @@ namespace Cloud77.Abstractions.Service
             Code = "empty-user-post";
             Message = $"find no posts for account {email}";
 
+        }
+    }
+
+    public class UserPostCreated : ServiceResponse
+    {
+        public UserPostCreated(string id)
+        {
+            Id = id;
+            Code = "user-post-created";
+            Message = $"Your post is created successfully with id {id}";
+        }
+    }
+
+    public class UserPostDeleted : ServiceResponse
+    {
+        public UserPostDeleted(string id)
+        {
+            Id = id;
+            Code = "user-post-deleted";
+            Message = $"Your post is deleted successfully with id {id}";
+        }
+    }
+
+    public class UserPostContentUpdated : ServiceResponse
+    {
+        public UserPostContentUpdated(string id)
+        {
+            Id = id;
+            Code = "user-post-content-updated";
+            Message = $"Your post content is updated successfully with id {id}";
+        }
+    }
+
+    public class UserPostContentNotExisting : ServiceResponse
+    {
+        public UserPostContentNotExisting(string id)
+        {
+            Id = id;
+            Code = "user-post-content-not-existing";
+            Message = $"Your post content is not existing with id {id}";
         }
     }
 

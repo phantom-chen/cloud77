@@ -6,3 +6,6 @@ structure
 data
 appsettings.development.json
 appsettings.production.json
+yarn.lock
+.env
+www

@@ -1,8 +1,17 @@
 import * as crypto from 'crypto';
 
 const algorithm = 'aes-256-cbc'; // Encryption algorithm
+
+function bufferFromString(text: string): Buffer {
+    return Buffer.from(text, 'utf8');
+}
+
+
+
 const secretKey = crypto.randomBytes(32); // Generate a 32-byte secret key
 const iv = crypto.randomBytes(16); // Initialization vector
+
+// secretKey.toString()
 
 export interface TokenPayload {
     id: string;

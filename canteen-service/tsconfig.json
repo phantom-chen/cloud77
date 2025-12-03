@@ -100,5 +100,11 @@
   },
   "exclude": [
     "node_modules"
+  ],
+  "include": [
+    "src/**/*",
+    "index.ts",
+    "index-dev.ts",
+    "index-tester.ts"
   ]
 }

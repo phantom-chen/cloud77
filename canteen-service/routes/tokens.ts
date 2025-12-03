@@ -1,0 +1,5 @@
+import { Request, Response } from 'express';
+
+export function getToken(req: Request, res: Response) {
+    res.json({ agent: 'Service Agent', version: '1.0.0' });
+}

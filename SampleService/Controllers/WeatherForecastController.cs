@@ -35,9 +35,16 @@ namespace SampleService.Controllers
         [Route("values")]
         public IActionResult GetNumber()
         {
-            //var obj = new Cloud77.Dotnet.Class1() { MyProperty = 1 };
-            //_logger.LogInformation(obj.Greeting());
             return Ok("ok");
+        }
+
+        [HttpGet]
+        [Route("html")]
+        public IActionResult GetHtml()
+        {
+            //var htmlContent = "<html><body><h1>Hello, World!</h1><p>This is a sample HTML response.</p></body></html>";
+            var htmlContent = "you are confirmed.";
+            return Content(htmlContent, "text/html");
         }
     }
 }

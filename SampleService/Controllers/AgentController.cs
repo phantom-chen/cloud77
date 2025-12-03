@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Cloud77.Abstractions.Service;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Net;
@@ -22,21 +23,31 @@ namespace SampleService.Controllers
     {
       string hostname = Dns.GetHostName();
       var ip = "";
-      var addresses = Dns.GetHostAddresses(hostname);
+      var addresses = Dns.GetHostAddresses(hostname).Where(a => !a.IsIPv6LinkLocal);
       if (addresses.Any())
       {
-        var addr = addresses.First(a => !a.IsIPv6LinkLocal);
+        var addr = addresses.FirstOrDefault();
+        
         if (addr != null) ip = addr.ToString();
       }
+
+      var tag1 = $"ENVIRONMENT={Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? ""}";
+      var tag2 = $"CUSTOM_LOGGING={Environment.GetEnvironmentVariable("CUSTOM_LOGGING") ?? ""}";
+
       Assembly assembly = Assembly.GetExecutingAssembly();
       FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
-      return Ok(new
+      var result = new ServiceAgent()
       {
-        version = fileVersionInfo.FileVersion,
-        hostname,
-        machine = Environment.MachineName,
-        environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "",
-      });
+        Version = fileVersionInfo.FileVersion,
+        Hostname = hostname,
+        IP = ip,
+        Service = "sample_service",
+        Tags = new[] { tag1, tag2 },
+        Machine = Environment.MachineName,
+        Environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "",
+        Logging = Environment.GetEnvironmentVariable("CUSTOM_LOGGING") ?? ""
+      };
+      return Ok(result);
     }
   }
 }

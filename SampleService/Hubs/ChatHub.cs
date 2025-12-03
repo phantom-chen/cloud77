@@ -1,4 +1,4 @@
-﻿using Cloud77.Service.Entity;
+﻿using Cloud77.Abstractions.Entity;
 using Microsoft.AspNetCore.SignalR;
 
 namespace SampleService.Hubs
@@ -7,7 +7,7 @@ namespace SampleService.Hubs
   {
     public async Task SendMessage(string user, string message)
     {
-      await Clients.Caller.SendAsync("ReceiveMessage", user, message);
+      await Clients.Caller.SendAsync("global-message", $"{user}: {message}");
     }
 
     public async Task UpdateChartData(string action)

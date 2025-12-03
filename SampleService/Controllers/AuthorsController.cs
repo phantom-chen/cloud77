@@ -1,5 +1,5 @@
-﻿using Cloud77.Service;
-using Cloud77.Service.Entity;
+﻿using Cloud77.Abstractions.Entity;
+using Cloud77.Abstractions.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
@@ -33,17 +33,17 @@ namespace SampleService.Controllers
     {
       if (string.IsNullOrEmpty(database))
       {
-        return NotFound(new ServiceResponse("database-not-found", "", "database not found"));
+        return NotFound(new NotFoundDatabase());
       }
       if (index < 0) index = 0;
       if (size <= 0) size = 3;
       var authors = collection.GetAuthors(index, size);
       if (authors == null)
       {
-        return NotFound(new ServiceResponse("empty-author", "", "empty author"));
+        return NotFound(new EmptyAuthor());
       }
       var count = collection.Count();
-      return Ok(new Collections.AuthorsResult()
+      return Ok(new AuthorsResult()
       {
         Index = index,
         Size = size,
@@ -58,7 +58,7 @@ namespace SampleService.Controllers
     {
       if (string.IsNullOrEmpty(database))
       {
-        return NotFound(new ServiceResponse("database-not-found", "", "database not found"));
+        return NotFound(new NotFoundDatabase());
       }
       var id = collection.CreateAuthor(new AuthorEntity()
       {
@@ -67,7 +67,7 @@ namespace SampleService.Controllers
         Region = body.Region,
         Address = body.Address
       });
-      return Created("/authors/" + id, new ServiceResponse("author-created"));
+      return Created("/authors/" + id, new AuthorCreated(id));
     }
 
     [HttpPut]
@@ -76,7 +76,7 @@ namespace SampleService.Controllers
     {
       if (string.IsNullOrEmpty(database))
       {
-        return NotFound(new ServiceResponse("database-not-found", "", "database not found"));
+        return NotFound(new NotFoundDatabase());
       }
       collection.UpdateAuthor(id, new AuthorEntity()
       {
@@ -85,7 +85,7 @@ namespace SampleService.Controllers
         Region = body.Region,
         Address = body.Address
       });
-      return Accepted("/authors/" + id, new ServiceResponse("author-updated", id, ""));
+      return Accepted("/authors/" + id, new AuthorUpdated(id));
     }
 
     [HttpDelete]
@@ -94,16 +94,16 @@ namespace SampleService.Controllers
     {
       if (string.IsNullOrEmpty(database))
       {
-        return NotFound(new ServiceResponse("database-not-found", "", "database not found"));
+        return NotFound(new NotFoundDatabase());
       }
       var result = collection.DeleteAuthor(id);
       if (result)
       {
-        return Ok(new ServiceResponse("author-deleted", id, ""));
+        return Ok(new AuthorDeleted(id));
       }
       else
       {
-        return StatusCode(StatusCodes.Status500InternalServerError, new ServiceResponse("update-database-error", id, "fail to update author"));
+        return StatusCode(StatusCodes.Status500InternalServerError, new DatabaseError("fail to update author"));
       }
     }
 

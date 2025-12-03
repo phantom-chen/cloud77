@@ -1,4 +1,4 @@
-﻿using Cloud77.Service;
+﻿using Cloud77.Abstractions.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +12,7 @@ namespace SuperService.Controllers
   /// It can only be accessible in development or staging.
   /// </summary>
   [Route("api/[controller]")]
-  [Authorize]
+  //[Authorize]
   [ApiController]
   public class DatabaseController : ControllerBase
   {
@@ -70,12 +70,7 @@ namespace SuperService.Controllers
       }
       else
       {
-        return NotFound(new ServiceResponse()
-        {
-          Code = "empty-database-collections",
-          Message = $"No collections found for database {configuration["Database"]}",
-          Id = ""
-        });
+                return NotFound(new EmptyDatabaseCollections(configuration["Database"]));
       }
     }
 
@@ -83,19 +78,14 @@ namespace SuperService.Controllers
     public async Task<IActionResult> Delete()
     {
       await client.DropDatabaseAsync(configuration["Database"]);
-      return Ok(new ServiceResponse()
-      {
-        Code = "database-deleted",
-        Message = $"Database {configuration["Database"]} has been deleted",
-        Id = ""
-      });
+      return Ok(new DatabaseDeleted(configuration["Database"]));
     }
 
     [Route("collections/{name}")]
     [HttpDelete]
     public IActionResult DeleteCollection(string name)
     {
-      return Ok();
+            throw new NotImplementedException();
     }
   }
 }

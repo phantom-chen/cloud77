@@ -1,5 +1,4 @@
-﻿using Cloud77.Service;
-using Cloud77.Service.Entity;
+﻿using Cloud77.Abstractions.Entity;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -17,7 +16,7 @@ namespace SuperService.Collections
     public SettingCollection(MongoClient client, IConfiguration configuration)
     {
       var database = client.GetDatabase(configuration["Database"]);
-      collection = database.GetCollection<SettingMongoEntity>(Cloud77Utility.Settings);
+      collection = database.GetCollection<SettingMongoEntity>("Settings");
     }
 
     public string Create(SettingEntity entity)

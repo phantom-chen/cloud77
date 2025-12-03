@@ -1,8 +1,8 @@
 ﻿using Grpc.Core;
 using MongoDB.Driver;
 using SuperService.Protos;
-using Cloud77.Service;
-using Cloud77.Service.Entity;
+using Cloud77.Abstractions.Utility;
+using Cloud77.Abstractions.Entity;
 using UserEmail = SuperService.Protos.UserEmail;
 using UserPassword = SuperService.Protos.UserPassword;
 using SuperService.Models;
@@ -23,7 +23,7 @@ namespace SuperService.Services
             ILogger<UserService> logger,
             TokenGenerator generator)
         {
-            this.defaultRole = configuration["Role_default"] ?? "";
+            this.defaultRole = configuration["Default_role"] ?? "";
             this.logger = logger;
             this.generator = generator;
             this.database = new UserCollection(client, configuration);
@@ -94,7 +94,7 @@ namespace SuperService.Services
 
         public override Task<ServiceReply> VerifyUser(UserEmail request, ServerCallContext context)
         {
-            var header = context.GetHttpContext().Request.Headers["x-cloud77-onetime-token"];
+            var header = context.GetHttpContext().Request.Headers["x-onetime-token"];
             var token = header.ToString().Trim();
             logger.LogInformation(token);
             

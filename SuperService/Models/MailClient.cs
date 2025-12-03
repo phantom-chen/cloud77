@@ -1,5 +1,4 @@
-﻿using Cloud77.Service.Entity;
-using Newtonsoft.Json;
+﻿using Cloud77.Abstractions.Entity;
 using System.Net;
 using System.Net.Mail;
 
@@ -15,19 +14,15 @@ namespace SuperService.Models
 
     public MailClient()
     {
-      var content = new LocalDataModel().SMTPSettings;
-      if (!string.IsNullOrEmpty(content))
-      {
-        var settings = JsonConvert.DeserializeObject<IEnumerable<SettingEntity>>(content);
-        host = settings.FirstOrDefault(s => s.Key == "smtp_client_host").Value ?? "";
-        username = settings.FirstOrDefault(s => s.Key == "smtp_client_username").Value ?? "";
-        password = settings.FirstOrDefault(s => s.Key == "smtp_client_password").Value ?? "";
-        address = settings.FirstOrDefault(s => s.Key == "email_address").Value ?? "";
-        display = settings.FirstOrDefault(s => s.Key == "email_display_name").Value ?? "";
-      }
+      var model = new LocalDataModel();
+      host = model.GetSetting("smtp_client_host");
+      username = model.GetSetting("smtp_client_username");
+      password = model.GetSetting("smtp_client_password");
+      address = model.GetSetting("email_address");
+      display = model.GetSetting("email_display_name");
     }
 
-    public void Send(EmailContentEntity email)
+    public void Send(EmailEntity email)
     {
       // only send to one email address
       var count = email.Addresses.Count();

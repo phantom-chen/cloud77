@@ -1,4 +1,4 @@
-﻿using Cloud77.Service.Entity;
+﻿using Cloud77.Abstractions.Entity;
 using Grpc.Core;
 using Microsoft.AspNetCore.Authorization;
 using MongoDB.Driver;

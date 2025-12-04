@@ -1,0 +1,7 @@
+{
+    "name": "SuperService",
+    "ports": "7701,7711",
+    "file": "C:\\inetpub\\apps\\SuperService\\SuperService.exe",
+    "directory": "C:\\inetpub\\apps\\SuperService\\",
+    "processName": "SuperService"
+}

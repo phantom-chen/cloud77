@@ -1,0 +1,5 @@
+{
+    "name": "CanteenService",
+    "ports": "7715",
+    "shellCommand": "cd C:\\inetpub\\apps\\CanteenService && yarn && node index.js"
+}

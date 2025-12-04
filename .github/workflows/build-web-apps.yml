@@ -27,40 +27,88 @@ jobs:
       - name: echo github ref
         run: echo ${{ github.ref }}
 
-      - name: set up docker
-        uses: docker/setup-buildx-action@v1
+      # - name: set up docker
+      #   uses: docker/setup-buildx-action@v1
 
-      - name: echo docker version
-        run: docker version
+      # - name: echo docker version
+      #   run: docker version
 
-      - if: github.event.inputs.app_name == 'angular-apps'
-        name: build image
-        run: cd ./web-apps/angular-apps && docker build -t registry.cn-hangzhou.aliyuncs.com/cloud_77/web-apps:${{ github.event.inputs.image_tag }} .
-
-      - if: github.event.inputs.app_name == 'canteen-app'
-        name: build image
-        run: cd ./web-apps/canteen-app && docker build -t registry.cn-hangzhou.aliyuncs.com/cloud_77/web-apps:${{ github.event.inputs.image_tag }} .
-
-      - if: github.event.inputs.app_name == 'factory-app'
-        name: build image
-        run: cd ./web-apps/factory-app && docker build -t registry.cn-hangzhou.aliyuncs.com/cloud_77/web-apps:${{ github.event.inputs.image_tag }} .
-
-      - if: github.event.inputs.app_name == 'web-apps'
-        name: build image
-        run: cd ./web-apps && docker build -t registry.cn-hangzhou.aliyuncs.com/cloud_77/web-apps:${{ github.event.inputs.image_tag }} .
-
-      - name: list images
-        run: docker images
-        if: success()
-    
-      - if: github.event.inputs.push_to_registry == 'yes' && success()
-        name: Login to Aliyun Registry
-        uses: docker/login-action@v3
+      - name: use node
+        uses: actions/setup-node@v1
         with:
-          registry: registry.cn-hangzhou.aliyuncs.com
-          username: ${{ secrets.ALIYUN_REGISTRY_USERNAME }}
-          password: ${{ secrets.ALIYUN_REGISTRY_ACCESS_TOKEN }}
+          node-version: "20.x"
+          registry-url: https://registry.npmjs.org/
 
-      - if: github.event.inputs.push_to_registry == 'yes' && success()
-        name: Push image
-        run: docker push registry.cn-hangzhou.aliyuncs.com/cloud_77/web-apps:${{ github.event.inputs.image_tag }}
+      - name: Run a multi-line script
+        run: |
+          echo Add other actions to build,
+          echo test, and deploy your project.
+          node -v
+          npm -v
+          yarn -v
+          ls
+          pwd
+
+      - name: Install package
+        run: cd ./web-apps/angular-apps && yarn install
+
+      - name: build angular app
+        run: |
+          echo "Building Angular app..."
+          cd ./web-apps/angular-apps
+          yarn install
+          yarn run build
+
+      - name: build sample app
+        run: cd ./web-apps/angular-apps && yarn run build-sample
+
+      - name: build account app
+        run: cd ./web-apps/angular-apps && yarn run build-account
+
+      - name: build dashboard app
+        run: cd ./web-apps/angular-apps && yarn run build-dashboard
+
+      - name: build internal app
+        run: cd ./web-apps/angular-apps && yarn run build-internal
+
+      - name: Copy files to remote
+        uses: ArthurYdalgo/github-action-scp@0.7.5
+        with:
+          local: web-apps/angular-apps/dist
+          remote: /tmp/web-apps/angular-apps
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+        if: success()
+
+      # - if: github.event.inputs.app_name == 'angular-apps'
+      #   name: build image
+      #   run: cd ./web-apps/angular-apps && docker build -t registry.cn-hangzhou.aliyuncs.com/cloud_77/web-apps:${{ github.event.inputs.image_tag }} .
+
+      # - if: github.event.inputs.app_name == 'canteen-app'
+      #   name: build image
+      #   run: cd ./web-apps/canteen-app && docker build -t registry.cn-hangzhou.aliyuncs.com/cloud_77/web-apps:${{ github.event.inputs.image_tag }} .
+
+      # - if: github.event.inputs.app_name == 'factory-app'
+      #   name: build image
+      #   run: cd ./web-apps/factory-app && docker build -t registry.cn-hangzhou.aliyuncs.com/cloud_77/web-apps:${{ github.event.inputs.image_tag }} .
+
+      # - if: github.event.inputs.app_name == 'web-apps'
+      #   name: build image
+      #   run: cd ./web-apps && docker build -t registry.cn-hangzhou.aliyuncs.com/cloud_77/web-apps:${{ github.event.inputs.image_tag }} .
+
+      # - name: list images
+      #   run: docker images
+      #   if: success()
+    
+      # - if: github.event.inputs.push_to_registry == 'yes' && success()
+      #   name: Login to Aliyun Registry
+      #   uses: docker/login-action@v3
+      #   with:
+      #     registry: registry.cn-hangzhou.aliyuncs.com
+      #     username: ${{ secrets.ALIYUN_REGISTRY_USERNAME }}
+      #     password: ${{ secrets.ALIYUN_REGISTRY_ACCESS_TOKEN }}
+
+      # - if: github.event.inputs.push_to_registry == 'yes' && success()
+      #   name: Push image
+      #   run: docker push registry.cn-hangzhou.aliyuncs.com/cloud_77/web-apps:${{ github.event.inputs.image_tag }}

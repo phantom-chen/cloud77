@@ -1,0 +1,20 @@
+﻿syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+option csharp_namespace = "TestUtility.Protos";
+
+package token;
+
+service TokenCreator {
+	rpc IssueToken (TokenRequest) returns (TokenReply);
+}
+
+message TokenRequest {
+	string email = 1;
+	string password = 2;
+}
+
+message TokenReply {
+	string value = 1;
+}

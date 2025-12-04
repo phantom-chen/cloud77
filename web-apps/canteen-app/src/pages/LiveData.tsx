@@ -1,21 +1,56 @@
-import { Box, Button, Tab, TextField, Typography } from '@mui/material';
-import { TabContext, TabList, TabPanel } from '@mui/lab';
+import { Box, Button, Tab, TextField, Typography, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import { Socket } from 'socket.io-client';
 import { createSocket } from './models/socket';
 import { LoginDialog } from './components/LoginDialog';
+import { Rooms } from './components/Rooms';
+import { Documents } from './components/Documents';
+import ChatPanel from './components/Chat';
+import axios from 'axios';
+import { IChatRoom } from '../models/chat-room';
 
 const LiveData: React.FC = () => {
 
-    const [value, setValue] = useState('0');
     const [userName, setUserName] = useState('');
     const [sessionId, setSessionId] = useState('');
     const [online, setOnline] = useState(0);
-    const [roomInput, setRoomInput] = useState('');
-    const [isLogin, setIsLogin] = useState<boolean>(true);
+    const [apiKey, setApiKey] = useState('');
+
+    const [broadcastMessage, setBroadcastMessage] = useState<string>('');
+    const [receivedMessages, setReceivedMessages] = useState<string[]>([]);
+    const [rooms, setRooms] = useState<IChatRoom[]>([]);
+    const [documents, setDocuments] = useState<{ id: string, title: string }[]>([]);
+
+    // const [isLogin, setIsLogin] = useState<boolean>(true);
+    const [selectedValue, setSelectedValue] = useState('');
 
     const socketRef = useRef<Socket>(createSocket());
-    
+
+    const handleChange = (event: SelectChangeEvent) => {
+        setSelectedValue(event.target.value as string);
+    };
+
+    useEffect(() => {
+        axios.get('api/gateway', {
+            headers: {
+                'x-api-version': 'v1'
+            }
+        })
+            .then(response => {
+
+                console.log(response.data);
+                const data = response.data;
+                console.log(data)
+                localStorage.setItem('sso_url', data.sso);
+                localStorage.setItem('home_url', data.home);
+                localStorage.setItem('api_key', data.key);
+                setApiKey(data.key);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }, []);
+
     useEffect(() => {
         socketRef.current?.on("connect", () => {
             console.log(socketRef.current?.connected); // true
@@ -29,30 +64,60 @@ const LiveData: React.FC = () => {
         socketRef.current?.io.on("reconnect", () => {
             console.log('reconnect_attempt');
         });
+
         socketRef.current?.on('session-id', (arg: { id: string }) => {
             setSessionId(arg.id);
         });
         socketRef.current?.on('online', (arg: { online: number }) => {
             setOnline(arg.online);
         });
+        
+        socketRef.current?.on("msgToClient", (arg) => {
+            console.log(arg);
+            setReceivedMessages(msgs => [...msgs, arg + ' ' + new Date().toLocaleString()]);
+        })
+
+        socketRef.current?.on("broadcastToOthers", (arg) => {
+            console.warn(arg);
+            setBroadcastMessage(arg);
+        });
+
+        socketRef.current?.on("broadcastToAll", (arg) => {
+            console.warn(arg);
+            setBroadcastMessage(arg);
+        });
+
+        socketRef.current?.on('rooms', (arg: { rooms: IChatRoom[] }) => {
+            console.log(arg);
+            setRooms(arg.rooms);
+        });
         socketRef.current?.on('update-user-response', (arg: { succeed: boolean, error: string, username: string, token: string }) => {
             console.log(arg);
             if (arg.token) {
                 sessionStorage.setItem('canteen_socket_session_token', arg.token);
-                setIsLogin(true);
+                // setIsLogin(true);
             }
             if (arg.username) {
                 setUserName(arg.username);
             }
         });
+
+        socketRef.current?.on('documents', (arg: { documents: { id: string, title: string}[]}) => {
+            console.log(arg);
+            setDocuments(arg.documents);
+        })
+
+        socketRef.current?.on('document-changed', (msg) => {
+            console.log(msg);
+        })
     }, [])
 
     useEffect(() => {
         if (sessionStorage.getItem('canteen_socket_session_token')) {
-            setIsLogin(true);
+            // setIsLogin(true);
             socketRef.current?.emit('update-user', { username: '', password: '', token: sessionStorage.getItem('canteen_socket_session_token') });
         } else {
-            setIsLogin(false);
+            // setIsLogin(false);
         }
     }, [])
 
@@ -74,51 +139,74 @@ const LiveData: React.FC = () => {
 
     return (
         <>
-            <LoginDialog open={!isLogin} onClose={(e, p) => {
+            {/* <LoginDialog open={!isLogin} onClose={(e, p) => {
                 setUserName(e);
                 // save user name in session
                 socketRef.current?.emit('update-user', { username: e, password: p, token: '' });
             }} />
             {
                 isLogin ? <Typography variant="h6" component='div'>Session Id: {sessionId}, Online users: {online}, Current user: {userName}</Typography> : undefined
+            } */}
+            <Typography variant="h6" component='div'>Session Id: {sessionId}</Typography>
+            <Typography variant="h6" component='div'>Online users: {online}</Typography>
+            {
+                broadcastMessage ? <Box sx={{ backgroundColor: '#f0f0f0', padding: '10px', marginTop: '10px', marginBottom: '10px' }}>
+                    <Typography variant="body1" component='div'>Broadcast message: {broadcastMessage}</Typography>
+                </Box> : undefined
             }
-            <Box sx={{ width: '100%', typography: 'body1' }}>
-                <TabContext value={value}>
-                    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                        <TabList onChange={(e, v) => setValue(v)} aria-label="lab API tabs example">
-                            <Tab label="Chat" value="0" />
-                            <Tab label="Rooms" value="1" />
-                            <Tab label="Documents" value="2" />
-                        </TabList>
-                    </Box>
-                    <TabPanel value="0">
-                        <>
-                        <p>chat tab works</p>
-                        </>
-                    </TabPanel>
-                    <TabPanel value="1">
-                        <p>rooms tab works</p>
-                        <div>
-                            <Button variant='contained' onClick={() => {
-                                socketRef.current?.emit('add-room', { token: sessionStorage.getItem('canteen_socket_session_token'), room: roomInput });
-                            }}>Create Room</Button>
-                            <Button variant='contained' onClick={() => {
-                                socketRef.current?.emit('remove-room', { token: sessionStorage.getItem('canteen_socket_session_token'), room: roomInput });
-                            }}>Remove Room</Button>
-                            <Button variant='contained' onClick={() => {
-                                socketRef.current?.emit('join-room', { token: sessionStorage.getItem('canteen_socket_session_token'), room: roomInput });
-                            }}>Join Room</Button>
-                        </div>
-
-                        <TextField label="Room Name" variant="standard" component='div'
-                            value={roomInput}
-                            onChange={e => setRoomInput(e.target.value)} />
-                    </TabPanel>
-                    <TabPanel value="2">
-                        <p>documents tab works</p>
-                    </TabPanel>
-                </TabContext>
-            </Box>
+            <FormControl fullWidth>
+                <InputLabel>Part</InputLabel>
+                <Select
+                    value={selectedValue}
+                    label="Part"
+                    onChange={handleChange}
+                >
+                    <MenuItem value={''}>Session</MenuItem>
+                    <MenuItem value={'chat'}>Chat</MenuItem>
+                    <MenuItem value={'rooms'}>Rooms</MenuItem>
+                    <MenuItem value={'documents'}>Documents</MenuItem>
+                </Select>
+            </FormControl>
+            {
+                selectedValue === '' ? <>
+                    <p>placeholder</p>
+                </> : undefined
+            }
+            {
+                selectedValue === 'rooms' ? <Rooms
+                    rooms={rooms}
+                    getRooms={() => {
+                        socketRef.current?.emit('get-rooms-request', { account: { token: 'xxx', email: 'user1', user: 'user1' }});
+                    }}
+                    addRoom={(room: IChatRoom) => {
+                        socketRef.current?.emit('add-room-request', { account: { token: 'xxx', email: 'user1', user: 'user1' }, room });
+                    }}
+                    removeRoom={(id: string, room: string) => {
+                        socketRef.current?.emit('remove-room-request', { account: { token: 'xxx', email: 'user1', user: 'user1' }, room: id });
+                    }}
+                    joinRoom={(id: string, room: string) => {
+                        // socketRef.current?.emit('join-room', { name: getUser(), room });
+                        alert('WIP');
+                    }}
+                /> : undefined
+            }
+            {
+                selectedValue === 'documents' ? <Documents 
+                    documents={documents}
+                    getDocuments={() => {
+                        socketRef.current?.emit('get-documents-request', { account: { token: 'xxx', email: 'user1', user: 'user1' }});
+                    }}/> : undefined
+            }
+            {
+                selectedValue === 'chat' ? <ChatPanel
+                    chatMessages={receivedMessages}
+                    sendMessage={(message: string) => {
+                        socketRef.current?.emit("msgToServer", { account: { token: 'xxx', email: 'user1', user: 'user1' }, message });
+                    }}
+                    sendToOthers={(message: string) => {
+                        socketRef.current?.emit("msgToOthers", { account: { token: 'xxx', email: 'user1', user: 'user1' }, message });
+                    }} /> : undefined
+            }
         </>
     )
 }

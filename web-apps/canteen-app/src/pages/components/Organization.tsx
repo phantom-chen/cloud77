@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import G6, { Graph } from '@antv/g6';
-import { CompanyData } from '../data';
+import { CompanyData } from '../../data/company';
 
 const Organization: React.FC = () => {
     const ref = React.useRef(null);

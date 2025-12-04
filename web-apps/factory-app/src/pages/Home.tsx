@@ -19,7 +19,11 @@ const Home: React.FC = () => {
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
             <h2>Welcome to the Home Page</h2>
             <div style={{ display: 'flex', justifyContent: 'center', gap: '20px' }}>
+               
                 {Parser().parse(content)}
+
+                <p>-------space------</p>
+
                 <div style={{ width: '300px' }}>
                     <SimpleChart data={ChartData} onClick={chartClickHandler}/> 
                 </div>

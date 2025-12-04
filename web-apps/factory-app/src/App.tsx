@@ -8,9 +8,11 @@ import LoginPage from './pages/Login';
 import HomePage from './pages/Home';
 import AccountPage from './pages/Account';
 import ChatPage from './pages/Chat';
+import MessagePage from './pages/Message';
+import AccountsPage from './pages/Accounts'
 
-process.env.DEMO_USER = "hello";
-console.log(process.env);
+// process.env.DEMO_USER = "hello";
+// console.log(process.env);
 
 function App() {
 
@@ -34,10 +36,13 @@ function App() {
                         <a href="/" style={{ color: location.pathname === '/login' ? 'yellow' : 'white', textDecoration: 'none', padding: '10px 20px', display: 'block' }} onMouseEnter={(e) => e.currentTarget.style.color = 'yellow'} onMouseLeave={(e) => e.currentTarget.style.color = location.pathname === '/login' ? 'yellow' : 'white'}>Home</a>
                     </li>
                     <li style={{ margin: '0 10px' }}>
-                        <a href="/login" style={{ color: location.pathname === '/login' ? 'yellow' : 'white', textDecoration: 'none', padding: '10px 20px', display: 'block' }} onMouseEnter={(e) => e.currentTarget.style.color = 'yellow'} onMouseLeave={(e) => e.currentTarget.style.color = location.pathname === '/login' ? 'yellow' : 'white'}>Login</a>
+                        <a href="/login" style={{ color: location.pathname === '/login' ? 'yellow' : 'white', textDecoration: 'none', padding: '10px 20px', display: 'block' }} onMouseEnter={(e) => e.currentTarget.style.color = 'yellow'} onMouseLeave={(e) => e.currentTarget.style.color = location.pathname === '/login' ? 'yellow' : 'white'}>SSO & Login</a>
                     </li>
                     <li style={{ margin: '0 10px' }}>
                         <a href="/account" style={{ color: 'white', textDecoration: 'none', padding: '10px 20px', display: 'block' }}>Account</a>
+                    </li>
+                    <li style={{ margin: '0 10px' }}>
+                        <a href="/accounts" style={{ color: 'white', textDecoration: 'none', padding: '10px 20px', display: 'block' }}>Accounts</a>
                     </li>
                     <li style={{ margin: '0 10px' }}>
                         <a href="/diagram" style={{ color: 'white', textDecoration: 'none', padding: '10px 20px', display: 'block' }}>Diagram</a>
@@ -51,8 +56,11 @@ function App() {
                 <Route path="" element={<HomePage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/account" element={<AccountPage />} />
+                <Route path="/accounts/:email" element={<AccountPage />} />
+                <Route path="/accounts" element={<AccountsPage />} />
                 <Route path="/diagram" element={<DiagramPage />} />
                 <Route path="/chat" element={<ChatPage />} />
+                <Route path="/message" element={<MessagePage />} />
             </Routes>
         </>
     );

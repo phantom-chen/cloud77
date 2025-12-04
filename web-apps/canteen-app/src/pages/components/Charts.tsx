@@ -4,7 +4,7 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import DraftsIcon from '@mui/icons-material/Drafts';
 import SendIcon from '@mui/icons-material/Send';
 import Item from "./Item";
-import { PVData, UVData } from "../data";
+import { PVData, UVData } from "../../data";
 
 const data = [
     { name: "Page A", uv: 590, pv: 800, amt: 1400 },

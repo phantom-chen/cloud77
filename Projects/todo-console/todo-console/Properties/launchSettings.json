@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "todo-console": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

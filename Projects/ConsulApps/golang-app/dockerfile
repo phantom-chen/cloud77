@@ -1,0 +1,19 @@
+# Build stage
+FROM golang:1.24-alpine as build
+ENV GOPROXY=https://goproxy.cn,direct
+ENV GO_ENABLED=0
+RUN mkdir /app
+WORKDIR /app
+COPY go.mod go.mod
+RUN go mod download
+COPY . .
+RUN go build -o golang-app.exe
+
+# Deploy stage
+FROM alpine as final
+EXPOSE 80
+ENV GIN_MODE=release
+RUN mkdir /app
+WORKDIR /app
+COPY --from=build /app/golang-app.exe ./golang-app.exe
+CMD [ "./golang-app.exe" ]

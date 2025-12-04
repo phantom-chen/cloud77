@@ -1,0 +1,31 @@
+version: '3.3'
+services:
+
+    todo_mysql:
+        image: mysql
+        volumes: 
+            - ../db/:/docker-entrypoint-initdb.d/
+        environment: 
+            - "MYSQL_ROOT_PASSWORD=123456"
+        expose: 
+            - "3306"
+
+    todo_mongodb:
+        image:  mongo
+        expose: 
+            - "27017"
+
+    todo_rabbitmq:
+        hostname: todo_rabbitmq_host
+        image: rabbitmq:management
+        environment: 
+            - RABBITMQ_DEFAULT_USER=admin
+            - RABBITMQ_DEFAULT_PASS=123456
+        expose:
+            - "5672"
+            - "15672"
+
+networks:
+  default:
+      external: true
+      name: todo-app-staging

@@ -1,6 +1,8 @@
-syntax = "proto3";
+﻿syntax = "proto3";
 
-option csharp_namespace = "ServiceTest";
+import "google/protobuf/empty.proto";
+
+option csharp_namespace = "TestUtility.Protos";
 
 package token;
 

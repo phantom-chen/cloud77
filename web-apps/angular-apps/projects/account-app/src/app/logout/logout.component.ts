@@ -4,7 +4,7 @@ import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angula
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
-import { removeTokens } from '../../../../../src/app/shared';
+import { removeTokens } from '@shared/utils';
 
 @Component({
   selector: 'app-logout',

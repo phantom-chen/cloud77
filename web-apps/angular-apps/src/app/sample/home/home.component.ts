@@ -2,7 +2,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { Guid } from 'guid-typescript';
-import { SharedModule } from '../../shared/shared.module';
+import { SharedModule } from '@shared/shared.module';
 import { Observable, of } from 'rxjs';
 import { Person, PERSONS } from './person';
 import { MatButtonModule } from '@angular/material/button';
@@ -57,7 +57,7 @@ export class HomeComponent implements OnInit {
         this.developer = data.developer;
       });
 
-    this.http.get('/resources/samples/posts.json')
+    this.http.get('/resources/json/posts.json')
       .subscribe((data: any) => {
         console.log(data);
         this.logs.push(`Posts: ${data.length}`);

@@ -1,35 +1,69 @@
-<div class="container co-lg-12">
-    <div class="card">
-        <div class="card-header" style="display:flex;">
-            <h5>Accounts</h5>
-            <div style="flex: 1 1 auto;"></div>
-        </div>
+<div class="container">
 
-        <div class="card-body">
-
-            <table class="table table-sm table-striped table-bordered table-hover">
-                <tr>
-                    <th>Name</th>
-                    <th>Confirmed</th>
-                    <th>Email</th>
-                    <th style="width: 100px;">Actions</th>
-                </tr>
-                <tr *ngFor="let a of accounts">
-                    <td>{{ a.name || 'Null' }}</td>
-                    <td>{{ a.confirmed }}</td>
-                    <td>{{ a.email }}</td>
-                    <td style="display:flex;">
-                        <button type="button" class="btn btn-outline-primary btn-sm" style="margin-right:6px;"><i
-                                class="material-icons">edit</i></button>
-                        <button type="button" class="btn btn-outline-danger btn-sm"><i
-                                class="material-icons">delete</i></button>
-                    </td>
-                </tr>
-            </table>
-            <mat-paginator [length]="listLength" [pageSize]="pageSize" [pageSizeOptions]="[10, 12]" showFirstLastButtons=true (page)="pageChanged($event)"></mat-paginator>
-
-        </div>
-
+    <div *ngIf="!isLogin && !loading">
+        <p class="text-danger">Not authorized!</p>
+        <button (click)="onSSO()">Sign In with SSO</button>
     </div>
 
+    <div *ngIf="isLogin">
+        <div class="co-lg-12">
+            <div class="card">
+                <div class="card-header" style="display:flex;">
+                    <h5>Accounts</h5>
+                    <div style="flex: 1 1 auto;"></div>
+                </div>
+
+                <div class="card-body">
+
+                    <section>
+                        <h6>Sorting</h6>
+                        <mat-button-toggle-group name="sort-direction" [(ngModel)]="sort" aria-label="Sorting" (change)="getAccounts()">
+                            <mat-button-toggle value="asc">Ascending</mat-button-toggle>
+                            <mat-button-toggle value="desc">Descending</mat-button-toggle>
+                        </mat-button-toggle-group>
+                    </section>
+
+                    <section>
+                        <h6>Role</h6>
+                        <mat-button-toggle-group name="role-filter" [(ngModel)]="role" aria-label="Role Filter" (change)="getAccounts()">
+                            <mat-button-toggle value="">All</mat-button-toggle>
+                            <mat-button-toggle *ngFor="let r of roles" [value]="r">{{ r }}</mat-button-toggle>
+                        </mat-button-toggle-group>
+                    </section>
+
+                    <section>
+                        <h6>Email</h6>
+                        <mat-form-field>
+                            <mat-label>Email</mat-label>
+                            <input matInput placeholder="Email" [(ngModel)]="email" (change)="getAccounts()">
+                        </mat-form-field>
+                    </section>
+
+                    <table class="table table-sm table-striped table-bordered table-hover">
+                        <tr>
+                            <th>Name</th>
+                            <th>Confirmed</th>
+                            <th>Email</th>
+                            <th style="width: 100px;">Actions</th>
+                        </tr>
+                        <tr *ngFor="let a of accounts">
+                            <td>{{ a.name || 'Null' }}</td>
+                            <td>{{ a.confirmed }}</td>
+                            <td>{{ a.email }}</td>
+                            <td style="display:flex;">
+                                <button type="button" class="btn btn-outline-primary btn-sm"
+                                    style="margin-right:6px;"><i class="material-icons">edit</i></button>
+                                <button type="button" class="btn btn-outline-danger btn-sm"><i
+                                        class="material-icons">delete</i></button>
+                            </td>
+                        </tr>
+                    </table>
+                    <mat-paginator [length]="listLength" [pageSize]="pageSize" [pageSizeOptions]="[10, 12]"
+                        showFirstLastButtons=true (page)="pageChanged($event)"></mat-paginator>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
 </div>

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-message',
@@ -7,23 +7,15 @@ import { Component } from '@angular/core';
   templateUrl: './message.component.html',
   styleUrl: './message.component.css'
 })
-export class MessageComponent {
+export class MessageComponent implements OnInit, AfterViewInit {
+  
+  ngAfterViewInit(): void {
+    window.parent.postMessage({ name: 'app_message_loaded' }, '*');
+  }
 
   ngOnInit(): void {
     window.addEventListener('message', function (ev) {
       if (ev.data) {
-        if (ev.data.name === 'request_login') {
-          sessionStorage.setItem('user_app_host', ev.data.host);
-          sessionStorage.setItem('user_app_url', ev.data.url);
-          sessionStorage.setItem('user_app_message', ev.data.message);
-
-          window.parent.postMessage({ name: 'login_ready' }, '*');
-        }
-        
-        if (ev.data.name === 'logout') {
-          
-        }
-
         if (ev.data?.name === 'sync-tokens') {
           if (ev.data.accessToken) {
             sessionStorage.setItem('user_access_token', ev.data.accessToken);

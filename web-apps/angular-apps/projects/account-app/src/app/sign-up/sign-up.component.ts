@@ -6,10 +6,9 @@ import { MatCommonModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { PasswordStrengthMeterComponent } from 'angular-password-strength-meter';
 import { MatIconModule } from '@angular/material/icon';
-import { IGatewayService } from '../service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { AccountService } from '../account.service';
 
 @Component({
   selector: 'app-sign-up',
@@ -23,7 +22,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    PasswordStrengthMeterComponent
   ],
   templateUrl: './sign-up.component.html',
   styleUrl: './sign-up.component.css'
@@ -31,7 +29,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class SignUpComponent implements OnInit {
 
   constructor(
-    @Inject('IGatewayService') private gateway: IGatewayService,
+    @Inject('AccountService') private service: AccountService,
     private snackbar: MatSnackBar,
   ) {}
 
@@ -47,7 +45,7 @@ export class SignUpComponent implements OnInit {
   nameExisting = true;
 
   onEmailChange(): void {
-    this.gateway.getUser(this.email, '')
+    this.service.gateway.getUser(this.email, '')
     .then(res => {
       this.emailExisting = res.existing;
       if (res.existing) {
@@ -57,7 +55,7 @@ export class SignUpComponent implements OnInit {
   }
 
   onNameChange(): void {
-    this.gateway.getUser('', this.name)
+    this.service.gateway.getUser('', this.name)
     .then(res => {
       this.nameExisting = res.existing;
       if (res.existing) {
@@ -76,11 +74,11 @@ export class SignUpComponent implements OnInit {
     // format name
     // check password strength
     if (this.email && this.name && this.password) {
-      this.gateway.createUser(this.email, this.name, this.password)
-      .then(res => {
-        console.log(res);
-        this.snackbar.open('Info', res.message, {duration: 3000});
-      })
+      // this.gateway.createUser(this.email, this.name, this.password)
+      // .then(res => {
+      //   console.log(res);
+      //   this.snackbar.open('Info', res.message, {duration: 3000});
+      // })
     }
   }
 }

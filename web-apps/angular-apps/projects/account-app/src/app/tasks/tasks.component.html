@@ -1,21 +1,50 @@
-<p>tasks works!</p>
+<div class="container">
+    <app-un-authorized *ngIf="!loading && !isLogin" (ssoSignIn)="onSSO();"></app-un-authorized>
 
-<div class="example-container">
-    <h2>To do</h2>
+    <div *ngIf="isLogin">
 
-    <div cdkDropList #todoList="cdkDropList" [cdkDropListData]="todo" [cdkDropListConnectedTo]="[doneList]"
-        class="example-list" (cdkDropListDropped)="drop($event)">
-        <div class="example-box" *ngFor="let item of todo" cdkDrag>{{item}}</div>
+        <table class="table table-sm table-striped table-bordered table-hover">
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>State</th>
+            </tr>
+            <tr *ngFor="let task of tasks" (click)="editTask(task)">
+                <td>{{ task.title }}</td>
+                <td>{{ task.description }}</td>
+                <td>{{ task.state > 0 ? 'Done' : 'Pending' }}</td>
+            </tr>
+        </table>
+
+        <mat-paginator [length]="listLength" [pageSize]="pageSize" [pageSizeOptions]="[10, 12]" showFirstLastButtons=true (page)="pageChanged($event)"></mat-paginator>
+        
+        <button (click)="createTask()">create task</button>
+
+        <hr />
+
+        <div>
+            <div class="example-container">
+                <h2>To do</h2>
+
+                <div cdkDropList #todoList="cdkDropList" [cdkDropListData]="todo" [cdkDropListConnectedTo]="[doneList]"
+                    class="example-list" (cdkDropListDropped)="drop($event)">
+                    <div class="example-box" *ngFor="let item of todo" cdkDrag>{{item}}</div>
+                </div>
+            </div>
+
+            <div class="example-container">
+                <h2>Done</h2>
+
+                <div cdkDropList #doneList="cdkDropList" [cdkDropListData]="done" [cdkDropListConnectedTo]="[todoList]"
+                    class="example-list" (cdkDropListDropped)="drop($event)">
+                    <div class="example-box" *ngFor="let item of done" cdkDrag>{{item}}</div>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="loadingTasks" style="display: flex;">
+            <mat-spinner></mat-spinner>
+        </div>
+
     </div>
 </div>
-
-<div class="example-container">
-    <h2>Done</h2>
-
-    <div cdkDropList #doneList="cdkDropList" [cdkDropListData]="done" [cdkDropListConnectedTo]="[todoList]"
-        class="example-list" (cdkDropListDropped)="drop($event)">
-        <div class="example-box" *ngFor="let item of done" cdkDrag>{{item}}</div>
-    </div>
-</div>
-
-<button (click)="getTasks()">get tasks</button>

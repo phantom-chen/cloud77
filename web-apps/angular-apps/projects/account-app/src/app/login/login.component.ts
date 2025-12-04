@@ -8,15 +8,16 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { getRemainingTime, getTokens, getUserEmail, removeTokens, saveTokens, SharedModule, syncTokens, timestampToDate, updateUserEmail } from "../../../../../src/app/shared";
-import { debugMode } from '../../../../../src/app/shared';
-import { IGatewayService, SNACKBAR_DURATION } from '../service';
+import { getRemainingTime, getTokens, getUserEmail, removeTokens, saveTokens, debugMode, syncTokens, timestampToDate, updateUserEmail } from "@shared/utils";
+import { SharedModule } from '@shared/shared.module';
+import { SNACKBAR_DURATION } from '@shared/utils';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { HttpErrorResponse } from '@angular/common/http';
+import { AccountService } from '../account.service';
 
 export interface IHandleHttpError {
   handleHttpError(response: HttpErrorResponse): void
@@ -48,25 +49,24 @@ export interface IHandleHttpError {
 export class LoginComponent implements OnInit, AfterViewInit {
 
   constructor(
-    @Inject('IGatewayService') private gateway: IGatewayService,
+    @Inject('AccountService') private service: AccountService,
     private snackbar: MatSnackBar,
     private san: DomSanitizer) {
     this.debugMode = debugMode();
     if (this.debugMode) {
       this.logs += 'Debug Mode\n';
     }
-    this.frameResourceUrl = this.san.bypassSecurityTrustResourceUrl(sessionStorage.getItem('user_app_message') ?? '');
   }
 
   ngAfterViewInit(): void {
     if (getTokens(false).access) {
-      this.onNavigate();
+
     }
   }
 
   ngOnInit(): void {
     // sync local storage to session storage
-    this.remember = (localStorage.getItem('cloud77_remember') ?? '')?.length > 0 ? true : false;
+    this.remember = (localStorage.getItem('remember_me') ?? '')?.length > 0 ? true : false;
     // this.remember = true;
     const tokens = getTokens(false);
     this.hasTokens = (tokens.access !== '' && tokens.refresh !== '');
@@ -75,24 +75,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
     if (getUserEmail()) {
       this.account = getUserEmail();
     }
-
-    window.addEventListener('message', function (ev) {
-      if (ev.data) {
-        if (ev.data.name === 'tokens_saved') {
-          const appUrl = sessionStorage.getItem('user_app_url') ?? '';
-          sessionStorage.removeItem('user_app_message');
-          sessionStorage.removeItem('user_app_url');
-          sessionStorage.removeItem('user_app_host');
-          window.location.href = appUrl;
-        }
-
-        if (ev.data.request === 'logout') {
-
-        }
-      }
-    });
-
-    this.gateway
   }
 
   handleHttpError(error: HttpErrorResponse) {
@@ -110,6 +92,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     }
   }
 
+  serviceAvailable: boolean = false;
   tokenValidity: number = 100;
   hasValidTokens: boolean = false;
   hasTokens: boolean = false;
@@ -124,33 +107,31 @@ export class LoginComponent implements OnInit, AfterViewInit {
   authenticatedUsers: string[] = [];
   logs = '';
 
-  frameResourceUrl?: SafeResourceUrl;
+
   debugMode: boolean = false;
   existing: boolean = true;
 
-  @ViewChild("messageContainer")
-  messageContainer!: ElementRef<HTMLIFrameElement>;
+
 
   onAccountChange() {
-    this.gateway.getUser(this.account, '')
+    this.service.gateway.getUser(this.account, '')
       .then(res => {
         this.existing = res.existing;
       });
   }
 
   onLoginClick() {
-    this.gateway.generateToken(this.account, this.password)
-      .then(data => {
-        updateUserEmail(data.email);
-        saveTokens(data.value, data.refreshToken);
-        this.onNavigate();
-      })
-      .catch(err => {
-        console.log(err);
-        if (err instanceof HttpErrorResponse) {
-          this.handleHttpError(err);
-        }
-      });
+    // this.gateway.generateToken(this.account, this.password)
+    //   .then(data => {
+    //     updateUserEmail(data.email);
+    //     saveTokens(data.value, data.refreshToken);
+    //   })
+    //   .catch(err => {
+    //     console.log(err);
+    //     if (err instanceof HttpErrorResponse) {
+    //       this.handleHttpError(err);
+    //     }
+    //   });
   }
 
   onKeyUp(event: KeyboardEvent): void {
@@ -161,37 +142,20 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   onCheckTokens(): void {
     syncTokens();
-    this.gateway.validateToken().then(res => {
+    this.service.gateway.validateToken()
+    .subscribe(res => {
       this.hasValidTokens = true;
-      const exp: Date = timestampToDate(res);
+      const exp: Date = timestampToDate(res.expiration);
       const current: Date = new Date();
       const diff = getRemainingTime(current, exp);
       console.log(`Remaining: ${diff.day} days / ${diff.hour} hours / ${diff.minute} minute`);
       this.snackbar.open('Info', `Remaining: ${diff.day} days / ${diff.hour} hours / ${diff.minute} minute`, { duration: SNACKBAR_DURATION });
-    });
+    })
   }
 
   onLogout(): void {
     removeTokens();
     this.snackbar.open('info', 'Logout successfully.', { duration: SNACKBAR_DURATION });
-  }
-
-  onNavigate(): void {
-    const appUrl = sessionStorage.getItem('user_app_url') ?? '';
-    const messageUrl = sessionStorage.getItem('user_app_message') ?? '';
-
-    if (appUrl && messageUrl) {
-      const tokens = getTokens(false);
-      this.frameResourceUrl = this.san.bypassSecurityTrustResourceUrl(messageUrl);
-
-      setTimeout(() => {
-        this.messageContainer.nativeElement.contentWindow?.postMessage({
-          name: 'sync-tokens',
-          accessToken: tokens.access,
-          refreshToken: tokens.refresh
-        }, '*')
-      }, 1000);
-    }
   }
 
   copyToken(name: string): void {

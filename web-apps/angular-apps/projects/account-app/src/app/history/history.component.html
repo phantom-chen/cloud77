@@ -1,5 +1,7 @@
 <div class="container">
-    <div class="card">
+    <app-un-authorized *ngIf="!loading && !isLogin" (ssoSignIn)="onSSO();"></app-un-authorized>
+
+    <div *ngIf="isLogin" class="card">
         <div class="card-header">
             User History
         </div>

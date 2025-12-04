@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
+import { exitLoginSession } from '@shared/utils';
+import { AccountService } from '../account.service';
 
 @Component({
   selector: 'app-home',
@@ -8,5 +10,19 @@ import { Component } from '@angular/core';
   styleUrl: './home.component.css'
 })
 export class HomeComponent {
+
   title = 'Account Portal';
+
+  constructor(
+    @Inject('AccountService') private service: AccountService,
+  ) { }
+
+  onSSO(): void {
+    this.service.gateway.ssoSignIn$.next();
+  }
+
+  onLogout(): void {
+    exitLoginSession();
+    window.location.reload();
+  }
 }

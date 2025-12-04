@@ -2,3 +2,12 @@ button {
   padding-top: 2px;
   padding-bottom: 2px;
 }
+
+.author-card {
+  border: solid black 1px;
+  margin: 5px;
+}
+
+p {
+  margin: 0px;
+}

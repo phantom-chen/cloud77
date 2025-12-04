@@ -1,6 +1,36 @@
-<p>live-chart works!</p>
-<div style="display: block">
-    <canvas baseChart [datasets]="chartData" [labels]="chartLabels" [options]="chartOptions" [legend]="chartLegend"
-        [type]="chartType" (chartClick)="clickData()">
-    </canvas>
+<div class="card">
+    <div class="card-header">
+        SignalR
+    </div>
+
+    <div class="card-body">
+        <div style="display: flex;">
+            <div style="width: 50%;">
+                <p>Live Chart
+                    <span>received: {{ counter }}</span>
+                </p>
+                <div>
+                    <button mat-raised-button (click)="startService()">Start</button>
+                    <button mat-raised-button (click)="stopService()">Stop</button>
+                </div>
+                <div style="display: block">
+                    <canvas baseChart [datasets]="chartData" [labels]="chartLabels" [options]="chartOptions"
+                        [legend]="chartLegend" [type]="chartType" (chartClick)="clickData()">
+                    </canvas>
+                </div>
+
+            </div>
+            <div style="width: 50%;">
+                <button mat-raised-button (click)="sendMessage()">Broadcast Message</button>
+                <input type="text" placeholder="Message" [(ngModel)]="message" />
+                <p *ngIf="globalMessage" class="text-info">{{globalMessage}}</p>
+            </div>
+        </div>
+
+        <ul *ngIf="broadCastChartData">
+            <li *ngFor='let data of broadCastChartData'>
+                <strong>Label: </strong> {{data.label}} - <strong>Value: </strong> {{data.data[0]}}
+            </li>
+        </ul>
+    </div>
 </div>

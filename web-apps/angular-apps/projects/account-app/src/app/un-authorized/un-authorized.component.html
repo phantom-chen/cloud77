@@ -4,8 +4,34 @@
     </div>
     <div class="row">
         <p class="text-bg-danger">You are not authorized. Please login.</p>
+        <p class="text-warning text-center">You are not authenticated (No user token).</p>
+        <p class="text-danger text-center">You are not authenticated (Invalid user token).</p>
     </div>
     <div class="row">
-        <button (click)="onClick()">Go to Login</button>
+        <button (click)="onClick()">{{ ssoButtonText }}</button>
     </div>
+
+    <div class="row">
+        <button (click)="onCancel()">Cancel</button>
+    </div>
+
+    <section id="services" class="section">
+        <h5>Services</h5>
+        <p>We offer a wide range of services to meet your needs.</p>
+    </section>
+
+    <section id="about" class="section">
+        <h5>About Us</h5>
+        <p>Learn more about our company and our mission.</p>
+    </section>
+
+    <section id="contact" class="section">
+        <h5>Contact Us</h5>
+        <p>Get in touch with us through our contact form or email.</p>
+    </section>
+
+    <article class="article">
+        <h5>First Blog Post</h5>
+        <p>Welcome to my first blog post! This is an example of an article element.</p>
+    </article>
 </div>

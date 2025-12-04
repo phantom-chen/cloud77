@@ -1,0 +1,31 @@
+<div class="container">
+    <app-un-authorized *ngIf="!loading && !isLogin" (ssoSignIn)="onSSO();"></app-un-authorized>
+
+    <div *ngIf="isLogin">
+        <p>files works!</p>
+        <p>use files API from sample service</p>
+
+        <div style="display: flex;">
+            <div style="width: 50%;">
+                <p>Upload File</p>
+                <input #fileInput placeholder="upload file" type="file" (change)="onFileChange($event)" />
+                <button *ngIf="uploadEnabled" mat-raised-button (click)="uploadFile();">Upload</button>
+                <button (click)="clearFileInput()">Clear Selected File</button>
+                <p *ngIf="uploadProgress > 0 && uploadProgress < 100">
+                    {{uploadProgress}}%
+                </p>
+            </div>
+            <div style="width: 50%;">
+                <mat-selection-list (selectionChange)="onSelectedFilesChange($event)">
+                    @for (f of files; track f) {
+                    <mat-list-option [value]="f">{{f}}</mat-list-option>
+                    }
+                </mat-selection-list>
+
+                <button *ngIf="selectedFiles.length > 0" (click)="deleteFile()">Delete Selected Files</button>
+                <button *ngIf="selectedFiles.length > 0" (click)="downloadFile()">Download Selected Files</button>
+            </div>
+        </div>
+    </div>
+
+</div>

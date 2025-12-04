@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, Inject } from '@angular/core';
+import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
 import { NgxChartsModule } from "@swimlane/ngx-charts";
+import { DashboardService } from '../dashboard.service';
 
 @Component({
   selector: 'app-statistics',
@@ -12,16 +13,32 @@ import { NgxChartsModule } from "@swimlane/ngx-charts";
   templateUrl: './statistics.component.html',
   styleUrl: './statistics.component.css'
 })
-export class StatisticsComponent implements AfterViewInit {
+export class StatisticsComponent implements OnInit, AfterViewInit {
 
-  constructor(    
-  ) {}
+  constructor(
+    @Inject('DashboardService') private service: DashboardService
+  ) { }
+
+  ngOnInit(): void {
+    this.service.gateway.loginSession$.subscribe(res => {
+      this.loading = false;
+      if (res.expiration) {
+        this.isLogin = true;
+      }
+    });
+    this.service.gateway.validateToken();
+  }
 
   ngAfterViewInit(): void {
 
   }
 
-  isLogin = true;
+  onSSO(): void {
+    this.service.gateway.ssoSignIn$.next();
+  }
+
+  loading = true;
+  isLogin = false;
   gradient: boolean = true;
   showLegend: boolean = true;
   showLabels: boolean = true;
@@ -41,7 +58,7 @@ export class StatisticsComponent implements AfterViewInit {
       'name': 'France',
       'value': 7200000
     },
-      {
+    {
       'name': 'UK',
       'value': 6200000
     }
@@ -60,7 +77,7 @@ export class StatisticsComponent implements AfterViewInit {
       'name': 'test3',
       'value': 300
     },
-      {
+    {
       'name': 'test4',
       'value': 400
     }

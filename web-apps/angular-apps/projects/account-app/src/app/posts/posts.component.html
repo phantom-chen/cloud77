@@ -1,2 +1,27 @@
-<p>posts works!</p>
-<a routerLink="123">123</a>
+<div class="container">
+
+    <app-un-authorized *ngIf="!loading && !isLogin" (ssoSignIn)="onSSO();"></app-un-authorized>
+
+    <div *ngIf="isLogin">
+        <a *ngFor="let post of posts" [routerLink]="post.id">{{ post.title }}</a>
+
+        <p class="text-info" *ngIf="posts.length === 0">Empty Posts, create now</p>
+
+        <button (click)="create()">create</button>
+
+        <div class="row">
+            <mat-form-field>
+                <mat-label>Posts</mat-label>
+                <mat-select [(ngModel)]="id" (valueChange)="onValueChange($event)">
+                    <mat-option value="">Select a post</mat-option>
+                    @for (post of posts; track post) {
+                    <mat-option [value]="post.id">{{post.title}}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <button mat-flat-button color="primary" (click)="edit()">Edit selected post</button>
+    </div>
+
+</div>

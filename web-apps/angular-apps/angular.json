@@ -24,11 +24,6 @@
               {
                 "glob": "**/*",
                 "input": "public"
-              },
-              {
-                "glob": "**/*",
-                "input": "node_modules/monaco-editor/min/vs",
-                "output": "/monaco/vs"
               }
             ],
             "styles": [
@@ -480,96 +475,35 @@
         }
       }
     },
-    "internal-app": {
-      "projectType": "application",
-      "schematics": {},
-      "root": "projects/internal-app",
-      "sourceRoot": "projects/internal-app/src",
-      "prefix": "app",
+    "angular-ui": {
+      "projectType": "library",
+      "root": "projects/angular-ui",
+      "sourceRoot": "projects/angular-ui/src",
+      "prefix": "lib",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "outputPath": "dist/internal-app",
-            "index": "projects/internal-app/src/index.html",
-            "browser": "projects/internal-app/src/main.ts",
-            "polyfills": [
-              "zone.js"
-            ],
-            "tsConfig": "projects/internal-app/tsconfig.app.json",
-            "assets": [
-              {
-                "glob": "**/*",
-                "input": "projects/internal-app/public"
-              }
-            ],
-            "styles": [
-              "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
-              "projects/internal-app/src/styles.css"
-            ],
-            "scripts": [
-              "node_modules/jquery/dist/jquery.min.js",
-              "node_modules/bootstrap/dist/js/bootstrap.min.js"
-            ]
+            "project": "projects/angular-ui/ng-package.json"
           },
           "configurations": {
             "production": {
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "2kB",
-                  "maximumError": "4kB"
-                }
-              ],
-              "outputHashing": "all"
+              "tsConfig": "projects/angular-ui/tsconfig.lib.prod.json"
             },
             "development": {
-              "optimization": false,
-              "extractLicenses": false,
-              "sourceMap": true
+              "tsConfig": "projects/angular-ui/tsconfig.lib.json"
             }
           },
           "defaultConfiguration": "production"
         },
-        "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
-          "configurations": {
-            "production": {
-              "buildTarget": "internal-app:build:production"
-            },
-            "development": {
-              "buildTarget": "internal-app:build:development"
-            }
-          },
-          "defaultConfiguration": "development"
-        },
-        "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n"
-        },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
+            "tsConfig": "projects/angular-ui/tsconfig.spec.json",
             "polyfills": [
               "zone.js",
               "zone.js/testing"
-            ],
-            "tsConfig": "projects/internal-app/tsconfig.spec.json",
-            "assets": [
-              {
-                "glob": "**/*",
-                "input": "projects/internal-app/public"
-              }
-            ],
-            "styles": [
-              "projects/internal-app/src/styles.css"
-            ],
-            "scripts": []
+            ]
           }
         }
       }

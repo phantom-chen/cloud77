@@ -9,7 +9,15 @@ import { AfterViewInit, Component } from '@angular/core';
 })
 export class MessageComponent implements AfterViewInit {
   ngAfterViewInit(): void {
-    window.addEventListener('message', function (ev) {      
+    window.addEventListener('message', function (ev) {
+      if (ev.source !== window.parent) {
+        return;
+      }
+
+      if (!ev.data) {
+        return;
+      }
+
       if (ev.data?.name === 'sync-tokens') {
         if (ev.data.accessToken) {
           sessionStorage.setItem('user_access_token', ev.data.accessToken);

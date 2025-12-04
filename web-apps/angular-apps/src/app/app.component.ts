@@ -1,4 +1,4 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, HostListener } from '@angular/core';
 import { NavigationEnd, NavigationStart, Router, RouterModule } from '@angular/router';
 import { SharedModule } from './shared/shared.module';
 import { CommonModule } from '@angular/common';
@@ -42,6 +42,12 @@ export class AppComponent implements AfterViewInit {
   links: string[][] = [];
   noHeader: boolean = false;
 
+  @HostListener('window:storage')
+  onStorageChange(event: any) {
+    console.log('change...', event);
+    // console.log(localStorage.getItem('1'))
+  }
+
   ngAfterViewInit(): void {
     document.addEventListener('DOMContentLoaded', function () {
       // Call your method here
@@ -58,6 +64,17 @@ export class AppComponent implements AfterViewInit {
       yourMethod();
     });
 
+    window.addEventListener('storage', function (event) {
+      console.log('Storage event:', event);
+      // Handle storage events here if needed
+    });
+    // Listen to storage changes and react accordingly
+    window.addEventListener('storage', (event) => {
+      if (event.key === 'user_app_ready') {
+      console.log('Session storage "tester" changed:', event.newValue);
+      // You can add logic here to update component state or trigger actions
+      }
+    });
     this.router.events.subscribe((e) => {
       if (e instanceof NavigationStart) {
         // this.activeLink = e.url;
@@ -76,6 +93,7 @@ export class AppComponent implements AfterViewInit {
         } else {
           this.links = [
             ['Hello', '/hello'],
+            ['SSO', '/sso'],
           ];
         }
       }

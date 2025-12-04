@@ -162,8 +162,14 @@
                     </clipPath>
                 </defs>
             </svg>
-            <h1>Hello, {{ title }}</h1>
+            <h1>{{ title }}</h1>
             <p>Congratulations! Your app is running. 🎉</p>
+            <div>
+                <button (click)="onSSO()">Sign In with SSO</button>
+            </div>
+            <div>
+                <button (click)="onLogout()">Exit current session</button>
+            </div>
         </div>
         <div class="divider" role="separator" aria-label="Divider"></div>
         <div class="right-side">

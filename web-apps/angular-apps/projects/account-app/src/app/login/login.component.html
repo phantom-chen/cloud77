@@ -11,6 +11,7 @@
   <div class="card-body content">
 
     <!-- verify service in running -->
+    <p *ngIf="serviceAvailable" class="text-danger text-center">Service is unavailable, please try again later.</p>
 
     <div *ngIf="!hasTokens" style="margin: auto;box-shadow: 3px;" class="col-lg-6">
       <form novalidate>
@@ -102,8 +103,4 @@
       <app-preview [content]="logs"></app-preview>
     </div>
   </div>
-</div>
-
-<div hidden>
-  <iframe #messageContainer [src]="frameResourceUrl"></iframe>
 </div>

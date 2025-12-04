@@ -1,6 +1,37 @@
-<p>post works!</p>
-<nu-monaco-editor [autoFormat]="true"
-    style="height: 300px;width: 100%;"
-    [model]="model"
-    [options]="options">
-</nu-monaco-editor>
+<div class="container">
+    <app-un-authorized *ngIf="!loading && !isLogin" (ssoSignIn)="onSSO();"></app-un-authorized>
+
+    <div *ngIf="isLogin">
+        <p>post works!</p>
+
+        <div class="row">
+            <p>post id is {{id}}</p>
+        </div>
+
+        <div class="row">
+            <mat-chip-listbox>
+                <mat-chip-option color="primary" selected *ngFor="let tag of tags">{{ tag }}</mat-chip-option>
+            </mat-chip-listbox>
+        </div>
+
+        <div class="row">
+            <mat-chip-listbox>
+                <mat-chip-option color="primary" selected *ngFor="let tag of themes">{{ tag }}</mat-chip-option>
+            </mat-chip-listbox>
+        </div>
+
+        <p>Collection: xxx</p>
+        <p>Description: xxx</p>
+        <p>Created at: xxx</p>
+
+        <nu-monaco-editor [autoFormat]="true" style="height: 300px;width: 100%;" [model]="model" [options]="options">
+        </nu-monaco-editor>
+
+        <div class="row">
+            <textarea [(ngModel)]="content" rows="4" cols="50"></textarea>
+        </div>
+
+        <button mat-button (click)="sync()">Sync editors</button>
+        <button mat-raised-button color="primary" (click)="update();">Save</button>
+    </div>
+</div>

@@ -11,7 +11,7 @@ import { AfterViewInit, Component } from '@angular/core';
 export class OrdersComponent implements AfterViewInit {
   constructor(private http: HttpClient) {}
   ngAfterViewInit(): void {
-    this.http.get('/sample-api/products').subscribe((data) => {
+    this.http.get('/api/sample/products').subscribe((data) => {
       console.log(data);
     });
   }

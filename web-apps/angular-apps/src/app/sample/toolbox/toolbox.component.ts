@@ -1,13 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { SharedModule } from '../../shared/shared.module';
+import { SharedModule } from '@shared/shared.module';
 import { MatCommonModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { convertFromBase64, convertToBase64, hashString } from '../../shared';
+import { convertFromBase64, convertToBase64, hashString } from '@shared/utils';
 
 export function reverseString(str: string) {
   return str.split('').reverse().join('');
@@ -52,7 +52,6 @@ export class ToolboxComponent {
     this.encryptResult = convertToBase64(this.encryptSource);
     console.log(this.encryptResult);
     console.log(hashString(this.encryptSource));
-
     console.log(generateUniqueId(6));
   }
 

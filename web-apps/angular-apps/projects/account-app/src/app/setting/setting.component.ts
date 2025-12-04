@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatCommonModule } from '@angular/material/core';
 import { MatCardModule } from "@angular/material/card";
@@ -9,7 +9,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { SNACKBAR_DURATION } from '../service';
+import { SNACKBAR_DURATION } from '@shared/utils';
+import { UnAuthorizedComponent } from '../un-authorized/un-authorized.component';
+import { AccountService } from '../account.service';
 
 @Component({
   selector: 'app-setting',
@@ -23,18 +25,37 @@ import { SNACKBAR_DURATION } from '../service';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    UnAuthorizedComponent
   ],
   templateUrl: './setting.component.html',
   styleUrl: './setting.component.css'
 })
-export class SettingComponent {
+export class SettingComponent implements OnInit {
   constructor(
+    @Inject('AccountService') private service: AccountService,
     private snackbar: MatSnackBar,
     private router: Router
-  ) {}
+  ) { }
+  ngOnInit(): void {
+    this.service.gateway.loginSession$.subscribe({
+      next: res => {
+        this.loading = false;
+        if (res.expiration) {
+          this.isLogin = true;
 
+        }
+      }
+    });
+    this.service.gateway.validateToken();
+  }
 
+  onSSO(): void {
+    this.service.gateway.ssoSignIn$.next();
+  }
+
+  loading: boolean = true;
+  isLogin: boolean = false;
   email: string = '';
   password: string = '';
   newPassword: string = '';
@@ -44,7 +65,7 @@ export class SettingComponent {
   disableDelete = true;
 
   onEmailChange() {
-    this.disableDelete = this.emailConfirm.toLowerCase().length  < 6;
+    this.disableDelete = this.emailConfirm.toLowerCase().length < 6;
     console.warn('enable when email length is greater than 6');
   }
 

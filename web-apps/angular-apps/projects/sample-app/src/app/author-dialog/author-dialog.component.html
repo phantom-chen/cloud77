@@ -1,0 +1,46 @@
+<style>
+    mat-form-field {
+        min-width: 300px;
+    }
+</style>
+
+<div class="container col-lg-12">
+    <h1 mat-dialog-title>
+        {{
+        data.id === '' ? 'Create Author' : 'Update Author'
+        }}
+    </h1>
+
+    <div mat-dialog-content>
+        <h5 *ngIf="data.id !== ''">Author Id {{ data.id }}</h5>
+        <div class="row">
+            <mat-form-field appearance="outline" class="col-lg-6">
+                <mat-label>Name</mat-label>
+                <input matInput placeholder="Name" [(ngModel)]="data.name">
+            </mat-form-field>
+        </div>
+        <div class="row">
+            <mat-form-field appearance="outline" class="col-lg-6">
+                <mat-label>Title</mat-label>
+                <input matInput placeholder="Title" [(ngModel)]="data.title">
+            </mat-form-field>
+        </div>
+        <div class="row">
+            <mat-form-field appearance="outline" class="col-lg-6">
+                <mat-label>Region</mat-label>
+                <input matInput placeholder="Region" [(ngModel)]="data.region">
+            </mat-form-field>
+        </div>
+        <div class="row">
+            <mat-form-field appearance="outline" class="col-lg-6">
+                <mat-label>Address</mat-label>
+                <input matInput placeholder="Address" [(ngModel)]="data.address">
+            </mat-form-field>
+        </div>
+    </div>
+    <div mat-dialog-actions align="end">
+        <button mat-button (click)="onNoClick()" cdkFocusInitial>Cancel</button>
+        <button *ngIf="data.id !== ''" mat-raised-button (click)="onUpdate('delete')">Delete</button>
+        <button mat-raised-button (click)="onUpdate('update')">Save</button>
+    </div>
+</div>

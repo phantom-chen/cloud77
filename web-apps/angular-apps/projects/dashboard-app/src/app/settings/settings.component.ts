@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCommonModule } from '@angular/material/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -11,7 +11,8 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { SNACKBAR_DURATION, AppSetting } from '../models';
+import { AppSetting, DashboardService } from '../dashboard.service';
+
 
 @Component({
   selector: 'app-settings',
@@ -36,9 +37,13 @@ export class SettingsComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
+    @Inject('DashboardService') private service: DashboardService,
     private dialog: MatDialog,
     private snackbar: MatSnackBar
   ) {}
+
+  loading = true;
+  isLogin = false;
 
   settings: AppSetting[] = [];
   healthEnable: boolean = true;
@@ -47,7 +52,19 @@ export class SettingsComponent implements OnInit {
   body: string = "email body";
 
   ngOnInit(): void {
-    this.refresh();
+    this.service.gateway.loginSession$.subscribe(res => {
+      this.loading = false;
+      if (res.expiration) {
+        this.isLogin = true;
+        this.refresh();
+      }
+    });
+    
+    this.service.gateway.validateToken();
+  }
+
+  onSSO(): void {
+    this.service.gateway.ssoSignIn$.next();
   }
 
   setting: AppSetting = {
@@ -56,20 +73,31 @@ export class SettingsComponent implements OnInit {
     description: ''
   };
 
+  getSystem(): void {
+    this.http.get('/api/super/system').subscribe((data: any) => {
+      console.log(data);
+    });
+  }
+
   refresh(): void {
-    this.http.get('/user-api/settings').subscribe((data: any) => {
+    this.http.get('/api/user/settings').subscribe((data: any) => {
       console.log(data);
       this.settings = data;
-      this.healthEnable = this.settings.find(s => s.key === 'health_check_enable')?.value === 'true' ? true : false;
-      this.address = this.settings.find(s => s.key === 'health_check_address')?.value || '';
-      this.subject = this.settings.find(s => s.key === 'health_check_subject')?.value || '';
-      this.body = this.settings.find(s => s.key === 'health_check_body')?.value || '';
     }, (error) => {
       this.settings = [
         { key: 'key1', value: 'value1', description: 'description1' },
         { key: 'key2', value: 'value2', description: 'description2' },
         { key: 'key3', value: 'value3', description: 'description3' }
       ]
+    });
+    
+    this.http.get('/api/super/system').subscribe((data: any) => {
+      console.log(data.settings);
+      const systemSettings = data.settings as AppSetting[];
+      this.healthEnable = systemSettings.find(s => s.key === 'health_check_enable')?.value === 'true' ? true : false;
+      this.address = systemSettings.find(s => s.key === 'health_check_address')?.value || '';
+      this.subject = systemSettings.find(s => s.key === 'health_check_subject')?.value || '';
+      this.body = systemSettings.find(s => s.key === 'health_check_body')?.value || '';
     });
   }
 
@@ -83,11 +111,11 @@ export class SettingsComponent implements OnInit {
       console.log(result);
       if (result) {
         if (result.key && result.value && result.description) {
-          this.http.post('/user-api/settings', result).subscribe((data: any) => {
+          this.http.post('/api/user/settings', result).subscribe((data: any) => {
             console.log(data);
             this.refresh();
           });
-          this.snackbar.open('Info', 'WIP', { duration: SNACKBAR_DURATION });
+          this.snackbar.open('Info', 'WIP', { duration: 2000 });
         }
       }
     });

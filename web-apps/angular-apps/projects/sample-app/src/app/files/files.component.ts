@@ -37,7 +37,7 @@ export class FilesComponent implements AfterViewInit {
       const formData = new FormData();
       formData.append('file', this.selectedFile);
 
-      this.http.post<any>('/sample-api/files', formData, {
+      this.http.post<any>('/api/sample/files', formData, {
         reportProgress: true,
         observe: 'events'
       }).subscribe(res => {
@@ -58,16 +58,12 @@ export class FilesComponent implements AfterViewInit {
   }
 
   getFileList(): void {
-    this.http.get<string[]>('/sample-api/files').subscribe(res => {
+    this.http.get<string[]>('/api/sample/files').subscribe(res => {
       console.log('File list:', res);
       this.files = res;
     }, err => {
       console.error('Error getting file list:', err);
     });
-    this.http.get('/user-api/authors')
-    .subscribe(res => {
-      console.log(res);
-    })
   }
 
   selectFile(file: string) {
@@ -76,7 +72,7 @@ export class FilesComponent implements AfterViewInit {
   }
 
   deleteFile(file: string) {
-    this.http.delete(`/sample-api/files/${file}`).subscribe(res => {
+    this.http.delete(`/api/sample/files/${file}`).subscribe(res => {
       console.log('File deleted:', res);
       this.getFileList();
     }, err => {

@@ -33,6 +33,11 @@
 </style>
 
 <div class="container">
-  <app-toolbar *ngIf="!noHeader"/>
-  <router-outlet />
+  <app-toolbar *ngIf="!noHeader" [headers]="headers" />
+  <div style="margin-top: 10px;">
+    <router-outlet />
+  </div>
+</div>
+<div *ngIf="frameResourceUrl" hidden>
+  <iframe #messageContainer [src]="frameResourceUrl"></iframe>
 </div>

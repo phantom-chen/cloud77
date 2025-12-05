@@ -1,0 +1,13 @@
+services:
+
+  redis-ui:
+    image: patrikx3/p3x-redis-ui:latest
+    ports:
+      - "7843:7843"
+    volumes:
+      - ./settings:/settings
+
+networks:
+    default:
+        external:
+            name: my_dev_apps

@@ -1,0 +1,13 @@
+version: '3.6'
+
+services:
+
+  express_app:
+      image: express-app
+      expose:
+          - "3000"
+
+networks:
+  default:
+      external:
+          name: my_dev_apps

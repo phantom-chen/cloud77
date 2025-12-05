@@ -1,0 +1,7 @@
+{
+    "name": "GatewayService",
+    "ports": "7710",
+    "file": "C:\\inetpub\\apps\\GatewayService\\GatewayService.exe",
+    "directory": "C:\\inetpub\\apps\\GatewayService\\",
+    "processName": "GatewayService"
+}

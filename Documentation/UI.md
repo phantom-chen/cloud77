@@ -30,16 +30,13 @@
   - `/posts`
   - `/files`
 
-- Dashboard App: manage user stuffs
+- Dashboard App: manage user stuffs, view the whole systems
 
   - `/accounts`
   - `/history`
   - `/settings`
   - `/health`
   - `/queues`
-
-- Internal App: view the whole systems
-  
   - `/users`
 
 ## Storage

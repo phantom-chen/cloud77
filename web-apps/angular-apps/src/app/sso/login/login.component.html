@@ -62,6 +62,10 @@
             <button (click)="sendMessage()">Broadcast message</button>
         </div>
 
+        <div *ngIf="hadValidToken" style="margin: auto;">
+            <textarea cols="100" rows="10" readonly>{{tokenString}}</textarea>
+        </div>
+
         <div>
             <iframe #messageContainer [src]="frameResourceUrl"></iframe>
         </div>

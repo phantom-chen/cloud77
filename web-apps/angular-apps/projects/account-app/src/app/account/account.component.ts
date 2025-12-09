@@ -12,7 +12,7 @@ import { ProfileDialogComponent } from '../profile-dialog/profile-dialog.compone
 import { UnAuthorizedComponent } from '../un-authorized/un-authorized.component';
 import { AccountService } from '../account.service';
 import { SharedModule } from '@shared/shared.module';
-import { SNACKBAR_DURATION } from '@shared/utils';
+import { getUserEmail, SNACKBAR_DURATION } from '@shared/utils';
 
 @Component({
   selector: 'app-account',
@@ -75,7 +75,7 @@ export class AccountComponent implements OnInit {
 
         if (res.expiration) {
           console.warn('No email found in session storage');
-          this.email = sessionStorage.getItem('user_email') || '';
+          this.email = getUserEmail();
           this.isLogin = true;
           this.service.getAccountInfo().subscribe({
             next: data => {

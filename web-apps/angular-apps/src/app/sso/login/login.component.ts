@@ -28,16 +28,12 @@ import { GatewayService } from '../../gateway.service';
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
-export class LoginComponent implements OnInit, OnDestroy {
+export class LoginComponent implements OnInit {
 
   constructor(
     @Inject('GatewayService') private gateway: GatewayService,
     @Inject('UserService') private service: UserService,
     private san: DomSanitizer) { }
-
-  ngOnDestroy(): void {
-
-  }
 
   ngOnInit(): void {
     this.remember = (localStorage.getItem('remember_me') ?? '')?.length > 0 ? true : false;
@@ -61,10 +57,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     if (this.hadToken) {
       this.validateToken();
     }
-    
-    // this.service.isHealth().subscribe((data: any) => {
-    //   console.log('Health check:', data);
-    // });
 
     this.frameResourceUrl = this.san.bypassSecurityTrustResourceUrl(sessionStorage.getItem('user_app_message') ?? localStorage.getItem('user_app_message') ?? '');
     window.addEventListener('message', function (ev) {
@@ -108,6 +100,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   hadToken = false;
   hadValidToken = false;
   frameResourceUrl?: SafeResourceUrl;
+  tokenString: string = '';
 
   @ViewChild("messageContainer")
   messageContainer!: ElementRef<HTMLIFrameElement>;
@@ -126,7 +119,10 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   onKeyUp(event: KeyboardEvent): void {
-
+    // Check if the pressed key is Enter
+    if (event.key === 'Enter') {
+      this.onLoginClick();
+    }
   }
 
   onLoginClick() {
@@ -163,6 +159,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         // navigate to the application
         let sixDotx = "......";
         const tokens = getTokens(false);
+        this.tokenString = `${tokens.access}\n\n${tokens.refresh}`;
         this.openingMessage = 'Opening your app' + sixDotx;
         setInterval(() => {
           if (sixDotx.length > 1) {

@@ -1,14 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { FormsModule } from "@angular/forms";
-import { AfterViewInit, Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCommonModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { getRemainingTime, getTokens, getUserEmail, removeTokens, saveTokens, debugMode, syncTokens, timestampToDate, updateUserEmail } from "@shared/utils";
+import { DomSanitizer } from '@angular/platform-browser';
+import { getRemainingTime, getTokens, getUserEmail, removeTokens, debugMode, timestampToDate, updateUserEmail } from "@shared/utils";
 import { SharedModule } from '@shared/shared.module';
 import { SNACKBAR_DURATION } from '@shared/utils';
 import { MatSelectModule } from '@angular/material/select';
@@ -141,7 +141,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
   }
 
   onCheckTokens(): void {
-    syncTokens();
     this.service.gateway.validateToken()
     .subscribe(res => {
       this.hasValidTokens = true;

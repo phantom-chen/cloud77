@@ -35,55 +35,47 @@ export function debugMode(): boolean {
     return sessionStorage.getItem('user_debug_mode') ? true : false;
 }
 
-export function getUserEmail(): string {
-    return localStorage.getItem('cloud77_user_email') ?? '';
-}
-
-export function updateUserEmail(email: string): void {
-    localStorage.setItem('cloud77_user_email', email);
-}
-
-export function getUserEmails(isLogin: boolean = true): string[] {
-    const users = localStorage.getItem("cloud77_user_emails")?.split(',') ?? [];
-    if (!isLogin) return users;
-
-    const _users: string[] = users.map(u => {
-        return localStorage.getItem(`cloud77_access_token_${hashString(u)}`) ? u : '';
-    });
-
-    return _users.filter(u => u);
-}
-
-export function addUserEmail(email: string): void {
-    const emails = getUserEmails();
-    if (!emails.includes(email)) {
-        emails.push(email);
-        localStorage.setItem('cloud77_user_emails', emails.join(','));
+export function getUserEmail(session: boolean = true): string {
+    if (session) {
+        return sessionStorage.getItem('user_email') ?? '';
     }
+    return localStorage.getItem('user_email') ?? '';
 }
 
-export function removeTokens(): void {
-    localStorage.removeItem(`cloud77_user_access_token`);
-    localStorage.removeItem(`cloud77_user_refresh_token`);
-    sessionStorage.removeItem(`user_access_token`);
-    sessionStorage.removeItem(`user_refresh_token`);
+export function updateUserEmail(session: boolean = true, email: string): void {
+    if (session) {
+        sessionStorage.setItem('user_email', email);
+        return;
+    }
+    localStorage.setItem('user_email', email);
 }
 
-export function removeUserEmail(email: string): void {
-    removeTokens();
-    const users = getUserEmails();
-    localStorage.setItem('cloud77_user_emails', users.filter(u => u != email).join(','));
+export function removeTokens(session: boolean = true): void {
+    if (session) {
+        sessionStorage.removeItem(`user_access_token`);
+        sessionStorage.removeItem(`user_refresh_token`);
+        return;
+    }
+    localStorage.removeItem(`user_access_token`);
+    localStorage.removeItem(`user_refresh_token`);
 }
 
-export function saveTokens(access: string, refresh: string): void {
-    localStorage.setItem(`cloud77_user_access_token`, access);
-    localStorage.setItem(`cloud77_user_refresh_token`, refresh);
-    syncTokens();
+export function removeUserEmail(session: boolean = true): void {
+    if (session) {
+        sessionStorage.removeItem('user_email');
+        return;
+    }
+    localStorage.removeItem('user_email');
 }
 
-export function syncTokens(): void {
-    sessionStorage.setItem('user_access_token', localStorage.getItem(`cloud77_user_access_token`) ?? '');
-    sessionStorage.setItem('user_refresh_token', localStorage.getItem(`cloud77_user_refresh_token`) ?? '');
+export function saveTokens(session: boolean = true, access: string, refresh: string): void {
+    if (session) {
+        sessionStorage.setItem(`user_access_token`, access);
+        sessionStorage.setItem(`user_refresh_token`, refresh);
+        return;
+    }
+    localStorage.setItem(`user_access_token`, access);
+    localStorage.setItem(`user_refresh_token`, refresh);
 }
 
 export function getTokens(session: boolean = true): { access: string, refresh: string } {

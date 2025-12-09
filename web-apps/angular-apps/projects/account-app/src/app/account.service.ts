@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { EventQueryResult, Profile, UserAccount, UserPost, UserRole, UserTask } from "@phantom-chen/cloud77";
-import { GatewayService, getTokens } from "@shared/utils";
+import { EventQueryResult, getUser, Profile, UserAccount, UserPost, UserRole, UserTask } from "@phantom-chen/cloud77";
+import { GatewayService, getTokens, getUserEmail } from "@shared/utils";
 import { Observable, Subject } from "rxjs";
 
 @Injectable()
@@ -23,17 +23,17 @@ export class AccountService {
     }
 
     getAccountInfo(): Observable<UserAccount> {
-        const email = sessionStorage.getItem('user_email') || '';
+        const email = getUserEmail();
         return this.http.get<UserAccount>(`/api/user/accounts/${email}`);
     }
 
     getHistory(): Observable<EventQueryResult> {
-        const email = sessionStorage.getItem('user_email') || '';
+        const email = getUserEmail();
         return this.http.get<EventQueryResult>(`/api/super/events/${email}`);
     };
 
     updateProfile(profile: Profile) {
-        const email = sessionStorage.getItem('user_email') || '';
+        const email = getUserEmail();
         return this.http.put(`/api/user/accounts/${email}/profile`, profile).subscribe(res => console.log(res));
     }
 
@@ -70,12 +70,12 @@ export class AccountService {
     }
 
     getFiles(): Observable<string[]> {
-        const email = sessionStorage.getItem('user_email') || '';
+        const email = getUserEmail();
         return this.http.get<string[]>(`/api/sample/files`);
     }
 
     uploadFile(form: FormData): Observable<any> {
-        const email = sessionStorage.getItem('user_email') || '';
+        const email = getUserEmail();
         return this.http.post('/api/sample/files', form, {
             reportProgress: true,
             observe: 'events'
@@ -83,7 +83,7 @@ export class AccountService {
     }
 
     downloadFile(fileName: string): Observable<Blob> {
-        const email = sessionStorage.getItem('user_email') || '';
+        const email = getUserEmail();
         return this.http.get(`/api/sample/files/${fileName}`, {
             responseType: 'blob',
             headers: {
@@ -93,12 +93,12 @@ export class AccountService {
     }
 
     deleteFile(fileName: string): Observable<any> {
-        const email = sessionStorage.getItem('user_email') || '';
+        const email = getUserEmail();
         return this.http.delete(`/api/sample/files/${fileName}`);
     }
 
     verifyEmail(): Observable<any> {
-        const email = sessionStorage.getItem('user_email') || '';
+        const email = getUserEmail();
         return this.http.post(`/api/user/accounts/${email}/verification`, undefined);
     }
 }

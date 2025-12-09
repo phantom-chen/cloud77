@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { saveTokens } from '@shared/utils';
 
 @Component({
   selector: 'app-message',
@@ -18,9 +19,7 @@ export class MessageComponent implements OnInit, AfterViewInit {
       if (ev.data) {
         if (ev.data?.name === 'sync-tokens') {
           if (ev.data.accessToken) {
-            sessionStorage.setItem('user_access_token', ev.data.accessToken);
-            sessionStorage.setItem('user_refresh_token', ev.data.refreshToken);
-
+            saveTokens(true, ev.data.accessToken, ev.data.refreshToken);
             window.parent.postMessage({ name: 'tokens_saved' }, '*')
           }
         }

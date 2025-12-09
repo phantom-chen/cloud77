@@ -28,6 +28,8 @@
                 <input matInput placeholder="User Email" autocomplete="off" [(ngModel)]="email" name="user-email"
                     (change)="onEmailChange($event)">
             </mat-form-field>
+        
+            <button mat-raised-button color="primary" (click)="deleteHistory()">Delete User History</button>
         </div>
 
         <button mat-raised-button color="primary" (click)="searchEvents()">Search History</button>
@@ -55,5 +57,11 @@
             </tr>
         </table>
 
+                <form class="example-form">
+          <mat-form-field class="example-full-width">
+            <mat-label>Leave a comment</mat-label>
+            <textarea matInput placeholder="Ex. It makes me feel..."></textarea>
+          </mat-form-field>
+        </form>
     </div>
 </div>

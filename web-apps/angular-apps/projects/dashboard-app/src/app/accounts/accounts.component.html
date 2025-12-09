@@ -15,9 +15,11 @@
 
                 <div class="card-body">
 
+                    <div style="display: flex;">
                     <section>
                         <h6>Sorting</h6>
-                        <mat-button-toggle-group name="sort-direction" [(ngModel)]="sort" aria-label="Sorting" (change)="getAccounts()">
+                        <mat-button-toggle-group name="sort-direction" [(ngModel)]="sort" aria-label="Sorting"
+                            (change)="getAccounts()">
                             <mat-button-toggle value="asc">Ascending</mat-button-toggle>
                             <mat-button-toggle value="desc">Descending</mat-button-toggle>
                         </mat-button-toggle-group>
@@ -25,7 +27,8 @@
 
                     <section>
                         <h6>Role</h6>
-                        <mat-button-toggle-group name="role-filter" [(ngModel)]="role" aria-label="Role Filter" (change)="getAccounts()">
+                        <mat-button-toggle-group name="role-filter" [(ngModel)]="role" aria-label="Role Filter"
+                            (change)="getAccounts()">
                             <mat-button-toggle value="">All</mat-button-toggle>
                             <mat-button-toggle *ngFor="let r of roles" [value]="r">{{ r }}</mat-button-toggle>
                         </mat-button-toggle-group>
@@ -37,7 +40,15 @@
                             <mat-label>Email</mat-label>
                             <input matInput placeholder="Email" [(ngModel)]="email" (change)="getAccounts()">
                         </mat-form-field>
+                        <form class="example-form">
+                            <mat-form-field class="example-full-width">
+                                <mat-label>User Email</mat-label>
+                                <input matInput name="user-email-input" placeholder="Query user email"
+                                    [(ngModel)]="email">
+                            </mat-form-field>
+                        </form>
                     </section>
+                    </div>
 
                     <table class="table table-sm table-striped table-bordered table-hover">
                         <tr>
@@ -54,13 +65,13 @@
                                 <button type="button" class="btn btn-outline-primary btn-sm"
                                     style="margin-right:6px;"><i class="material-icons">edit</i></button>
                                 <button type="button" class="btn btn-outline-danger btn-sm"><i
-                                        class="material-icons">delete</i></button>
+                                        class="material-icons" (click)="deleteAccount()">delete</i></button>
                             </td>
                         </tr>
                     </table>
                     <mat-paginator [length]="listLength" [pageSize]="pageSize" [pageSizeOptions]="[10, 12]"
                         showFirstLastButtons=true (page)="pageChanged($event)"></mat-paginator>
-
+                    <p>check user resources: user, tasks, posts, files, clients, events</p>
                 </div>
 
             </div>

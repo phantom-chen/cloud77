@@ -87,9 +87,7 @@ export class AppComponent implements OnInit, OnDestroy {
           { label: 'Statistics', path: '/statistics' },
           { label: 'Accounts', path: '/accounts' },
           { label: 'History', path: '/history' },
-          { label: 'Dashboard', path: './dashboard' },
-          { label: 'Settings', path: './settings' },
-          { label: 'Queues', path: './queues' }
+          { label: 'System', path: './system' }
         ])
       }
     })

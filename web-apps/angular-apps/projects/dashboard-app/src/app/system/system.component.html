@@ -1,0 +1,168 @@
+<div *ngIf="!isLogin && !loading">
+    <p class="text-danger">Not authorized!</p>
+    <button (click)="onSSO()">Sign In with SSO</button>
+</div>
+
+<div class="row" *ngIf="isLogin">
+    <mat-form-field>
+        <mat-label>System</mat-label>
+        <mat-select [(ngModel)]="option" (valueChange)="onValueChange($event)">
+            @for (o of options; track o) {
+            <mat-option [value]="o.value">{{o.label}}</mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
+</div>
+
+<div *ngIf="isLogin && option === ''">
+    <p class="text-info">{{environment}}</p>
+    <p class="text-info">{{home}}</p>
+    <p class="text-info">{{sso}}</p>
+    <p class="text-info">{{key}}</p>
+</div>
+
+<div *ngIf="isLogin && option === 'overview'">
+    <p class="text-info">Overview</p>
+    <p class="text-info">{{database}}</p>
+    <p class="text-info">{{collections.sort().join(", ")}}</p>
+
+    <div class="row">
+        <div class="card col-lg-6">
+            <div class="card-header">
+                <button mat-icon-button (click)="addSetting()">
+                    <mat-icon fontIcon="add"></mat-icon>
+                </button>
+            </div>
+
+            <div class="card-body">
+                <ul>
+                    <li *ngFor="let item of settings">{{ item.key }}</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card col-lg-6">
+            <div class="card-header">
+                <p>Health!</p>
+            </div>
+
+            <div class="card-body">
+                <div class="row">
+                    <mat-slide-toggle [(ngModel)]="healthEnable">Enable Daily Health Check</mat-slide-toggle>
+                </div>
+                <div class="row">
+                    <mat-form-field>
+                        <mat-label>Email Address</mat-label>
+                        <input matInput placeholder="Email Address" [(ngModel)]="address" />
+                    </mat-form-field>
+                </div>
+
+                <div class="row">
+                    <mat-form-field>
+                        <mat-label>Subject</mat-label>
+                        <input matInput placeholder="Subject" [(ngModel)]="subject" />
+                    </mat-form-field>
+                </div>
+
+                <div class="row">
+                    <mat-form-field>
+                        <mat-label>Body</mat-label>
+                        <textarea matInput placeholder="Body" [(ngModel)]="body"></textarea>
+                        <mat-hint align="end" aria-live="polite">
+                            10 / 100
+                        </mat-hint>
+                    </mat-form-field>
+                </div>
+                <button mat-raised-button color="primary">Update Health Setting</button>
+            </div>
+        </div>
+    </div>
+
+    <p>send message to default queue</p>
+</div>
+
+<div *ngIf="isLogin && option === 'agent'">
+    <p *ngFor="let item of health">{{ item }}</p>
+</div>
+
+<div *ngIf="isLogin && option === 'cache'">
+    <form class="example-form">
+
+        <div class="row col-lg-12">
+
+            <div class="col-lg-6">
+                <mat-form-field class="example-full-width">
+                    <mat-label>Cache Key</mat-label>
+                    <input matInput name="cache-key-input" placeholder="Cache Key" [(ngModel)]="cacheKey">
+                </mat-form-field>
+            </div>
+
+            <div class="col-lg-6">
+                <mat-form-field class="example-full-width">
+                    <mat-label>Cache Value</mat-label>
+                    <input matInput name="cache-value-input" placeholder="Cache Value" [(ngModel)]="cacheValue">
+                </mat-form-field>
+            </div>
+        </div>
+
+    </form>
+
+    <div class="row">
+        <button mat-raised-button color="primary" (click)="getCache()">Get Cache</button>
+        <button mat-raised-button color="primary" (click)="updateCache()">Update Cache</button>
+        <button mat-raised-button color="primary" (click)="deleteCache()">Delete Cache</button>
+
+    </div>
+
+    <p *ngIf="cacheErrorMessage" class="text-bg-danger">{{ cacheErrorMessage }}</p>
+</div>
+
+<div *ngIf="isLogin && option === 'notification'">
+    <p>send email</p>
+    <div class="row">
+        <mat-form-field>
+            <mat-label>Email</mat-label>
+            <input matInput placeholder="Email" [(ngModel)]="notification.email" />
+        </mat-form-field>
+    </div>
+
+    <div class="row">
+        <mat-form-field>
+            <mat-label>Subject</mat-label>
+            <input matInput placeholder="Subject" [(ngModel)]="notification.subject" />
+        </mat-form-field>
+    </div>
+
+    <div class="row">
+        <mat-form-field>
+            <mat-label>Body</mat-label>
+            <textarea matInput placeholder="Body" [(ngModel)]="notification.body"></textarea>
+        </mat-form-field>
+    </div>
+
+    <div class="row">
+        <div style="width: 100%;display: flex;padding: 2px;">
+            <button mat-raised-button color="primary" (click)="sendMail()">Send Mail</button>
+        </div>
+    </div>
+    <p>action buttons</p>
+    <div class="row">
+        <div style="width: 96%;display: flex;">
+            <button type="button" class="btn btn-outline-primary btn-sm"><i class="material-icons">edit</i></button>
+            <button type="button" class="btn btn-outline-danger btn-sm"><i class="material-icons">delete</i></button>
+            <button type="button" class="btn btn-outline-primary btn-sm" (click)="sendMail()"><i
+                    class="material-icons">email</i></button>
+            <button type="button" class="btn btn-outline-danger btn-sm"><i class="material-icons">save</i></button>
+            <button type="button" class="btn btn-outline-primary btn-sm"><i
+                    class="material-icons">arrow_upward</i></button>
+            <button type="button" class="btn btn-outline-danger btn-sm"><i
+                    class="material-icons">arrow_downward</i></button>
+        </div>
+    </div>
+
+    <p>send health mail</p>
+    <p>send custom mail</p>
+    <p>send user confirm email</p>
+    <p>send reset password email</p>
+
+</div>

@@ -11,7 +11,7 @@ import { AfterViewInit, Component } from '@angular/core';
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
-export class HomeComponent implements AfterViewInit {
+export class HomeComponent {
 
   title = 'Sample Portal';
 
@@ -20,15 +20,4 @@ export class HomeComponent implements AfterViewInit {
     { id: 2, email: 'user2@example.com', name: 'User 2' },
     { id: 3, email: 'user3@example.com', name: 'User 3' },
   ]  
-
-  constructor(private http: HttpClient) {}
-
-  ngAfterViewInit(): void {
-    this.http.get('/api/health', { responseType: 'text' })
-    .subscribe(res => {
-      console.log(res);
-
-    })
-  }
-
 }

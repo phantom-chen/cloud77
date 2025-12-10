@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --port 7700 --proxy-config ./proxy.json",
-    "start-gh": "ng serve --port 7700 --project gh-page-app --proxy-config ./proxy.json",
+    "start-gh": "ng serve --port 7709 --project gh-page-app --proxy-config ./proxy.json",
     "start-sample": "ng serve --project sample-app --port 7702 --proxy-config ./proxy.json",
     "start-account": "ng serve --project account-app --port 7703 --proxy-config ./proxy.json",
     "start-dashboard": "ng serve --project dashboard-app --port 7708 --proxy-config ./proxy.json",

@@ -23,7 +23,7 @@ export class HomeComponent {
   ) {
     const tokens = getTokens(true);
     if (tokens.access && tokens.refresh) {
-      this.tokenString = `${tokens.access}\n\n${tokens.refresh}`;
+      this.tokenString = `${tokens.access},${tokens.refresh}`;
     }
   }
 
@@ -37,9 +37,9 @@ export class HomeComponent {
   }
 
   onChange(event: Event): void {
-    const tokens = this.tokenString.split('\n\n');
+    const tokens = this.tokenString.split(',');
     if (tokens.length === 2) {
-      saveTokens(true, tokens[0], tokens[1]);
+      saveTokens(true, tokens[0].trim(), tokens[1].trim());
     }
   }
 }

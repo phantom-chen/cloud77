@@ -159,7 +159,7 @@ export class LoginComponent implements OnInit {
         // navigate to the application
         let sixDotx = "......";
         const tokens = getTokens(false);
-        this.tokenString = `${tokens.access}\n\n${tokens.refresh}`;
+        this.tokenString = `${tokens.access},${tokens.refresh}`;
         this.openingMessage = 'Opening your app' + sixDotx;
         setInterval(() => {
           if (sixDotx.length > 1) {

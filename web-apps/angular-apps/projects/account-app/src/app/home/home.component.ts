@@ -40,6 +40,11 @@ export class HomeComponent {
     const tokens = this.tokenString.split(',');
     if (tokens.length === 2) {
       saveTokens(true, tokens[0].trim(), tokens[1].trim());
+      this.service.gateway.validateToken().subscribe(result => {
+        if (result.role) {
+          window.location.reload();
+        }
+      });
     }
   }
 }

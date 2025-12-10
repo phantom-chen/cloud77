@@ -72,15 +72,20 @@ export class AppComponent implements OnInit, OnDestroy {
     this.service.gateway.loginSession$.subscribe(res => {
       if (res.expiration) {
         this.isLogin = true;
-        this.headers$.next([
-          { label: 'Home', path: '/' },
-          { label: 'Account', path: '/my' },
-          { label: 'Setting', path: '/setting' },
-          { label: 'Posts', path: '/posts' },
-          { label: 'Tasks', path: '/tasks' },
-          { label: 'Files', path: '/files' },
-          { label: 'History', path: '/history' }
-        ]);
+        this.service.gateway.getSite().then((res: string) => {
+          const obj = JSON.parse(res);
+          console.log(obj.apps);
+          const apps = obj.apps.map((app: any) => {
+            return { label: app.label, path: app.path };
+          });
+
+          this.headers$.next([
+            { label: "Home", path: "/" },
+            { label: "Account", path: "/my" },
+            { label: "Setting", path: "/setting" },
+            { label: "History", path: "/history" }
+          ].concat(apps));
+        });
       }
     });
     this.router.events.subscribe((event) => {

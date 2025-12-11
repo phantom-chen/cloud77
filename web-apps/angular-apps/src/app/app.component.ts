@@ -87,8 +87,7 @@ export class AppComponent implements AfterViewInit {
             ['Hello Home', '/hello'],
             ['Toolbox', '/hello/toolbox'],
             ['Tutorial', '/hello/tutorial'],
-            ['Periodic Table', '/hello/periodic-table'],
-            ['Material', '/hello/material']
+            ['Periodic Table', '/hello/periodic-table']
           ];          
         } else {
           this.links = [

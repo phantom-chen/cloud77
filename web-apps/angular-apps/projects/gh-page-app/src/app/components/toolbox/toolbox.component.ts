@@ -9,4 +9,12 @@ import { Component } from '@angular/core';
 })
 export class ToolboxComponent {
 
+  name = 'Cory Rylan';
+
+  reverseString(): void {
+    console.log('Toolbox component method called: reverseString');
+    import('./string-helper').then(module => {
+      this.name = module.reverseString(this.name);
+    });
+  }
 }

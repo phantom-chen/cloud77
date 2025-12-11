@@ -10,6 +10,7 @@ import { DiagramComponent } from "./components/diagram/diagram.component";
 import { MaterialComponent } from "./components/material/material.component";
 import { AngularComponent } from './components/angular/angular.component';
 import { SharedModule } from '@shared/shared.module';
+import { ToolboxComponent } from "./components/toolbox/toolbox.component";
 
 @Component({
   selector: 'app-root',
@@ -24,7 +25,8 @@ import { SharedModule } from '@shared/shared.module';
     HomeComponent,
     DiagramComponent,
     MaterialComponent,
-    AngularComponent
+    AngularComponent,
+    ToolboxComponent
 ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'

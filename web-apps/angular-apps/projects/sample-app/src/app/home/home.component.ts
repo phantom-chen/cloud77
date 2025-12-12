@@ -14,10 +14,5 @@ import { AfterViewInit, Component } from '@angular/core';
 export class HomeComponent {
 
   title = 'Sample Portal';
-
-  users: { id: number, email: string, name: string }[] = [
-    { id: 1, email: 'user1@example.com', name: 'User 1' },
-    { id: 2, email: 'user2@example.com', name: 'User 2' },
-    { id: 3, email: 'user3@example.com', name: 'User 3' },
-  ]  
+  
 }

@@ -1,3 +1,61 @@
 <p>toolbox works! reverse, base64</p>
-<p class="text-info">Name value is: {{ name }}</p>
-<button (click)="reverseString()">Hammer</button>
+
+<div class="card">
+    <div class="card-header">
+        <p class="header-content">Reverse String</p>
+    </div>
+
+    <div class="card-body">
+        <p class="text-info">Name value is: {{ name }}</p>
+        <button (click)="reverseString('js')">Reverse (JS)</button>
+        <button (click)="reverseString('ts')">Reverse (TS)</button>
+        <button (click)="reverseString('')">Reverse (Dynamically)</button>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <p class="header-content">Encrypt String (base64)</p>
+    </div>
+
+    <div class="card-body">
+        <input [(ngModel)]="encryptSource" placeholder="Enter string to encrypt" />
+        <button (click)="encrypt()">Encrypt</button>
+        <p>Result: <span class="text-info">{{ encryptResult }}</span></p>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <p class="header-content">Decrypt String (base64)</p>
+    </div>
+
+    <div class="card-body">
+        <input [(ngModel)]="decryptSource" placeholder="Enter string to decrypt" />
+        <button (click)="decrypt()">Decrypt</button>
+        <p>Result: <span class="text-info">{{ decryptResult }}</span></p>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <p class="header-content">Generate Unique Id</p>
+    </div>
+
+    <div class="card-body">
+        <button (click)="generateId()">Generate Id</button>
+        <p>Result: <span class="text-info">{{ id }}</span></p>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <p class="header-content">Hash String</p>
+    </div>
+
+    <div class="card-body">
+        <input [(ngModel)]="hashSource" placeholder="Enter string to hash" />
+        <button (click)="hash()">Hash</button>
+        <p>Result: <span class="text-info">{{ hashResult }}</span></p>
+    </div>
+</div>

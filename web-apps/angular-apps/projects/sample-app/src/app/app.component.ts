@@ -14,7 +14,9 @@ import { HttpClient } from '@angular/common/http';
   styleUrl: './app.component.css'
 })
 export class AppComponent implements OnInit {
+
   constructor(private http: HttpClient) { }
+
   ngOnInit(): void {
     this.http.get('/api/gateway').subscribe((data: any) => {
       if (data) {
@@ -23,5 +25,10 @@ export class AppComponent implements OnInit {
         localStorage.setItem('api_key', data.key);
       }
     });
+
+    this.http.get('/resources/json/posts.json')
+      .subscribe((data: any) => {
+        console.log(data);
+      });
   }
 }

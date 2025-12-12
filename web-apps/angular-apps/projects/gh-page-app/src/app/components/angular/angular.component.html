@@ -1,6 +1,28 @@
-<p>angular works!</p>
-<p>directive</p>
-<p>template</p>
-<p>content</p>
-<p>container</p>
-<p>pipe</p>
+<div style="text-align: center;">
+    <p>angular works!</p>
+    <p>directive</p>
+    <p>template</p>
+    <p>content</p>
+    <p>container</p>
+    <p>pipe</p>
+</div>
+<div style="text-align: center;">
+    <p *ngFor="let person of persons$ | async">
+        {{ person.personId }}.{{ person.name }} - {{ person.city }}
+    </p>
+
+    <div class="cart-item" *ngFor="let item of items; index as i">
+        <span>{{ item }}, index {{ i + 1 }}</span>
+    </div>
+</div>
+
+<div style="text-align: center;">
+    <button (click)="openDialog('alert')">Alert</button>
+    <button (click)="openDialog('confirm')">Confirm</button>
+    <button (click)="openDialog('prompt')">Prompt</button>
+</div>
+
+<div style="text-align: center;">
+    <span><a href="https://www.runoob.com/nodejs/nodejs-tutorial.html" target="_blank">Node.js Tutorial</a></span>
+    <span><a href="https://v11.material.angular.io/components/categories" target="_blank">Angular material 11</a></span>
+</div>

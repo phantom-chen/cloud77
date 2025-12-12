@@ -1,28 +1,44 @@
-<mat-tab-group>
-  <mat-tab label="Home">
-    <app-home></app-home>
-  </mat-tab>
+<div class="container">
+  <mat-tab-group>
+    <mat-tab label="Home">
+      <app-home></app-home>
+    </mat-tab>
 
-  <mat-tab label="Angular">
-    <p>angular works</p>
-    <lib-angular-ui></lib-angular-ui>
-    <app-angular></app-angular>
-  </mat-tab>
+    <mat-tab label="Angular">
+      <p>angular works</p>
+      <lib-angular-ui></lib-angular-ui>
+      <app-angular></app-angular>
+    </mat-tab>
 
-  <mat-tab label="Material">
-    <p>material works</p>
-    <app-material></app-material>
-  </mat-tab>
+    <mat-tab label="Observer">
+      <app-observer></app-observer>
+    </mat-tab>
 
-  <mat-tab label="Toolbox">
-    <app-toolbox></app-toolbox>
-  </mat-tab>
+    <mat-tab label="Material">
+      <p>material works</p>
+      <app-material></app-material>
+    </mat-tab>
 
-  <mat-tab label="Diagram Editor">
-    <p>diagram editor works</p>
-    <app-diagram></app-diagram>
-  </mat-tab>
+    <mat-tab label="Toolbox">
+      <app-toolbox></app-toolbox>
+    </mat-tab>
 
-</mat-tab-group>
+    <mat-tab label="Diagram Editor">
+      <p>diagram editor works</p>
+      <app-diagram></app-diagram>
+    </mat-tab>
 
-<router-outlet />
+    <mat-tab label="Drag & Drop">
+      <p>drag & drop works</p>
+      <app-drag-drop></app-drag-drop>
+    </mat-tab>
+
+    <mat-tab label="Table">
+      <p>table works</p>
+      <app-table></app-table>
+    </mat-tab>
+
+  </mat-tab-group>
+
+  <router-outlet />
+</div>

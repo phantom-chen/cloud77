@@ -11,6 +11,9 @@ import { MaterialComponent } from "./components/material/material.component";
 import { AngularComponent } from './components/angular/angular.component';
 import { SharedModule } from '@shared/shared.module';
 import { ToolboxComponent } from "./components/toolbox/toolbox.component";
+import { DragDropComponent } from './components/drag-drop/drag-drop.component';
+import { TableComponent } from './components/table/table.component';
+import { ObserverComponent } from './components/observer/observer.component';
 
 @Component({
   selector: 'app-root',
@@ -26,7 +29,10 @@ import { ToolboxComponent } from "./components/toolbox/toolbox.component";
     DiagramComponent,
     MaterialComponent,
     AngularComponent,
-    ToolboxComponent
+    ToolboxComponent,
+    DragDropComponent,
+    TableComponent,
+    ObserverComponent
 ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'

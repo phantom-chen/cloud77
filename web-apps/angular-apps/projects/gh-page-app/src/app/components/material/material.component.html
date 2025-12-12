@@ -12,6 +12,24 @@
                     </mat-panel-description>
                 </mat-expansion-panel-header>
                 <p>This is the primary content of the panel.</p>
+                <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="home"></mat-icon>
+                <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="favorite"></mat-icon>
+                <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="pin-left"></mat-icon>
+                <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="close"></mat-icon>
+
+                <p>{{ view | uppercase }} is used</p>
+                <mat-button-toggle-group name="fontStyle" aria-label="Font Style" value="grid" (change)="onViewToggle($event)">
+                    <mat-button-toggle value="grid">Grid View</mat-button-toggle>
+                    <mat-button-toggle value="list">List View</mat-button-toggle>
+                </mat-button-toggle-group>
+
+                <div class="row">
+                    <mat-form-field appearance="outline" class="col-lg-6">
+                        <mat-label>Search Item</mat-label>
+                        <input matInput placeholder="Search ..." [(ngModel)]="searchText">
+                    </mat-form-field>
+                </div>
+
             </mat-expansion-panel>
 
             <mat-expansion-panel expanded="true">
@@ -113,3 +131,13 @@
         </mat-nav-list>
     </div>
 </div>
+
+<mat-grid-list cols="5" rowHeight="2:1">
+    <mat-grid-tile class="grid-tile" colspan="2">
+        <p>left area</p>
+    </mat-grid-tile>
+
+    <mat-grid-tile class="grid-tile" colspan="3">
+        <p>right area</p>
+    </mat-grid-tile>
+</mat-grid-list>

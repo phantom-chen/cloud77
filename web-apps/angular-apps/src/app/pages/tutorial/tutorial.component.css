@@ -21,3 +21,15 @@ p {
   justify-content: center;
   margin-top: 16px;
 }
+
+svg#clouds {
+    position: fixed;
+    bottom: -160px;
+    left: -230px;
+    z-index: -10;
+    width: 100%;
+}
+
+:host {
+    height: inherit;
+}

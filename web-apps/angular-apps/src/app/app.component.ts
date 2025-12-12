@@ -39,7 +39,11 @@ export class AppComponent implements AfterViewInit {
 
   constructor(private router: Router) {}
 
-  links: string[][] = [];
+  links: string[][] = [
+    ['Tutorial', '/tutorial'],
+    ['Layout', '/layout'],
+    ['SSO', '/sso'],
+  ];
   noHeader: boolean = false;
 
   @HostListener('window:storage')
@@ -79,21 +83,13 @@ export class AppComponent implements AfterViewInit {
       if (e instanceof NavigationStart) {
         // this.activeLink = e.url;
         console.log(e.url);
-        this.noHeader = e.url.startsWith('/message');
+        this.noHeader = e.url.startsWith('/message') || e.url.startsWith('/tutorial' ) || e.url.startsWith('/layout');
       }
       if (e instanceof NavigationEnd) {
-        if (e.url.startsWith('/hello')) {
-          this.links = [
-            ['Hello Home', '/hello'],
-            ['Toolbox', '/hello/toolbox'],
-            ['Tutorial', '/hello/tutorial'],
-            ['Periodic Table', '/hello/periodic-table']
-          ];          
+        if (e.url.startsWith('/tutorial')) {
+
         } else {
-          this.links = [
-            ['Hello', '/hello'],
-            ['SSO', '/sso'],
-          ];
+
         }
       }
     });

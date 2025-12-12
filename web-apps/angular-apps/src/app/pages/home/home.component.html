@@ -254,3 +254,12 @@
         <video loop controls style="max-width: 600px;margin: auto;" src="/assets/welcome.mp4"></video>
     </div>
 </div>
+
+<div style="text-align: center;">
+    <a routerLink="dashboard">Dashboard</a>
+    <a routerLink="chat">Chat</a>
+    <a routerLink="shipping">Shipping Prices</a>
+    <a title="demo" [routerLink]="['demo', 123]">hello</a>
+</div>
+
+<app-footer [code]="code" [owner]="owner" [developer]="developer" [url]="url" [name]="name" [repo]="repo"></app-footer>

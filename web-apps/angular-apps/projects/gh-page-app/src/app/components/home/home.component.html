@@ -246,5 +246,32 @@
             </div>
         </div>
     </main>
-    <app-preview content="This is the GitHub page."></app-preview>
+
+    <div class="container" style="max-width: 800px;">
+        <div style="text-align: center;">
+            <p style="text-align: center;">{{ current }}</p>
+            <main>
+                <p class="custom-styled-text pink-background">use css library, import style at angular.json styles (text
+                    with background color)</p>
+            </main>
+            <ul>
+                <li *ngFor="let item of logs">{{item}}</li>
+            </ul>
+        </div>
+        <div class="row col-lg-12">
+            <div class="col-lg-6">
+                left pane
+            </div>
+            <div class="col-lg-6">
+                right pane
+            </div>
+        </div>
+
+        <app-preview content="This is the GitHub page."></app-preview>
+
+        <input [(ngModel)]="pageUrl" placeholder="Enter page url" />
+        <button (click)="openPage()">Open Page at New Tab</button>
+
+    </div>
+
 </div>

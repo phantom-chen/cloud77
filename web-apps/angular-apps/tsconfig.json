@@ -31,7 +31,10 @@
         // "./dist/angular-ui"
         "./projects/angular-ui/src/public-api.ts"
       ]
-    }
+    },
+    "types": [
+      "node"
+    ]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

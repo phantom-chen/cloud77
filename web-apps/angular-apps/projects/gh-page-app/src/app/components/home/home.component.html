@@ -269,9 +269,16 @@
 
         <app-preview content="This is the GitHub page."></app-preview>
 
+        <button (click)="drawing()">Draw Image on Canvas</button>
         <input [(ngModel)]="pageUrl" placeholder="Enter page url" />
         <button (click)="openPage()">Open Page at New Tab</button>
 
+        <pre id="rabbit">
+            {{ rabbit }}
+        </pre>
+
+        <p id="elem">custom event element</p>
+        <button (click)="dispatchEvent()">Dispatch Custom Event</button>
     </div>
 
 </div>

@@ -3,13 +3,17 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Person, PERSONS } from './person';
 import { Observable, of } from 'rxjs';
+import { AngularUIModule } from 'my-angular-ui';
+import { BoardComponent } from '../board/board.component';
 
 @Component({
   selector: 'app-angular',
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule
+    FormsModule,
+    AngularUIModule,
+    BoardComponent
   ],
   templateUrl: './angular.component.html',
   styleUrl: './angular.component.css'
@@ -17,7 +21,8 @@ import { Observable, of } from 'rxjs';
 export class AngularComponent {
   items: string[] = ['string1', 'string2'];
   persons$: Observable<Person[]>;
-
+  color: string | undefined;
+  
   constructor() {
     this.persons$ = of(PERSONS);
   }

@@ -21,11 +21,7 @@
               <mat-form-field>
                 <mat-label>Email / Username</mat-label>
                 <input matInput placeholder="Email / Username" autocomplete="off" [(ngModel)]="account"
-                  name="user-account" [matAutocomplete]="userac"
-                  (change)="onAccountChange()">
-                <mat-autocomplete #userac>
-                  <mat-option [value]="item" *ngFor="let item of users">{{ item }}</mat-option>
-                </mat-autocomplete>
+                  name="user-account" (change)="onAccountChange()">
               </mat-form-field>
 
               <p *ngIf="!existing" class="text-warning">your account is not existing.</p>
@@ -84,8 +80,6 @@
       </button>
     </div>
 
-    <mat-divider></mat-divider>
-
     <div *ngIf="authenticatedUsers.length > 0" style="margin: auto;" class="row col-lg-6">
       <mat-form-field>
         <mat-label>Users below login at the site</mat-label>
@@ -102,7 +96,6 @@
     <div *ngIf="debugMode" class="content">
       <app-preview [content]="logs"></app-preview>
     </div>
-
     
   </div>
 </div>

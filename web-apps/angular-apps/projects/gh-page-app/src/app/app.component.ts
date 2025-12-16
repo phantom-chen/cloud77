@@ -14,6 +14,7 @@ import { ToolboxComponent } from "./components/toolbox/toolbox.component";
 import { DragDropComponent } from './components/drag-drop/drag-drop.component';
 import { TableComponent } from './components/table/table.component';
 import { ObserverComponent } from './components/observer/observer.component';
+import { CloneComponent } from './components/clone/clone.component';
 
 @Component({
   selector: 'app-root',
@@ -32,7 +33,8 @@ import { ObserverComponent } from './components/observer/observer.component';
     ToolboxComponent,
     DragDropComponent,
     TableComponent,
-    ObserverComponent
+    ObserverComponent,
+    CloneComponent
 ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'

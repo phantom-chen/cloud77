@@ -4,7 +4,7 @@ import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCommonModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
+
 import { RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -35,7 +35,6 @@ export interface IHandleHttpError {
     MatInputModule,
     MatIconModule,
     MatFormFieldModule,
-    MatAutocompleteModule,
     MatSelectModule,
     MatDividerModule,
     MatCheckboxModule,
@@ -59,9 +58,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    if (getTokens(false).access) {
 
-    }
   }
 
   ngOnInit(): void {
@@ -110,9 +107,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   debugMode: boolean = false;
   existing: boolean = true;
-
-
-
   onAccountChange() {
     this.service.gateway.getUser(this.account, '')
       .then(res => {
@@ -177,7 +171,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
   }
 
   clearLogin(): void {
-    alert('wip')
     // if (this.account) {
     //   removeUserEmail(this.account);
     //   this.account = this.users.length > 0 ? this.users[0] : '';
@@ -186,7 +179,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
   }
 
   autoLogin(): void {
-    alert('wip')
     // if (this.authenticatedAccount) {
     //   if (this.messageUrl) {
     //     const tokens = getTokens(this.authenticatedAccount);

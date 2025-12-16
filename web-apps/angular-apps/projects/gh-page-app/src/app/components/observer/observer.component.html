@@ -1,2 +1,18 @@
 <p>observer works!</p>
-<button id="btn">test</button>
+<div class="row">
+    <button id="btn">click me</button>
+</div>
+
+<textarea id="txt" [(ngModel)]="logs"></textarea>
+
+<button (click)="fromEventClick()">From Event</button>
+
+<button (click)="fromObjectClick()">From Object</button>
+
+<button (click)="ofOperatorClick()">Of Operator</button>
+
+<button (click)="intervalOperatorClick()">Interval Operator</button>
+
+<button (click)="generateOperatorClick()">Generate Operator</button>
+
+<button (click)="timerOperatorClick()">Timer Operator</button>

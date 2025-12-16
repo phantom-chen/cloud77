@@ -141,3 +141,16 @@
         <p>right area</p>
     </mat-grid-tile>
 </mat-grid-list>
+
+<gridster [options]="options">
+
+  <gridster-item [item]="{ x: 0, y: 0, cols: 2, rows: 2}">
+    <div>
+      <p>grid item</p>
+    </div>
+  </gridster-item>
+
+  <gridster-item [item]="item" *ngFor="let item of items">
+    <p>gridster works!</p>    
+  </gridster-item>
+</gridster>

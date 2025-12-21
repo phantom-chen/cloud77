@@ -1,10 +1,28 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Person, PERSONS } from './person';
 import { Observable, of } from 'rxjs';
 import { AngularUIModule } from 'my-angular-ui';
 import { BoardComponent } from '../board/board.component';
+
+@Component({
+  selector: "app-my-buttons",
+  standalone: true,
+  imports: [CommonModule],
+  template: ` <div class="container">
+    <button>{{content}}</button>
+    <p [ngStyle]="{'background-color':color}">{{content}}</p>
+    <ng-content></ng-content>
+    </div>`,
+})
+export class MyButtonsComponent {
+  @Input()
+  content = "default content";
+  
+  @Input()
+  color = 'red';
+}
 
 @Component({
   selector: 'app-angular',
@@ -13,7 +31,8 @@ import { BoardComponent } from '../board/board.component';
     CommonModule,
     FormsModule,
     AngularUIModule,
-    BoardComponent
+    BoardComponent,
+    MyButtonsComponent
   ],
   templateUrl: './angular.component.html',
   styleUrl: './angular.component.css'

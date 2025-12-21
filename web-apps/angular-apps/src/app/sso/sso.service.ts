@@ -39,4 +39,8 @@ export class UserService {
             { email, password, name: "" }
         ).pipe(timeout(timeoutSeconds * 1000));
     }
+
+    refreshToken(): void {
+        // put x-refresh-token in headers
+    }
 }

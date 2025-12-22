@@ -8,6 +8,7 @@ import { MatButtonToggleModule } from "@angular/material/button-toggle";
 import { FormsModule } from "@angular/forms";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-accounts",
@@ -39,7 +40,8 @@ export class AccountsComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-    @Inject("DashboardService") private service: DashboardService
+    @Inject("DashboardService") private service: DashboardService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -55,6 +57,7 @@ export class AccountsComponent implements OnInit {
       }
     });
     this.service.gateway.validateToken();
+    console.log(this.router.routerState.snapshot.url);
   }
 
   onSSO(): void {

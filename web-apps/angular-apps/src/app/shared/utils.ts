@@ -274,3 +274,14 @@ export class GatewayService {
         )
     }
 }
+
+export interface LoginResult {
+    status: LoginStatus;
+    message?: string;
+    token?: string;
+}
+
+export enum LoginStatus {
+    error = 0,
+    success = 1
+}

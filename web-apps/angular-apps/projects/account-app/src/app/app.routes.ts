@@ -13,6 +13,7 @@ import { PostComponent } from './post/post.component';
 import { FilesComponent } from './files/files.component';
 import { TasksComponent } from './tasks/tasks.component';
 import { NotFoundComponent } from './not-found/not-found.component';
+import { KeyGuard } from './key.guard';
 
 export const routes: Routes = [
     {
@@ -33,7 +34,7 @@ export const routes: Routes = [
     {
         path: "my",
         component: AccountComponent,
-        canActivate: [TokenGuard]
+        canActivate: [KeyGuard, TokenGuard]
     },
     {
         path: "setting",

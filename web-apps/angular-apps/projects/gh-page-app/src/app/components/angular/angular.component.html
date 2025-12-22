@@ -5,6 +5,7 @@
             <p>template</p>
             <p>content</p>
             <p>container</p>
+            <ng-container *ngTemplateOutlet="demoTemplate"></ng-container>
             <p>{{ 0 | taskState }}, {{ 1 | taskState }}, {{ 2 | taskState }}, {{ 3 | taskState }}</p>
         </div>
         <div style="text-align: center;">
@@ -49,16 +50,37 @@
         <div style="display: flex;">
             <app-my-buttons style="width: 200px;">
                 <p>the children content</p>
+                <app-my-button content="first button" color="red"></app-my-button>
             </app-my-buttons>
             <app-my-buttons style="width: 200px;">
                 <p>the children content</p>
+                <app-my-button content="second button" color="green"></app-my-button>
             </app-my-buttons>
             <app-my-buttons style="width: 200px;">
                 <p>the children content</p>
+                <app-my-button content="third button" color="blue"></app-my-button>
             </app-my-buttons>
         </div>
+
+        <div [ngClass]="{'red': true, 'blue': false}">
+            this div
+        </div>
+        
+        <ul>
+            <li *ngFor="let item of array, let i = index">
+                <span [ngClass]="{'red': i==1}">{{item}}</span>
+            </li>
+        </ul>
+        
+        <div [ngStyle]="{'background-color':'pink'}">hello ngStyle</div>
+        <div style="background-color:yellow">hello ngStyle</div>
     </div>
     <div class="col-lg-6">
         <app-board></app-board>
     </div>
 </div>
+
+<ng-template #demoTemplate>
+    <p>This is a demo template</p>
+    <p class="text-bg-info">info text</p>
+</ng-template>

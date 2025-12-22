@@ -8,6 +8,13 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { RouterModule } from '@angular/router';
 import { MatToolbarModule } from "@angular/material/toolbar";
 import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
+
+export interface AppItem {
+  label: string;
+  link?: string;
+  icon: string;
+}
 
 @Component({
   selector: 'app-layout',
@@ -21,11 +28,22 @@ import { MatButtonModule } from '@angular/material/button';
     MatListModule,
     MatIconModule,
     MatToolbarModule,
-    MatButtonModule
+    MatButtonModule,
+    MatMenuModule
   ],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.css'
 })
 export class LayoutComponent {
-  title = 'Sample Layout';
+
+  title = 'Layout';
+  homeColor = 'green';
+  account = 'user name';
+  apps: AppItem[] = [
+    { label: 'Dashboard', link: '/dashboard', icon: 'dashboard' },
+    { label: 'Reports', link: '/reports', icon: 'bar_chart' },
+    { label: 'Settings', link: '/settings', icon: 'settings' },
+    { label: 'Profile', link: '/profile', icon: 'person' },
+    { label: 'Help', link: '/help', icon: 'help' }
+  ];
 }

@@ -6,99 +6,121 @@ import { Observable, Subject } from "rxjs";
 
 @Injectable()
 export class AccountService {
+  constructor(private http: HttpClient) {
+    console.log("DashboardService initialized");
+    this.gateway = new GatewayService(this.http);
+  }
 
-    constructor(private http: HttpClient) {
-        console.log('DashboardService initialized');
-        this.gateway = new GatewayService(this.http);
-    }
+  gateway: GatewayService;
 
-    gateway: GatewayService;
-
-    getDashboardData() {
-        // Simulate fetching dashboard data
-        return {
-            files: ['file1.txt', 'file2.txt', 'file3.txt'],
-            recentActivities: ['Logged in', 'Uploaded file1.txt', 'Deleted file2.txt']
-        };
-    }
-
-    getAccountInfo(): Observable<UserAccount> {
-        const email = getUserEmail();
-        return this.http.get<UserAccount>(`/api/user/accounts/${email}`);
-    }
-
-    getHistory(): Observable<EventQueryResult> {
-        const email = getUserEmail();
-        return this.http.get<EventQueryResult>(`/api/super/events/${email}`);
+  getDashboardData() {
+    // Simulate fetching dashboard data
+    return {
+      files: ["file1.txt", "file2.txt", "file3.txt"],
+      recentActivities: [
+        "Logged in",
+        "Uploaded file1.txt",
+        "Deleted file2.txt",
+      ],
     };
+  }
 
-    updateProfile(profile: Profile) {
-        const email = getUserEmail();
-        return this.http.put(`/api/user/accounts/${email}/profile`, profile).subscribe(res => console.log(res));
-    }
+  getAccountInfo(): Observable<UserAccount> {
+    const email = getUserEmail();
+    return this.http.get<UserAccount>(`/api/user/accounts/${email}`);
+  }
 
-    getTasks(): Observable<any> {
-        return this.http.get('/api/user/tasks');
-    }
+  getHistory(): Observable<EventQueryResult> {
+    const email = getUserEmail();
+    return this.http.get<EventQueryResult>(`/api/super/events/${email}`);
+  }
 
-    createTask(task: UserTask): Observable<any> {
-        return this.http.post('/api/user/tasks', task);
-    }
+  updateProfile(profile: Profile) {
+    const email = getUserEmail();
+    return this.http
+      .put(`/api/user/accounts/${email}/profile`, profile)
+      .subscribe((res) => console.log(res));
+  }
 
-    createPost(post: UserPost): Observable<any> {
-        return this.http.post('/api/user/posts', post);
-    }
+  updatePassword(body: {
+    email: string;
+    password: string;
+    newPassword: string;
+  }) {
+    return this.http.put(`/api/user/accounts/${body.email}/password`, body);
+  }
 
-    updateTask(task: UserTask): Observable<any> {
-        return this.http.put('/api/user/tasks', task);
-    }
+  deleteAccount(email: string) {
+    return this.http.delete(
+      `/api/users/accounts/${email}`
+    );
+  }
 
-    deleteTask(id: string): Observable<any> {
-        return this.http.delete(`/api/user/tasks/${id}`);
-    }
+  getTasks(): Observable<any> {
+    return this.http.get("/api/user/tasks");
+  }
 
-    getPosts(): Observable<any> {
-        return this.http.get('/api/user/posts');
-    }
+  createTask(task: UserTask): Observable<any> {
+    return this.http.post("/api/user/tasks", task);
+  }
 
-    getPostContent(id: string): Observable<any> {
-        return this.http.get(`/api/user/posts/${id}`, { responseType: 'text' });
-    }
+  createPost(post: UserPost): Observable<any> {
+    return this.http.post("/api/user/posts", post);
+  }
 
-    updatePostContent(id: string, content: string): Observable<any> {
-        return this.http.put(`/api/user/posts/${id}`, content);
-    }
+  updateTask(task: UserTask): Observable<any> {
+    return this.http.put("/api/user/tasks", task);
+  }
 
-    getFiles(): Observable<string[]> {
-        const email = getUserEmail();
-        return this.http.get<string[]>(`/api/sample/files`);
-    }
+  deleteTask(id: string): Observable<any> {
+    return this.http.delete(`/api/user/tasks/${id}`);
+  }
 
-    uploadFile(form: FormData): Observable<any> {
-        const email = getUserEmail();
-        return this.http.post('/api/sample/files', form, {
-            reportProgress: true,
-            observe: 'events'
-        });
-    }
+  getPosts(): Observable<any> {
+    return this.http.get("/api/user/posts");
+  }
 
-    downloadFile(fileName: string): Observable<Blob> {
-        const email = getUserEmail();
-        return this.http.get(`/api/sample/files/${fileName}`, {
-            responseType: 'blob',
-            headers: {
-                'Content-Disposition': `attachment; filename="${fileName}"`
-            }
-        });
-    }
+  getPostContent(id: string): Observable<any> {
+    return this.http.get(`/api/user/posts/${id}`, { responseType: "text" });
+  }
 
-    deleteFile(fileName: string): Observable<any> {
-        const email = getUserEmail();
-        return this.http.delete(`/api/sample/files/${fileName}`);
-    }
+  updatePostContent(id: string, content: string): Observable<any> {
+    return this.http.put(`/api/user/posts/${id}`, content);
+  }
 
-    verifyEmail(): Observable<any> {
-        const email = getUserEmail();
-        return this.http.post(`/api/user/accounts/${email}/verification`, undefined);
-    }
+  getFiles(): Observable<string[]> {
+    const email = getUserEmail();
+    return this.http.get<string[]>(`/api/sample/files`);
+  }
+
+  uploadFile(form: FormData): Observable<any> {
+    const email = getUserEmail();
+    return this.http.post("/api/sample/files", form, {
+      reportProgress: true,
+      observe: "events",
+    });
+  }
+
+  downloadFile(fileName: string): Observable<Blob> {
+    const email = getUserEmail();
+    return this.http.get(`/api/sample/files/${fileName}`, {
+      responseType: "blob",
+      headers: {
+        "Content-Disposition": `attachment; filename="${fileName}"`,
+      },
+    });
+  }
+
+  deleteFile(fileName: string): Observable<any> {
+    const email = getUserEmail();
+    return this.http.delete(`/api/sample/files/${fileName}`);
+  }
+
+  verifyEmail(): Observable<any> {
+    const email = getUserEmail();
+    return this.http.post(
+      `/api/user/accounts/${email}/verification`,
+      undefined
+    );
+  }
 }

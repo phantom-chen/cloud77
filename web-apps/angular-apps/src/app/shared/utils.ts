@@ -31,10 +31,6 @@ export function convertFromBase64(value: string): string {
     return buffer.toString();
 }
 
-export function debugMode(): boolean {
-    return sessionStorage.getItem('user_debug_mode') ? true : false;
-}
-
 export function getUserEmail(session: boolean = true): string {
     if (session) {
         return sessionStorage.getItem('user_email') ?? '';

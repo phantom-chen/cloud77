@@ -13,6 +13,7 @@ import { UnAuthorizedComponent } from '../un-authorized/un-authorized.component'
 import { AccountService } from '../account.service';
 import { SharedModule } from '@shared/shared.module';
 import { getUserEmail, SNACKBAR_DURATION } from '@shared/utils';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-account',
@@ -62,6 +63,21 @@ export class AccountComponent implements OnInit {
 
   preview = '';
 
+  handleHttpError(error: HttpErrorResponse) {
+    this.snackbar.open(
+      `${error.status} - ${error.statusText}`,
+      `${error.error ? error.error.message : error.statusText}`,
+      {
+        duration: SNACKBAR_DURATION
+      }
+    )
+    if (error.status === 401) {
+      this.snackbar.open('Error', 'Unauthorized', { duration: SNACKBAR_DURATION });
+    } else {
+
+    }
+  }
+
   ngOnInit(): void {
     // this.gateway.ping().then((data: string) => {
     //   console.log('Gateway ping response:', data);
@@ -89,7 +105,17 @@ export class AccountComponent implements OnInit {
       }
     });
 
-    this.service.gateway.validateToken();
+    this.service.gateway.validateToken().subscribe(
+      next => {
+        console.log('Validate token response:', next);
+      },
+      error => {
+        console.log('Validate token error:', error);
+        if (error instanceof HttpErrorResponse) {
+          this.handleHttpError(error);
+        }
+      }
+    );
   }
 
   onSSO(): void {

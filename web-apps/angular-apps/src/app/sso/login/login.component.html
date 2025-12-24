@@ -10,6 +10,10 @@
     </div>
 
     <div class="card-body content">
+
+        <p *ngIf="!serviceAvailable" class="text-danger text-center">Service is unavailable, please try again later.</p>
+        <p *ngIf="serviceAvailable" class="text-success text-center">Service is available.</p>
+
         <div *ngIf="!hadToken || !hadValidToken" style="margin: auto;box-shadow: 3px;" class="col-lg-6">
             <form novalidate>
                 <div class="container content">
@@ -22,6 +26,9 @@
                             </mat-form-field>
                         </div>
 
+                        <p *ngIf="account && !accountExisting" class="text-warning">your account is not existing.</p>
+                        <p *ngIf="account && accountExisting" class="text-success">your account is registered</p>
+
                         <div class="row">
                             <mat-form-field>
                                 <mat-label>Password</mat-label>
@@ -31,23 +38,24 @@
                         </div>
 
                         <div class="row">
+
                             <mat-checkbox color="primary" [(ngModel)]="remember" name="remembercheckbox">Remember
                                 Me</mat-checkbox>
-                            <!--forget password-->
-                            <!--sign up-->
+
                         </div>
 
                         <div class="row">
                             <div style="display: flex;">
                                 <button type="submit" mat-raised-button color="primary"
                                     (click)="onLoginClick();">Login</button>
-                                <!-- <button type="button" mat-outlined-button color="primary">
+
+                                <button type="button" mat-outlined-button color="primary">
                                     <a #signup target="_blank" [routerLink]="['/sign-up']" [relativeTo]=""
                                         routerLinkActive="active">Sign
                                         Up</a>
-                                </button> -->
-                                <!-- <button type="button" mat-button (click)="clearLogin();">Clear Account Login</button>
-                                <button mat-button>Forget password</button> -->
+                                </button>
+
+                                <button mat-button>Forget password</button>
                             </div>
                         </div>
 
@@ -57,17 +65,37 @@
         </div>
 
         <div *ngIf="hadValidToken" style="margin: auto;">
+            <p class="text-info-emphasis">login as: {{ account | uppercase }}</p>
+            <div>
+                <span class="text-warning">Token is valid for {{ tokenValidity }} minutes</span>
+            </div>
             <p class="text-info">{{openingMessage}}</p>
+
             <input type="text" placeholder="Type..." [(ngModel)]="message">
             <button (click)="sendMessage()">Broadcast message</button>
+
+            <button mat-button (click)="copyTokens()"><mat-icon>file_copy</mat-icon>Copy Tokens</button>
+
+            <button mat-button (click)="onLogout()">Logout</button>
         </div>
 
         <div *ngIf="hadValidToken" style="margin: auto;">
             <textarea cols="100" rows="10" readonly>{{tokenString}}</textarea>
         </div>
 
-        <div>
-            <iframe #messageContainer [src]="frameResourceUrl"></iframe>
+        <div style="display: flex;">
+            <div style="width: 50%;">
+                <div>
+                    <iframe #messageContainer [src]="frameResourceUrl"></iframe>
+                </div>
+            </div>
+
+            <div style="width: 50%;">
+                <div *ngIf="debugMode">
+                    <app-preview [content]="logs"></app-preview>
+                </div>
+            </div>
         </div>
+
     </div>
 </div>

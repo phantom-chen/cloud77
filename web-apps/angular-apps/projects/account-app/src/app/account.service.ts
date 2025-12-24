@@ -1,8 +1,12 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { EventQueryResult, getUser, Profile, UserAccount, UserPost, UserRole, UserTask } from "@phantom-chen/cloud77";
 import { GatewayService, getTokens, getUserEmail } from "@shared/utils";
 import { Observable, Subject } from "rxjs";
+
+export interface IHandleHttpError {
+  handleHttpError(response: HttpErrorResponse): void
+}
 
 @Injectable()
 export class AccountService {

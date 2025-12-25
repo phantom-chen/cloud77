@@ -74,7 +74,7 @@ export class AccountsComponent implements OnInit {
     this.accounts = [];
     if (this.email) {
       this.http
-        .get(`api/super/accounts/emails?search=${this.email}`)
+        .get(`/api/super/accounts/emails?search=${this.email}`)
         .subscribe((data: any) => {
           console.log(data);
           const emails = data as string[];

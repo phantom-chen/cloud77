@@ -118,51 +118,140 @@
 </div>
 
 <div *ngIf="isLogin && option === 'notification'">
-    <p>send email</p>
-    <div class="row">
-        <mat-form-field>
-            <mat-label>Email</mat-label>
-            <input matInput placeholder="Email" [(ngModel)]="notification.email" />
-        </mat-form-field>
-    </div>
 
-    <div class="row">
-        <mat-form-field>
-            <mat-label>Subject</mat-label>
-            <input matInput placeholder="Subject" [(ngModel)]="notification.subject" />
-        </mat-form-field>
-    </div>
+    <div class="row col-lg-12">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <p style="font-weight: bold;">Default Message</p>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <mat-form-field>
+                            <mat-label>Message</mat-label>
+                            <input matInput placeholder="Message" [(ngModel)]="message" />
+                        </mat-form-field>
+                    </div>
+                    <div class="row">
+                        <button mat-raised-button color="primary" (click)="sendMessage()">Send</button>
+                    </div>
+                </div>
+            </div>
 
-    <div class="row">
-        <mat-form-field>
-            <mat-label>Body</mat-label>
-            <textarea matInput placeholder="Body" [(ngModel)]="notification.body"></textarea>
-        </mat-form-field>
-    </div>
+            <div class="card">
+                <div class="card-header">
+                    <p style="font-weight: bold;">Bus Message</p>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <mat-form-field>
+                            <mat-label>Sender</mat-label>
+                            <input matInput placeholder="Sender" [(ngModel)]="sender" />
+                        </mat-form-field>
+                    </div>
 
-    <div class="row">
-        <div style="width: 100%;display: flex;padding: 2px;">
-            <button mat-raised-button color="primary" (click)="sendMail()">Send Mail</button>
+                    <div class="row">
+                        <mat-form-field>
+                            <mat-label>Content</mat-label>
+                            <input matInput placeholder="Content" [(ngModel)]="content" />
+                        </mat-form-field>
+                    </div>
+
+                    <div class="row">
+                        <button mat-raised-button color="primary" (click)="sendBusMessage()">Send</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <p style="font-weight: bold;">Mail Notification</p>
+                </div>
+
+                <div class="card-body">
+                    <div class="content">
+                        <div class="row">
+                            <mat-form-field>
+                                <mat-label>Email</mat-label>
+                                <input matInput placeholder="Email" [(ngModel)]="notification.email" />
+                            </mat-form-field>
+                        </div>
+
+                        <div class="row">
+                            <mat-form-field>
+                                <mat-label>Subject</mat-label>
+                                <input matInput placeholder="Subject" [(ngModel)]="notification.subject" />
+                            </mat-form-field>
+                        </div>
+
+                        <div class="row">
+                            <mat-form-field>
+                                <mat-label>Body</mat-label>
+                                <textarea matInput placeholder="Body" [(ngModel)]="notification.body"></textarea>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="row">
+                            <div style="display: flex;">
+                                <button type="button" class="btn btn-outline-primary btn-sm" (click)="sendMail()"><i
+                                        class="material-icons">email</i></button>
+                                <button type="button" class="btn btn-outline-primary btn-sm"><i
+                                        class="material-icons">edit</i></button>
+                                <button type="button" class="btn btn-outline-danger btn-sm"><i
+                                        class="material-icons">delete</i></button>
+                                <button type="button" class="btn btn-outline-danger btn-sm"><i
+                                        class="material-icons">save</i></button>
+                                <button type="button" class="btn btn-outline-primary btn-sm"><i
+                                        class="material-icons">arrow_upward</i></button>
+                                <button type="button" class="btn btn-outline-danger btn-sm"><i
+                                        class="material-icons">arrow_downward</i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <p style="font-weight: bold;">Default Message Response</p>
+                </div>
+
+                <div class="card-body">
+                    <div class="content">
+                        <p class="text-info">{{ messageResponse }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <p style="font-weight: bold;">Bus Message Response</p>
+                </div>
+
+                <div class="card-body">
+                    <div class="content">
+                        <p class="text-info">{{ greetingResponse }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <p style="font-weight: bold;">Last Sent Mail Content</p>
+                    <button type="button" class="btn btn-outline-primary btn-sm" (click)="getMailBody()"><i
+                            class="material-icons">refresh</i></button>
+                </div>
+
+                <div class="card-body">
+                    <div class="content">
+                        <div *ngIf="innerHtml" [innerHTML]="innerHtml"></div>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
-    <p>action buttons</p>
-    <div class="row">
-        <div style="width: 96%;display: flex;">
-            <button type="button" class="btn btn-outline-primary btn-sm"><i class="material-icons">edit</i></button>
-            <button type="button" class="btn btn-outline-danger btn-sm"><i class="material-icons">delete</i></button>
-            <button type="button" class="btn btn-outline-primary btn-sm" (click)="sendMail()"><i
-                    class="material-icons">email</i></button>
-            <button type="button" class="btn btn-outline-danger btn-sm"><i class="material-icons">save</i></button>
-            <button type="button" class="btn btn-outline-primary btn-sm"><i
-                    class="material-icons">arrow_upward</i></button>
-            <button type="button" class="btn btn-outline-danger btn-sm"><i
-                    class="material-icons">arrow_downward</i></button>
-        </div>
-    </div>
-
-    <p>send health mail</p>
-    <p>send custom mail</p>
-    <p>send user confirm email</p>
-    <p>send reset password email</p>
 
 </div>

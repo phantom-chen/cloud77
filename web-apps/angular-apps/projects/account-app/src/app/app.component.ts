@@ -85,6 +85,8 @@ export class AppComponent implements OnInit, OnDestroy {
     });
     this.service.gateway.loginSession$.subscribe((res) => {
       if (res.expiration) {
+        console.log("user is logged in");
+        console.log(res);
         this.isLogin = true;
         this.service.gateway.getSite().then((res: string) => {
           const obj = JSON.parse(res);

@@ -72,14 +72,20 @@ export class SystemComponent implements OnInit, AfterViewInit {
   cacheErrorMessage = "";
 
   message: string = "";
+  content: string = "";
+  sender: string = "";
+  messageResponse: string = "";
+  greetingResponse: string = "";
 
   notification: { email: string, subject: string, body: string } = { email: '', subject: '', body: '' };
+  innerHtml: string = '';
+
   constructor(
     private http: HttpClient,
     @Inject("DashboardService") private service: DashboardService,
     private dialog: MatDialog,
     private snackbar: MatSnackBar
-  ) {}
+  ) { }
 
   onSSO(): void {
     this.service.gateway.ssoSignIn$.next();
@@ -290,24 +296,52 @@ export class SystemComponent implements OnInit, AfterViewInit {
         next: (res) => {
           console.log(res);
         },
-        error: (err) => {},
+        error: (err) => { },
       });
   }
 
-    sendMessage(): void {
+  sendMessage(): void {
     if (this.message) {
-      console.log('wip');
-      console.log(this.message);
-      this.http.post(`/api/super/queues?message=${this.message}`, undefined).subscribe({
-        next: (res) => {
-          console.log(res);
-        },
-        error: (err) => {
-
-        }
+      this.http.post(`/api/super/queues?message=${this.message}`, undefined, { responseType: 'text' }).subscribe(res => {
+        console.log(res);
+        this.http.get('/api/super/caches/my_services_default_queue').subscribe({
+          next: (res: any) => {
+            console.log(res);
+            this.messageResponse = `Message received and saved in cache ${res.key}, value is ${res.value}`;
+          },
+          error: (err) => {
+            console.log(err);
+            console.log(err.error);
+          },
+        });
       });
     } else {
       alert('empty message');
     }
+  }
+
+  sendBusMessage(): void {
+    if (this.content && this.sender) {
+      console.log(this.content);
+      console.log(this.sender);
+      this.http.post(`/api/super/queues/buses`, { content: this.content, sender: this.sender }).subscribe({
+        next: (res: any) => {
+          this.greetingResponse = `${res.code}, ${res.message}`;
+        },
+        error: (err) => {
+        }
+      });
+    }
+  }
+
+  getMailBody(): void {
+    this.http.get('/api/super/system/mail-body', { responseType: 'text' }).subscribe({
+      next: (res) => {
+        this.innerHtml = res;
+      },
+      error: (err) => {
+        console.log(err);
+      }
+    });
   }
 }

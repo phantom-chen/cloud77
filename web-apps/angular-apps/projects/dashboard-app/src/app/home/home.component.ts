@@ -17,6 +17,7 @@ import { FormsModule } from '@angular/forms';
 export class HomeComponent {
   title = 'Dashboard Portal';
   tokenString: string = '';
+  debugMode: boolean = false;
   constructor(
     @Inject('DashboardService') private service: DashboardService,
   ) {
@@ -24,6 +25,7 @@ export class HomeComponent {
     if (tokens.access && tokens.refresh) {
       this.tokenString = `${tokens.access},${tokens.refresh}`;
     }
+    this.debugMode = localStorage.getItem('debug') ? true : false;
   }
 
   onSSO(): void {

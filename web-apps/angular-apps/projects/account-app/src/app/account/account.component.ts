@@ -136,9 +136,9 @@ export class AccountComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result: Profile) => {
       console.log(result);
-      this.snackbar.open('Info', 'WIP', { duration: SNACKBAR_DURATION });
       if (result) {
         this.service.updateProfile(result);
+        this.snackbar.open('Info', 'WIP', { duration: SNACKBAR_DURATION });
       }
     });
   }

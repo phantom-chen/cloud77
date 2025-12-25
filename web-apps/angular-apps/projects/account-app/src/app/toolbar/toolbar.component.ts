@@ -13,4 +13,6 @@ import { Component, Input } from '@angular/core';
 export class ToolbarComponent {
   @Input()
   headers: { label: string, path: string }[] = [];
+
+  email = 'wip'
 }

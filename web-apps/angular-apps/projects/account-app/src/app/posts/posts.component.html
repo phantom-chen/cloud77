@@ -3,25 +3,34 @@
     <app-un-authorized *ngIf="!loading && !isLogin" (ssoSignIn)="onSSO();"></app-un-authorized>
 
     <div *ngIf="isLogin">
-        <a *ngFor="let post of posts" [routerLink]="post.id">{{ post.title }}</a>
 
-        <p class="text-info" *ngIf="posts.length === 0">Empty Posts, create now</p>
+        <div style="display: flex;">
+            <mat-action-list style="box-shadow: 0 2px 4px rgba(0,0,0,0.1);width: 360px;min-height: 720px;">
+                <button mat-list-item (click)="create()">{{ posts.length === 0 ? 'No posts found, create now' : 'New Post'}}</button>
+                <button mat-list-item *ngFor="let post of posts" (click)="edit(post)">{{ post.title }}</button>
+            </mat-action-list>
 
-        <button (click)="create()">create</button>
+            <div class="container">
+                <p>post edit area</p>
+                <p>id: {{ id }}</p>
+                <p>title: {{ title }}</p>
+                <p>description: {{ description }}</p>
 
-        <div class="row">
-            <mat-form-field>
-                <mat-label>Posts</mat-label>
-                <mat-select [(ngModel)]="id" (valueChange)="onValueChange($event)">
-                    <mat-option value="">Select a post</mat-option>
-                    @for (post of posts; track post) {
-                    <mat-option [value]="post.id">{{post.title}}</mat-option>
-                    }
-                </mat-select>
-            </mat-form-field>
+                <div>
+                    <nu-monaco-editor [autoFormat]="true" style="height: 300px;width: 100%;" [model]="model" [options]="options">
+                    </nu-monaco-editor>
+                </div>
+                <hr/>
+                <button mat-button (click)="syncContent()">Sync Content</button>
+                <div class="row">
+                    <textarea [(ngModel)]="content" rows="4" cols="50"></textarea>
+                </div>
+
+                <button mat-raised-button color="primary" (click)="updateContent();">Update</button>
+                <button mat-button (click)="delete();">Delete</button>
+            </div>
         </div>
 
-        <button mat-flat-button color="primary" (click)="edit()">Edit selected post</button>
     </div>
 
 </div>

@@ -88,8 +88,17 @@ export class AccountService {
     return this.http.get(`/api/user/posts/${id}`, { responseType: "text" });
   }
 
+  updatePost(post: UserPost): Observable<any> {
+    // not implemented yet
+    return this.http.put(`/api/user/posts`, post);
+  }
+
   updatePostContent(id: string, content: string): Observable<any> {
     return this.http.put(`/api/user/posts/${id}`, content);
+  }
+
+  deletePost(id: string): Observable<any> {
+    return this.http.delete(`/api/user/posts/${id}`);
   }
 
   getFiles(): Observable<string[]> {

@@ -18,6 +18,8 @@ export class HomeComponent {
 
   title = 'Account Portal';
   tokenString: string = '';
+  debugMode: boolean = false;
+
   constructor(
     @Inject('AccountService') private service: AccountService,
   ) {
@@ -25,6 +27,7 @@ export class HomeComponent {
     if (tokens.access && tokens.refresh) {
       this.tokenString = `${tokens.access},${tokens.refresh}`;
     }
+    this.debugMode = localStorage.getItem('debug') ? true : false;
   }
 
   onSSO(): void {

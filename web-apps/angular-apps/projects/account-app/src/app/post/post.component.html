@@ -2,11 +2,6 @@
     <app-un-authorized *ngIf="!loading && !isLogin" (ssoSignIn)="onSSO();"></app-un-authorized>
 
     <div *ngIf="isLogin">
-        <p>post works!</p>
-
-        <div class="row">
-            <p>post id is {{id}}</p>
-        </div>
 
         <div class="row">
             <mat-chip-listbox>
@@ -22,16 +17,6 @@
 
         <p>Collection: xxx</p>
         <p>Description: xxx</p>
-        <p>Created at: xxx</p>
-
-        <nu-monaco-editor [autoFormat]="true" style="height: 300px;width: 100%;" [model]="model" [options]="options">
-        </nu-monaco-editor>
-
-        <div class="row">
-            <textarea [(ngModel)]="content" rows="4" cols="50"></textarea>
-        </div>
-
-        <button mat-button (click)="sync()">Sync editors</button>
-        <button mat-raised-button color="primary" (click)="update();">Save</button>
+        <p>Created at: xxx</p>        
     </div>
 </div>

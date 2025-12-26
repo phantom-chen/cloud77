@@ -82,9 +82,4 @@ export class StatisticsComponent implements OnInit, AfterViewInit {
       'value': 400
     }
   ];
-
-  reload() {
-    // window.location.reload();
-    document.location.reload();
-  }
 }

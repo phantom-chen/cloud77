@@ -90,20 +90,6 @@ export class HistoryComponent implements OnInit {
 
   updateTable(data: any): void {
     console.log(data);
-    this.events = data.data as EventEntity[];
-  }
-
-  deleteHistory(): void {
-    const confirmed = confirm(
-      "Are you sure to delete user history\n" + this.email
-    );
-    console.log(confirmed);
-    if (confirmed) {
-      this.http
-        .delete(`/api/super/events/${this.email}`)
-        .subscribe((data: any) => {
-          console.log(data);
-        });
-    }
+    this.events = (data.data as EventEntity[]).slice(0, 30);
   }
 }

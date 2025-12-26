@@ -3,7 +3,6 @@ import {
   Component,
   ElementRef,
   Inject,
-  OnDestroy,
   OnInit,
   ViewChild,
 } from "@angular/core";
@@ -50,7 +49,7 @@ export class LoginComponent implements OnInit {
     @Inject("GatewayService") private gateway: GatewayService,
     @Inject("UserService") private service: UserService,
     private san: DomSanitizer
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.debugMode = localStorage.getItem("debug") ? true : false;
@@ -86,8 +85,8 @@ export class LoginComponent implements OnInit {
 
     this.frameResourceUrl = this.san.bypassSecurityTrustResourceUrl(
       sessionStorage.getItem("user_app_message") ??
-        localStorage.getItem("user_app_message") ??
-        ""
+      localStorage.getItem("user_app_message") ??
+      ""
     );
     window.addEventListener("message", function (ev) {
       if (ev.data) {
@@ -121,6 +120,10 @@ export class LoginComponent implements OnInit {
     window.addEventListener("storage", () => {
       console.log("Storage event:");
     });
+
+    this.gateway.isHealth().subscribe(res => {
+      this.serviceAvailable = res ? true : false;
+    })
   }
 
   remember = true;
@@ -137,11 +140,6 @@ export class LoginComponent implements OnInit {
 
   @ViewChild("messageContainer")
   messageContainer!: ElementRef<HTMLIFrameElement>;
-
-  sendMessage() {
-    console.log("Sending message:", this.message);
-    this.channel.postMessage(this.message);
-  }
 
   onAccountChange() {
     this.service.getUser(this.account, "").subscribe((res) => {
@@ -246,6 +244,10 @@ export class LoginComponent implements OnInit {
   }
 
   onLogout(): void {
+    if (this.message) {
+      console.log("Sending message:", this.message);
+      this.channel.postMessage(this.message);
+    }
     removeTokens();
     window.location.reload();
   }

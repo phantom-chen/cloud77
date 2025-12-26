@@ -1,18 +1,9 @@
 <div class="container col-lg-12">
-    <div class="card">
-        <div class="card-header">
-            <div style="display: flex;">
-                <h5>User Login</h5>
-                <mat-icon>signal_cellular_alt</mat-icon>
-                <span class="example-spacer"></span>
-            </div>
-        </div>
-    </div>
 
-    <div class="card-body content">
+    <div class="content">
 
         <p *ngIf="!serviceAvailable" class="text-danger text-center">Service is unavailable, please try again later.</p>
-        <p *ngIf="serviceAvailable" class="text-success text-center">Service is available.</p>
+        <div *ngIf="serviceAvailable" class="text-success text-center"><mat-icon>signal_cellular_alt</mat-icon><p>Service is available.</p></div>
 
         <div *ngIf="!hadToken || !hadValidToken" style="margin: auto;box-shadow: 3px;" class="col-lg-6">
             <form novalidate>
@@ -65,23 +56,23 @@
         </div>
 
         <div *ngIf="hadValidToken" style="margin: auto;">
-            <p class="text-info-emphasis">login as: {{ account | uppercase }}</p>
-            <div>
-                <span class="text-warning">Token is valid for {{ tokenValidity }} minutes</span>
+            <div style="text-align: center;">
+                <p class="text-info-emphasis">login as: {{ account | uppercase }}</p>
+                <div>
+                    <p class="text-warning">Token is valid for {{ tokenValidity }}</p>
+                    <button mat-button (click)="copyTokens()"><mat-icon>file_copy</mat-icon>Copy Tokens</button>
+                </div>
+                <p class="text-info">{{openingMessage}}</p>
             </div>
-            <p class="text-info">{{openingMessage}}</p>
-
-            <input type="text" placeholder="Type..." [(ngModel)]="message">
-            <button (click)="sendMessage()">Broadcast message</button>
-
-            <button mat-button (click)="copyTokens()"><mat-icon>file_copy</mat-icon>Copy Tokens</button>
-
-            <button mat-button (click)="onLogout()">Logout</button>
+            <div style="text-align: center;">
+                <input type="text" placeholder="The App want to exit" [(ngModel)]="message">
+                <button *ngIf="hadToken" mat-button (click)="onLogout()">
+                    <mat-icon>logout</mat-icon>Logout
+                </button>
+            </div>
         </div>
 
-        <div *ngIf="hadValidToken" style="margin: auto;">
-            <textarea cols="100" rows="10" readonly>{{tokenString}}</textarea>
-        </div>
+        <hr />
 
         <div style="display: flex;">
             <div style="width: 50%;">

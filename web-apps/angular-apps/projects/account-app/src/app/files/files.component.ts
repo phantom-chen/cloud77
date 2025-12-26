@@ -7,6 +7,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule } from "@angular/material/select";
 import { MatListModule, MatSelectionListChange } from '@angular/material/list';
 import { HttpErrorResponse, HttpProgressEvent } from '@angular/common/http';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-files',
@@ -17,7 +18,8 @@ import { HttpErrorResponse, HttpProgressEvent } from '@angular/common/http';
     MatSnackBarModule,
     MatDialogModule,
     MatSelectModule,
-    MatListModule
+    MatListModule,
+    MatButtonModule
   ],
   templateUrl: './files.component.html',
   styleUrl: './files.component.css'

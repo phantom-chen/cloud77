@@ -18,7 +18,7 @@
 
         <mat-paginator [length]="listLength" [pageSize]="pageSize" [pageSizeOptions]="[10, 12]" showFirstLastButtons=true (page)="pageChanged($event)"></mat-paginator>
         
-        <button (click)="createTask()">create task</button>
+        <button mat-flat-button color="primary" (click)="createTask()">create task</button>
 
         <hr />
 

@@ -13,6 +13,7 @@ import { UnAuthorizedComponent } from '../un-authorized/un-authorized.component'
 import { UserTask } from '@phantom-chen/cloud77';
 import { TaskDialogComponent } from '../task-dialog/task-dialog.component';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-tasks',
@@ -20,6 +21,7 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
   imports: [
     CommonModule,
     UnAuthorizedComponent,
+    MatButtonModule,
     MatSnackBarModule,
     MatDialogModule,
     DragDropModule,

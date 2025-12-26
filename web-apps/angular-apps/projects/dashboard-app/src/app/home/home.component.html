@@ -164,10 +164,10 @@
             </svg>
             <h1>{{ title }}</h1>
             <p>Congratulations! Your app is running. 🎉</p>
-            <div>
+            <div *ngIf="!tokenString">
                 <button (click)="onSSO()">Sign In with SSO</button>
             </div>
-            <div>
+            <div *ngIf="tokenString">
                 <button (click)="onLogout()">Exit current session</button>
             </div>
         </div>
@@ -219,4 +219,5 @@
     </div>
 </main>
 
-<textarea style="width: 100%;" cols="100" rows="10" [(ngModel)]="tokenString" (change)="onChange($event)"></textarea>
+<textarea *ngIf="debugMode" style="width: 100%;" cols="60" rows="6" [(ngModel)]="tokenString"
+    (change)="onChange($event)"></textarea>

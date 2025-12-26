@@ -9,6 +9,7 @@ import { FormsModule } from "@angular/forms";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { Router } from "@angular/router";
+import { MatAutocompleteModule } from "@angular/material/autocomplete";
 
 @Component({
   selector: "app-accounts",
@@ -20,6 +21,7 @@ import { Router } from "@angular/router";
     MatButtonToggleModule,
     MatFormFieldModule,
     MatInputModule,
+    MatAutocompleteModule,
   ],
   templateUrl: "./accounts.component.html",
   styleUrl: "./accounts.component.css",
@@ -37,6 +39,7 @@ export class AccountsComponent implements OnInit {
   role = "";
   sort = "desc";
   email = "";
+  matchedEmails: string[] = [];
 
   constructor(
     private http: HttpClient,
@@ -51,7 +54,6 @@ export class AccountsComponent implements OnInit {
         this.isLogin = true;
         this.getAccounts();
         this.http.get("api/super/accounts/roles").subscribe((data: any) => {
-          console.log(data);
           this.roles = data as string[];
         });
       }
@@ -70,29 +72,33 @@ export class AccountsComponent implements OnInit {
     this.getAccounts();
   }
 
-  getAccounts(): void {
-    this.accounts = [];
+  queryEmails(): void {
+    this.matchedEmails = [];
     if (this.email) {
       this.http
         .get(`/api/super/accounts/emails?search=${this.email}`)
         .subscribe((data: any) => {
           console.log(data);
           const emails = data as string[];
-          for (const element of emails) {
-            this.http
-              .get(`api/user/accounts/${element}`)
-              .subscribe((res: any) => {
-                console.log(res);
-                this.accounts.push(res as UserAccount);
-              });
+          this.matchedEmails = data as string[];
+          if (emails.length < 10) {
+            this.accounts = [];
+            for (const element of emails) {
+              this.http
+                .get(`api/user/accounts/${element}`)
+                .subscribe((res: any) => {
+                  this.accounts.push(res as UserAccount);
+                });
+            }
           }
         });
       return;
     }
-    console.log(this.sort);
-    console.log(this.role);
-    console.log(this.pageIndex);
-    console.log(this.pageSize);
+  }
+
+  getAccounts(): void {
+    this.accounts = [];
+
     let url = `/api/super/accounts?index=${this.pageIndex}&size=${this.pageSize}&sort=${this.sort}`;
     if (this.role) {
       url += `&role=${this.role}`;
@@ -117,6 +123,14 @@ export class AccountsComponent implements OnInit {
         .subscribe((data: any) => {
           console.log(data);
         });
+      // tasks, posts, files, clients and events
+      setTimeout(() => {
+        this.http
+          .delete(`/api/super/events/${this.email}`)
+          .subscribe((data: any) => {
+            console.log(data);
+          });
+      }, 3000);
     }
   }
 }

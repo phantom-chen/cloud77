@@ -4,8 +4,8 @@ services:
     ports:
       - "8080:80"
     networks:
-      - cloud77_dev
+      - my_dev_apps
 
 networks:
-  cloud77_dev:
+  my_dev_apps:
     external: true

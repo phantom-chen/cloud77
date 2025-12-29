@@ -1,7 +1,7 @@
 services:
   consulhost:
     image: consul:1.11.1
-    command: agent -ui -server -bootstrap-expect=3 -node=consulhost -client=0.0.0.0 -datacenter hangzhou
+    command: agent -ui -server -bootstrap-expect=3 -node=consulhost -client=0.0.0.0 -datacenter dc1
     environment:
       CONSUL_LOCAL_CONFIG: '{"skip_leave_on_interrupt": true}'
       CONSUL_BIND_INTERFACE: "eth0"
@@ -13,13 +13,13 @@ services:
     ports:
       - "8500:8500"
     networks:
-      - cloud77_dev
+      - my_dev_apps
 
   consulslave1:
     image: consul:1.11.1
     depends_on:
       - consulhost
-    command: agent -server -node=consulslave1 -client=0.0.0.0 -datacenter hangzhou -retry-join consulhost
+    command: agent -server -node=consulslave1 -client=0.0.0.0 -datacenter dc1 -retry-join consulhost
     environment:
       CONSUL_LOCAL_CONFIG: '{"skip_leave_on_interrupt": true}'
       CONSUL_BIND_INTERFACE: "eth0"
@@ -29,13 +29,13 @@ services:
       - "8302"
       - "8600"
     networks:
-      - cloud77_dev
+      - my_dev_apps
 
   consulslave2:
     image: consul:1.11.1
     depends_on:
       - consulhost
-    command: agent -server -node=consulslave2 -client=0.0.0.0 -datacenter hangzhou -retry-join consulhost
+    command: agent -server -node=consulslave2 -client=0.0.0.0 -datacenter dc1 -retry-join consulhost
     environment:
       CONSUL_LOCAL_CONFIG: '{"skip_leave_on_interrupt": true}'
       CONSUL_BIND_INTERFACE: "eth0"
@@ -45,8 +45,8 @@ services:
       - "8302"
       - "8600"
     networks:
-      - cloud77_dev
+      - my_dev_apps
 
 networks:
-  cloud77_dev:
+  my_dev_apps:
     external: true

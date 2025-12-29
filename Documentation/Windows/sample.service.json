@@ -1,0 +1,7 @@
+{
+    "name": "SampleService",
+    "ports": "7712",
+    "file": "C:\\inetpub\\apps\\SampleService\\SampleService.exe",
+    "directory": "C:\\inetpub\\apps\\SampleService\\",
+    "processName": "SampleService"
+}

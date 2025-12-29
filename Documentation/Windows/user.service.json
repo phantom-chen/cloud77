@@ -1,0 +1,7 @@
+{
+    "name": "UserService",
+    "ports": "7713",
+    "file": "C:\\inetpub\\apps\\UserService\\UserService.exe",
+    "directory": "C:\\inetpub\\apps\\UserService\\",
+    "processName": "UserService"
+}

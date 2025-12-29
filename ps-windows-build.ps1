@@ -69,10 +69,10 @@ Copy-Item -Path "$PWD\canteen-service\package.json" -Destination "$root\CanteenS
 
 Copy-Item -Path "$PWD\Documentation\Windows\certificate.ps1" -Destination "$root\certificate.ps1" -Force
 Copy-Item -Path "$PWD\Documentation\Windows\variables.ps1" -Destination "$root\variables.ps1" -Force
-Copy-Item -Path "$PWD\Documentation\Windows\helper.ps1" -Destination "$root\helper.ps1" -Force
+Copy-Item -Path "$PWD\Documentation\Windows\services.ps1" -Destination "$root\services.ps1" -Force
 
-Copy-Item -Path "$PWD\Documentation\Windows\canteen.service.json" -Destination "$root\canteen.service.json" -Force
-Copy-Item -Path "$PWD\Documentation\Windows\gateway.service.json" -Destination "$root\gateway.service.json" -Force
-Copy-Item -Path "$PWD\Documentation\Windows\sample.service.json" -Destination "$root\sample.service.json" -Force
-Copy-Item -Path "$PWD\Documentation\Windows\super.service.json" -Destination "$root\super.service.json" -Force
-Copy-Item -Path "$PWD\Documentation\Windows\user.service.json" -Destination "$root\user.service.json" -Force
+Copy-Item -Path "$PWD\Documentation\Windows\service.canteen.json" -Destination "$root\service.canteen.json" -Force
+Copy-Item -Path "$PWD\Documentation\Windows\service.gateway.json" -Destination "$root\service.gateway.json" -Force
+Copy-Item -Path "$PWD\Documentation\Windows\service.sample.json" -Destination "$root\service.sample.json" -Force
+Copy-Item -Path "$PWD\Documentation\Windows\service.super.json" -Destination "$root\service.super.json" -Force
+Copy-Item -Path "$PWD\Documentation\Windows\service.user.json" -Destination "$root\service.user.json" -Force

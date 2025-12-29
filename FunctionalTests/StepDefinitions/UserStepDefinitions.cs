@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using TestUtility;
 
 namespace FunctionalTests.StepDefinitions
@@ -78,8 +79,15 @@ namespace FunctionalTests.StepDefinitions
         [When("Get my access tokens")]
         public async Task GetTokensAsync()
         {
-            var uri = $"/api/sso/users/token?email={client.Tester.User.Email}&password={client.Tester.User.Password}";
+            var uri = "/api/sso/tokens";
             var request = client.CreateRequest(HttpMethod.Post, uri);
+            request.Content = JsonContent.Create(new Cloud77.Abstractions.Service.UserPassword()
+            {
+                Email = client.Tester.User.Email.ToLower(),
+                Name = "",
+                Password = client.Tester.User.Password,
+            });
+
             var response = await client.SendAsync(request);
 
             response.EnsureSuccessStatusCode();

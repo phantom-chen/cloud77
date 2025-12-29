@@ -1,3 +1,7 @@
+param(   
+    [Parameter(Mandatory = $false)][string]$action
+)
+
 function Invoke-Script {
     param (
         $shell,
@@ -28,7 +32,8 @@ function Get-ServiceInfo {
     $connections = Get-NetTCPConnection -LocalPort $port -ErrorAction Ignore
     if ($null -eq $connections) {
         Write-Host "  No connections found" -ForegroundColor Yellow
-    } else {
+    }
+    else {
         $connections | ForEach-Object {
             Write-Output "  $($_.LocalAddress):$($_.LocalPort)"
         }
@@ -43,12 +48,10 @@ function Stop-Service {
 
     if ($name -ne '') {
         $serviceCheck = Get-Process -Name $name -ErrorAction Ignore
-        if ($null -eq $serviceCheck)
-        {
+        if ($null -eq $serviceCheck) {
             Write-Host ('Logger: find no {0}.exe' -f $name)
         }
-        else
-        {
+        else {
             taskkill.exe -f -im ('{0}.exe' -f $name)
             Write-Host ('Logger: kill {0}.exe' -f $name)
         }
@@ -88,9 +91,7 @@ function Stop-Service {
     }
 }
 
-$action = Read-Host 'press the action for services'
-
-$files = Get-ChildItem "*.service.json"
+$files = Get-ChildItem "service.*.json"
 foreach ($file in $files) {
     $service = Get-Content $file.FullName | ConvertFrom-Json
     $name = $service.name
@@ -110,9 +111,7 @@ foreach ($file in $files) {
                 Invoke-Script -shell cmd -command $service.shellCommand
             }
         }
-    }
-
-    if ($action -eq 'stop') {
+    } elseif ($action -eq 'stop') {
         Write-Host "$action service $name"
         if ($service.processName -ne '' -and $service.processName -ne $null) {
             Stop-Service -name $service.processName
@@ -121,10 +120,10 @@ foreach ($file in $files) {
             $port = [int]($service.ports)
             Stop-Service -port $port
         }
+    } else {
+        Start-Sleep -Seconds 2
     }
 }
-
-Start-Sleep -Seconds 1
 
 foreach ($file in $files) {
     $service = Get-Content $file.FullName | ConvertFrom-Json
@@ -134,6 +133,3 @@ foreach ($file in $files) {
         Get-ServiceInfo -name $service.name -port $port
     }
 }
-
-Write-Host 'exit in 1 seconds'
-Start-Sleep -Seconds 1

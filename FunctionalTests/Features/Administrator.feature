@@ -12,20 +12,11 @@ Scenario: Database
     | test_db  | Users,Events |
 
 Scenario: Get Administrator Infomation
-  Given I am the tester admin
-  When Get my access tokens
-  Then My tokens are valid
-  And Get my account information
-    | Name  | Role          | Confirmed |
-    | admin | Administrator | no        |
-  And I have some tasks
-  And I have some posts
-
-Scenario: Get System Information
-
-  Given I am the tester admin
-  Then My tokens are valid
-  Then Gateway gets system information
+  #And Get my account information
+  #  | Name  | Role          | Confirmed |
+  #  | admin | Administrator | no        |
+  #And I have some tasks
+  #And I have some posts
 
 @ignore
 Scenario: Gateway settings

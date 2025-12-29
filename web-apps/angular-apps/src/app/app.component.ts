@@ -1,4 +1,4 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, HostListener } from '@angular/core';
 import { NavigationEnd, NavigationStart, Router, RouterModule } from '@angular/router';
 import { SharedModule } from './shared/shared.module';
 import { CommonModule } from '@angular/common';
@@ -39,8 +39,18 @@ export class AppComponent implements AfterViewInit {
 
   constructor(private router: Router) {}
 
-  links: string[][] = [];
+  links: string[][] = [
+    ['Tutorial', '/tutorial'],
+    ['Layout', '/layout'],
+    ['SSO', '/sso'],
+  ];
   noHeader: boolean = false;
+
+  @HostListener('window:storage')
+  onStorageChange(event: any) {
+    console.log('change...', event);
+    // console.log(localStorage.getItem('1'))
+  }
 
   ngAfterViewInit(): void {
     document.addEventListener('DOMContentLoaded', function () {
@@ -58,25 +68,28 @@ export class AppComponent implements AfterViewInit {
       yourMethod();
     });
 
+    window.addEventListener('storage', function (event) {
+      console.log('Storage event:', event);
+      // Handle storage events here if needed
+    });
+    // Listen to storage changes and react accordingly
+    window.addEventListener('storage', (event) => {
+      if (event.key === 'user_app_ready') {
+      console.log('Session storage "tester" changed:', event.newValue);
+      // You can add logic here to update component state or trigger actions
+      }
+    });
     this.router.events.subscribe((e) => {
       if (e instanceof NavigationStart) {
         // this.activeLink = e.url;
         console.log(e.url);
-        this.noHeader = e.url.startsWith('/message');
+        this.noHeader = e.url.startsWith('/message') || e.url.startsWith('/tutorial' ) || e.url.startsWith('/layout');
       }
       if (e instanceof NavigationEnd) {
-        if (e.url.startsWith('/hello')) {
-          this.links = [
-            ['Hello Home', '/hello'],
-            ['Toolbox', '/hello/toolbox'],
-            ['Tutorial', '/hello/tutorial'],
-            ['Periodic Table', '/hello/periodic-table'],
-            ['Material', '/hello/material']
-          ];          
+        if (e.url.startsWith('/tutorial')) {
+
         } else {
-          this.links = [
-            ['Hello', '/hello'],
-          ];
+
         }
       }
     });

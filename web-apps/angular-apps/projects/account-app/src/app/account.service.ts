@@ -1,0 +1,139 @@
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { EventQueryResult, getUser, Profile, UserAccount, UserPost, UserRole, UserTask } from "@phantom-chen/cloud77";
+import { GatewayService, getTokens, getUserEmail } from "@shared/utils";
+import { Observable, Subject } from "rxjs";
+
+export interface IHandleHttpError {
+  handleHttpError(response: HttpErrorResponse): void
+}
+
+@Injectable()
+export class AccountService {
+  constructor(private http: HttpClient) {
+    console.log("DashboardService initialized");
+    this.gateway = new GatewayService(this.http);
+  }
+
+  gateway: GatewayService;
+
+  getDashboardData() {
+    // Simulate fetching dashboard data
+    return {
+      files: ["file1.txt", "file2.txt", "file3.txt"],
+      recentActivities: [
+        "Logged in",
+        "Uploaded file1.txt",
+        "Deleted file2.txt",
+      ],
+    };
+  }
+
+  getAccountInfo(): Observable<UserAccount> {
+    const email = getUserEmail();
+    return this.http.get<UserAccount>(`/api/user/accounts/${email}`);
+  }
+
+  getHistory(): Observable<EventQueryResult> {
+    const email = getUserEmail();
+    return this.http.get<EventQueryResult>(`/api/super/events/${email}`);
+  }
+
+  updateProfile(profile: Profile) {
+    const email = getUserEmail();
+    return this.http
+      .put(`/api/user/accounts/${email}/profile`, profile)
+      .subscribe((res) => console.log(res));
+  }
+
+  updatePassword(body: {
+    email: string;
+    password: string;
+    newPassword: string;
+  }) {
+    return this.http.put(`/api/user/accounts/${body.email}/password`, body);
+  }
+
+  deleteAccount(email: string) {
+    return this.http.delete(
+      `/api/users/accounts/${email}`
+    );
+  }
+
+  getTasks(): Observable<any> {
+    return this.http.get("/api/user/tasks");
+  }
+
+  createTask(task: UserTask): Observable<any> {
+    return this.http.post("/api/user/tasks", task);
+  }
+
+  createPost(post: UserPost): Observable<any> {
+    return this.http.post("/api/user/posts", post);
+  }
+
+  updateTask(task: UserTask): Observable<any> {
+    return this.http.put("/api/user/tasks", task);
+  }
+
+  deleteTask(id: string): Observable<any> {
+    return this.http.delete(`/api/user/tasks/${id}`);
+  }
+
+  getPosts(): Observable<any> {
+    return this.http.get("/api/user/posts");
+  }
+
+  getPostContent(id: string): Observable<any> {
+    return this.http.get(`/api/user/posts/${id}`, { responseType: "text" });
+  }
+
+  updatePost(post: UserPost): Observable<any> {
+    // not implemented yet
+    return this.http.put(`/api/user/posts`, post);
+  }
+
+  updatePostContent(id: string, content: string): Observable<any> {
+    return this.http.put(`/api/user/posts/${id}`, content);
+  }
+
+  deletePost(id: string): Observable<any> {
+    return this.http.delete(`/api/user/posts/${id}`);
+  }
+
+  getFiles(): Observable<string[]> {
+    const email = getUserEmail();
+    return this.http.get<string[]>(`/api/sample/files`);
+  }
+
+  uploadFile(form: FormData): Observable<any> {
+    const email = getUserEmail();
+    return this.http.post("/api/sample/files", form, {
+      reportProgress: true,
+      observe: "events",
+    });
+  }
+
+  downloadFile(fileName: string): Observable<Blob> {
+    const email = getUserEmail();
+    return this.http.get(`/api/sample/files/${fileName}`, {
+      responseType: "blob",
+      headers: {
+        "Content-Disposition": `attachment; filename="${fileName}"`,
+      },
+    });
+  }
+
+  deleteFile(fileName: string): Observable<any> {
+    const email = getUserEmail();
+    return this.http.delete(`/api/sample/files/${fileName}`);
+  }
+
+  verifyEmail(): Observable<any> {
+    const email = getUserEmail();
+    return this.http.post(
+      `/api/user/accounts/${email}/verification`,
+      undefined
+    );
+  }
+}

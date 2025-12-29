@@ -12,12 +12,5 @@ import { Component, Input } from '@angular/core';
 })
 export class ToolbarComponent {
   @Input()
-  headers: { label: string, path: string }[] = [
-    { label: 'Home', path: '/' },
-    { label: 'Statistics', path: '/statistics' },
-    { label: 'Accounts', path: '/accounts' },
-    { label: 'Messages', path: '/messages' },
-    { label: 'Settings', path: '/settings' },
-    { label: 'History', path: '/history' }
-  ];
+  headers: { label: string, path: string }[] = [];
 }

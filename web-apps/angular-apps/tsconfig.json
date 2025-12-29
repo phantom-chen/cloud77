@@ -22,6 +22,18 @@
     "lib": [
       "ES2022",
       "dom"
+    ],
+    "paths": {
+      "@shared/*": [
+        "./src/app/shared/*"
+      ],
+      "my-angular-ui": [
+        // "./dist/angular-ui"
+        "./projects/angular-ui/src/public-api.ts"
+      ]
+    },
+    "types": [
+      "node"
     ]
   },
   "angularCompilerOptions": {

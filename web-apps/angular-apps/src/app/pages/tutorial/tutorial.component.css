@@ -1,0 +1,35 @@
+p {
+  margin: 0;
+  text-align: center;
+}
+
+.content {
+  flex: 1 1 auto;
+  display: flex;
+  margin: 4px auto 4px;
+  padding: 0 16px;
+  flex-flow: column;
+  align-items: center;
+  padding-bottom: 136px;
+  max-width: 960px;
+  flex-direction: column;
+}
+
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+svg#clouds {
+    position: fixed;
+    bottom: -160px;
+    left: -230px;
+    z-index: -10;
+    width: 100%;
+}
+
+:host {
+    height: inherit;
+}

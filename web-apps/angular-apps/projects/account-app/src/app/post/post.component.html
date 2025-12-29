@@ -1,6 +1,22 @@
-<p>post works!</p>
-<nu-monaco-editor [autoFormat]="true"
-    style="height: 300px;width: 100%;"
-    [model]="model"
-    [options]="options">
-</nu-monaco-editor>
+<div class="container">
+    <app-un-authorized *ngIf="!loading && !isLogin" (ssoSignIn)="onSSO();"></app-un-authorized>
+
+    <div *ngIf="isLogin">
+
+        <div class="row">
+            <mat-chip-listbox>
+                <mat-chip-option color="primary" selected *ngFor="let tag of tags">{{ tag }}</mat-chip-option>
+            </mat-chip-listbox>
+        </div>
+
+        <div class="row">
+            <mat-chip-listbox>
+                <mat-chip-option color="primary" selected *ngFor="let tag of themes">{{ tag }}</mat-chip-option>
+            </mat-chip-listbox>
+        </div>
+
+        <p>Collection: xxx</p>
+        <p>Description: xxx</p>
+        <p>Created at: xxx</p>        
+    </div>
+</div>

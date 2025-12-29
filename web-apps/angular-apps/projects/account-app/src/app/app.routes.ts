@@ -1,52 +1,61 @@
 import { Routes } from '@angular/router';
+import { MessageComponent } from './message/message.component';
+import { HomeComponent } from './home/home.component';
+import { AccountComponent } from './account/account.component';
 import { SettingComponent } from './setting/setting.component';
+import { TokenGuard } from './token.guard';
+import { HistoryComponent } from './history/history.component';
 import { PostsComponent } from './posts/posts.component';
 import { PostComponent } from './post/post.component';
+import { FilesComponent } from './files/files.component';
 import { TasksComponent } from './tasks/tasks.component';
-import { LoginComponent } from './login/login.component';
-import { LogoutComponent } from './logout/logout.component';
-import { SignUpComponent } from './sign-up/sign-up.component';
-import { ResetPasswordComponent } from './reset-password/reset-password.component';
-import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
-import { AccountComponent } from './account/account.component';
-import { HistoryComponent } from './history/history.component';
-import { MessageComponent } from './message/message.component';
+import { NotFoundComponent } from './not-found/not-found.component';
+import { KeyGuard } from './key.guard';
 
 export const routes: Routes = [
     {
-        path: '', component: LoginComponent
+        path: '', component: HomeComponent
     },
     {
         path: 'message', component: MessageComponent
     },
     {
-        path: 'logout', component: LogoutComponent
+        path: "my",
+        component: AccountComponent,
+        canActivate: [KeyGuard, TokenGuard]
     },
     {
-        path: 'sign-up', component: SignUpComponent
+        path: "setting",
+        component: SettingComponent,
+        canActivate: [TokenGuard]
     },
     {
-        path: 'reset-password', component: ResetPasswordComponent
+        path: "history",
+        component: HistoryComponent,
+        canActivate: [TokenGuard]
     },
     {
-        path: 'confirm-email', component: ConfirmEmailComponent
+        path: "posts",
+        component: PostsComponent,
+        canActivate: [TokenGuard]
     },
     {
-        path: 'dashboard', component: AccountComponent
+        path: "posts/:id",
+        component: PostComponent,
+        canActivate: [TokenGuard]
     },
     {
-        path: 'setting', component: SettingComponent
+        path: "files",
+        component: FilesComponent,
+        canActivate: [TokenGuard]
     },
     {
-        path: 'history', component: HistoryComponent
+        path: "tasks",
+        component: TasksComponent,
+        canActivate: [TokenGuard]
     },
     {
-        path: 'posts', component: PostsComponent
-    },
-    {
-        path: 'posts/:id', component: PostComponent
-    },
-    {
-        path: 'tasks', component: TasksComponent
+        path: "**",
+        component: NotFoundComponent
     }
 ];

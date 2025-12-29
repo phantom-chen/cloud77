@@ -1,51 +1,26 @@
 {
   "/version": {
-    "target": "http://localhost:5389",
+    "target": "http://localhost:7710",
     "secure": true,
     "changeOrigin": true
   },
   "/resources": {
-    "target": "https://www.cloud77.top",
+    "target": "http://localhost:5096",
     "secure": true,
     "changeOrigin": true
   },
   "/api": {
-    "target": "http://localhost:4359",
-    "secure": true,
-    "changeOrigin": true
-  },
-  "/gateway-api": {
-    "target": "http://localhost:4359",
-    "secure": true,
-    "changeOrigin": true
-  },
-  "/sample-api": {
-    "target": "http://localhost:4359",
-    "secure": true,
-    "changeOrigin": true
-  },
-  "/sso-api": {
-    "target": "http://localhost:4359",
-    "secure": true,
-    "changeOrigin": true
-  },
-  "/user-api": {
-    "target": "http://localhost:4359",
-    "secure": true,
-    "changeOrigin": true
-  },
-  "/super-api": {
-    "target": "http://localhost:4359",
+    "target": "http://localhost:7710",
     "secure": true,
     "changeOrigin": true
   },
   "/hubs": {
-    "target": "http://localhost:5389",
+    "target": "http://localhost:7710",
     "ws": true,
     "secure": false
   },
-  "/chat-ws": {
-    "target": "http://localhost:5389",
+  "/canteen-ws": {
+    "target": "http://localhost:7715",
     "ws": true,
     "secure": false
   }

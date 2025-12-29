@@ -1,28 +1,45 @@
-<button (click)="onLoad()">Load Authors</button>
+<p *ngIf="authors.length === 0">No Authors Found</p>
+<p *ngIf="authors.length > 0">Find {{ authors.length }} Authors</p>
+
+<button mat-raised-button color="primary" (click)="onCreate()">Create Author</button>
 
 <table class="table table-sm table-striped table-bordered table-hover">
   <tr>
     <th>Name</th>
-    <th>Confirmed</th>
-    <th>Email</th>
-    <th style="width: 100px;">Actions</th>
+    <th>Title</th>
+    <th>Region</th>
+    <th>Address</th>
+    <th>CreatedAt</th>
+    <th>Timestamp</th>
   </tr>
-  <tr *ngFor="let a of authors">
-    <td>{{ a || 'Null' }}</td>
-    <td>{{ a }}</td>
-    <td>{{ a }}</td>
-    <td style="display:flex;padding: 2px;margin: 2px;">
-      <button type="button"
-          class="btn btn-outline-primary btn-sm" style="margin-right:6px;"><i
-          class="material-icons">edit</i></button>
-      <button type="button"
-          class="btn btn-outline-danger btn-sm"><i class="material-icons">delete</i></button>
-    </td>
+  <tr *ngFor="let author of authors" (click)="onClick(author)">
+    <td>{{ author.name }}</td>
+    <td>{{ author.title }}</td>
+    <td>{{ author.region }}</td>
+    <td>{{ author.address }}</td>
+    <td>{{ author.createdAt | date: 'yyyy-MM-dd HH:mm' }}</td>
+    <td>{{ author.updatedAt | date: 'yyyy-MM-dd HH:mm' }}</td>
   </tr>
 </table>
-<mat-paginator
-  [length]="length"
-  [pageSize]="size"
-  [pageSizeOptions]="[5]"
-  showFirstLastButtons=true
-  (page)="pageChanged($event)"></mat-paginator>
+
+<section>
+  <mat-checkbox [(ngModel)]="gridView">Gird View</mat-checkbox>
+</section>
+
+<section *ngIf="gridView">
+  <mat-card *ngFor="let author of authors" class="author-card">
+    <mat-card-header>
+      <mat-card-title>Name: {{ author.name }}</mat-card-title>
+      <mat-card-subtitle>Title: {{ author.title }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <p>Id: {{ author.id }}</p>
+      <p>Region: {{ author.region ? author.region : 'N/A' }}, Address: {{ author.address ? author.address : 'N/A' }}</p>
+      <p>CreatedAt: {{ author.createdAt ? author.createdAt : 'N/A' }}</p>
+      <p>Timestamp: {{ author.updatedAt ? author.updatedAt : 'N/A' }}</p>
+    </mat-card-content>
+    <mat-card-actions align="end">
+      <button mat-button (click)="onClick(author)">Edit</button>
+    </mat-card-actions>
+  </mat-card>
+</section>

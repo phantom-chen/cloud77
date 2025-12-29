@@ -14,14 +14,21 @@ import { HttpClient } from '@angular/common/http';
   styleUrl: './app.component.css'
 })
 export class AppComponent implements OnInit {
+
   constructor(private http: HttpClient) { }
+
   ngOnInit(): void {
-    this.http.get('/gateway-api').subscribe((data: any) => {
+    this.http.get('/api/gateway').subscribe((data: any) => {
       if (data) {
-        localStorage.setItem('cloud77_sso', data.sso);
-        localStorage.setItem('cloud77_home', data.home);
-        localStorage.setItem('cloud77_api_key', data.key);
+        localStorage.setItem('sso_url', data.sso);
+        localStorage.setItem('home_url', data.home);
+        localStorage.setItem('api_key', data.key);
       }
     });
+
+    this.http.get('/resources/json/posts.json')
+      .subscribe((data: any) => {
+        console.log(data);
+      });
   }
 }

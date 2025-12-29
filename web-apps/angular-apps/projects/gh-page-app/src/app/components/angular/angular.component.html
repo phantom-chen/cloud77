@@ -1,0 +1,86 @@
+<div class="row col-lg-12">
+    <div class="col-lg-6">
+        <div style="text-align: center;">
+            <p>directive</p>
+            <p>template</p>
+            <p>content</p>
+            <p>container</p>
+            <ng-container *ngTemplateOutlet="demoTemplate"></ng-container>
+            <p>{{ 0 | taskState }}, {{ 1 | taskState }}, {{ 2 | taskState }}, {{ 3 | taskState }}</p>
+        </div>
+        <div style="text-align: center;">
+            <p *ngFor="let person of persons$ | async">
+                {{ person.personId }}.{{ person.name }} - {{ person.city }}
+            </p>
+
+            <div class="cart-item" *ngFor="let item of items; index as i">
+                <span>{{ item }}, index {{ i + 1 }}</span>
+            </div>
+        </div>
+
+        <div style="text-align: center;">
+            <button (click)="openDialog('alert')">Alert</button>
+            <button (click)="openDialog('confirm')">Confirm</button>
+            <button (click)="openDialog('prompt')">Prompt</button>
+        </div>
+
+        <div style="text-align: center;">
+            <span><a href="https://www.runoob.com/nodejs/nodejs-tutorial.html" target="_blank">Node.js
+                    Tutorial</a></span>
+            <span><a href="https://v11.material.angular.io/components/categories" target="_blank">Angular material
+                    11</a></span>
+        </div>
+
+        <div>
+            <input type="radio" (click)="color='lightgreen'">Green
+            <input type="radio" (click)="color='yellow'">Yellow
+            <input type="radio" (click)="color='cyan'">Cyan
+        </div>
+        <p highlight>highlighted with red</p>
+        <p highlight defaultColor='violet'>highlighted with violet</p>
+        <p [highlight]='color' defaultColor='violet'>highlighted with selected color</p>
+        <p>ngNonBindable with a directive</p>
+        <p ngNonBindable [highlight]="'yellow'">This should not evaluate: {{ 1 +1 }}, but will highlight
+            yellow.</p>
+
+        <p logging>logging directive in p</p>
+        <button logging>logging directive in button</button>
+        <input rainbow>
+
+        <div style="display: flex;">
+            <app-my-buttons style="width: 200px;">
+                <p>the children content</p>
+                <app-my-button content="first button" color="red"></app-my-button>
+            </app-my-buttons>
+            <app-my-buttons style="width: 200px;">
+                <p>the children content</p>
+                <app-my-button content="second button" color="green"></app-my-button>
+            </app-my-buttons>
+            <app-my-buttons style="width: 200px;">
+                <p>the children content</p>
+                <app-my-button content="third button" color="blue"></app-my-button>
+            </app-my-buttons>
+        </div>
+
+        <div [ngClass]="{'red': true, 'blue': false}">
+            this div
+        </div>
+        
+        <ul>
+            <li *ngFor="let item of array, let i = index">
+                <span [ngClass]="{'red': i==1}">{{item}}</span>
+            </li>
+        </ul>
+        
+        <div [ngStyle]="{'background-color':'pink'}">hello ngStyle</div>
+        <div style="background-color:yellow">hello ngStyle</div>
+    </div>
+    <div class="col-lg-6">
+        <app-board></app-board>
+    </div>
+</div>
+
+<ng-template #demoTemplate>
+    <p>This is a demo template</p>
+    <p class="text-bg-info">info text</p>
+</ng-template>

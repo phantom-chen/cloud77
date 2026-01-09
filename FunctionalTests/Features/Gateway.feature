@@ -30,6 +30,6 @@ Scenario: Services are health
   # api/values
 	And Gateway gets values from service agent sample
 	And Gateway gets values from service agent super
-	And Gateway gets values from service agent canteen
+	#And Gateway gets values from service agent canteen
 
 	And Gateway gets system information

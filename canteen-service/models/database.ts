@@ -54,6 +54,39 @@ export async function getAuthors(): Promise<Author[]> {
     });
 }
 
+const Bookmarks = "Bookmarks";
+
+export interface BookmarkEntity extends Document {
+    Collection: string,
+    Tags: string,
+    Title: string,
+    Href: string
+}
+
+export interface Bookmark {
+    id: string,
+    collection: string,
+    tags: string,
+    title: string,
+    href: string
+}
+
+export async function getBookmarks(): Promise<Bookmark[]> {
+    const client = await createMongoClient();
+    const collection = client.db(getSettings().database).collection<BookmarkEntity>(Bookmarks);
+    const bookmarks = await collection.find().toArray();
+    await client.close();
+    return bookmarks.map(b => {
+        return {
+            id: b._id.toString(),
+            collection: b.Collection,
+            tags: b.Tags,
+            title: b.Title,
+            href: b.Href
+        };
+    });
+}
+
 const Tasks = "Tasks";
 
 export interface TaskEntity extends Document {

@@ -1,6 +1,7 @@
 import * as dotenv from 'dotenv';
 import { getFiles } from './models/files';
-import { formatDateTimeWithLocalTimeZone, formatDateTimeCustomTimeZone, formatDateTimeWithTimeZone } from './models/date';dotenv.config();
+import { formatDateTimeWithLocalTimeZone, formatDateTimeCustomTimeZone, formatDateTimeWithTimeZone } from './models/date';
+dotenv.config();
 import { randomUUID } from 'crypto';
 import { generate } from 'randomstring';
 import { generateID } from './models/guid';

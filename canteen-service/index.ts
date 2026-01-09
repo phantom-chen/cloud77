@@ -4,11 +4,11 @@ import { Server } from 'socket.io';
 import http from 'http';
 import fileUpload from "express-fileupload";
 
-import { appendConnection, connectedUsers, removeConnection, serverConnected, serverDisConnected } from './models/online';
+import { connectedUsers, serverConnected, serverDisConnected } from './models/online';
 import { generateID } from './models/guid';
 import { platform, type } from 'os';
 import { getUser, issueToken } from './models/user';
-import { addRoom, getRooms, IChatRoom, removeRoom } from './models/room';
+import { addRoom, getRooms, IChatRoom } from './models/room';
 import { appendLog } from './models/logging';
 import router from './routes/router';
 import { AccountPayload } from './models/live';
@@ -16,6 +16,7 @@ import { createDocument, getDocument, getDocuments } from './models/document';
 import { rootData } from './models/local-data';
 import { createMongoClient, pingMongoServer } from './models/database';
 import { getSettings } from './models/settings';
+import { AuthorizationMiddleware } from './middlewares/authorization';
 
 dotenv.config();
 
@@ -24,16 +25,35 @@ console.log(`Canteen service port: ${PORT}`);
 const app = express();
 const port = Number(PORT);
 
+app.use(express.json());
+
 app.get('/', (req, res) => {
     res.send('Hello, world!');
+});
+
+app.get('/api/health', (req, res) => {
+    res.send('Healthy');
 });
 
 app.get('/api/values', (req, res) => {
     res.json(['canteen service value1', 'canteen service value2', 'canteen service value3']);
 });
 
-app.use('/api', router);
+app.use('/api', AuthorizationMiddleware, router);
 app.use(fileUpload);
+
+// global error middleware
+app.use((req, res, next) => {
+    try {
+        next();
+    } catch (error) {
+        res.status(500).send({
+            code: 'internal-server-error',
+            id: '',
+            message: (error as Error).message
+        })
+    }
+})
 
 const server = http.createServer(app);
 const io = new Server(server);
@@ -53,8 +73,6 @@ io.on('connection', (socket) => {
     socket.emit('session-id', { id: socket.id });   // assign session id
 
     // session-token, issue the token and save in session storage
-
-    appendConnection(socket.id);
 
     socket.emit("online", { online: serverConnected() });
 
@@ -83,7 +101,6 @@ io.on('connection', (socket) => {
         } else {
             socket.emit("update-user-response", { succeed: true, error: 'xxx', username: '', token: issueToken(data.username) });
         }
-        appendConnection(socket.id, data.username);
     })
 
     socket.on('create-user-request', (data: { user: string, email: string, password: string }) => {
@@ -163,7 +180,6 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
         console.log('user disconnected');
-        removeConnection(socket.id);
         socket.broadcast.emit("online", { online: serverDisConnected() });
     });
 });
@@ -187,13 +203,15 @@ server.listen(port, () => {
     console.log(getSettings().database);
     appendLog('Canteen service starts', 'warning');
     
-    pingMongoServer(createMongoClient(), 'tester')
-    .then(() => {
-        console.log('MongoDB server is reachable.');
-    })
-    .catch((err) => {
-        console.error('Error connecting to MongoDB server:', err);
-    });
+    if (process.env.DB_CONNECTION) {
+        pingMongoServer(createMongoClient(), 'tester')
+            .then(() => {
+                console.log('MongoDB server is reachable.');
+            })
+            .catch((err) => {
+                console.error('Error connecting to MongoDB server:', err);
+            });
+    }
 
     if (type() === 'Linux') {
         setInterval(() => {

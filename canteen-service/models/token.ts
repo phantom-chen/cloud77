@@ -12,7 +12,7 @@ export class AuthorizationError extends Error {
         this.message = params.message;
     }
 
-    public code = ''; 
+    public code = '';
 }
 
 const secret = 'abcdefghijklmnopqrstuvwzxyabcdefgh';
@@ -55,7 +55,8 @@ export function getClaims(token: string): string | undefined {
         return payload.email;
     } catch (error) {
         if (error instanceof TokenExpiredError) {
-            throw new AuthorizationError({ code: '999', message: "token expires" });
+            // throw new AuthorizationError({ code: '999', message: "token expires" });
+            console.log(error.message);
         }
     }
 }

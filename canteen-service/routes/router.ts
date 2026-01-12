@@ -9,7 +9,7 @@ import { getUser } from "./users";
 import { issueToken } from "./tokens";
 import { getAccounts, getAccount } from "./accounts";
 import { getTasks } from "./tasks";
-import { getPosts } from "./posts";
+import { createPost, deletePost, getPostContent, getPosts, updatePost, updatePostContent } from "./posts";
 
 const router = Router();
 
@@ -36,7 +36,14 @@ router.get('/users', getUser);
 router.post('/tokens', issueToken);
 router.get('/accounts', getAccounts);
 router.get('/accounts/:email', getAccount);
+
 router.get('/posts', getPosts);
+router.get('/posts/:id', getPostContent);
+router.put('/posts/:id', updatePostContent);
+router.put('/posts', updatePost);
+router.post('/posts', createPost);
+router.delete('/posts/:id', deletePost);
+
 router.get('/tasks', getTasks);
 
 export default router;

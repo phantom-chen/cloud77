@@ -1,6 +1,13 @@
 import * as dotenv from 'dotenv';
 import { addRoom, deleteRoom, getRoom, getRooms, getRoomsForUser, getUsersInRoom, joinRoom, leaveRoom, updateRoom } from './models/room';
 import { issueToken, getClaims } from './models/token';
+import { countUsers, getUser } from './models/database/user';
+import { createPost, createPosts, deletePost, getPosts } from './models/database/post';
+import { createMongoClient } from './models/database/client';
+import { getSettings } from './models/settings';
+import { getTasks } from './models/database/task';
+import { getAuthors } from './models/database/author';
+import { getBookmarks } from './models/database/bookmark';
 
 dotenv.config();
 
@@ -58,7 +65,7 @@ if (room) {
     for (const [day, hours] of Object.entries(room.availability)) {
         console.log(`  ${day}: open=${hours.open}, close=${hours.close}`);
     }
-    
+
 } else {
     console.log(`Room with id ${id} not found.`);
 }
@@ -78,6 +85,77 @@ getRoomsForUser('user3').forEach(roomId => {
 // const token = issueToken({ email: 'user@example.com', role: 'User' });
 // console.log(`Issued token: ${token.value}`);
 
-const _token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXJAZXhhbXBsZS5jb20iLCJyb2xlIjoiVXNlciIsImlhdCI6MTc2Nzg2Njk4MywiZXhwIjoxNzY3OTUzMzgzLCJhdWQiOiJhdWRpZW5jZSIsImlzcyI6Imlzc3VlciJ9.kww6wh0JU--kXO3yQgkwF4O31V-a8KP-_Xcyi8Mn0LA';
+// const _token = 'xxx;
+// getClaims(_token);
 
-getClaims(_token);
+const email = '';
+
+const run = async () => {
+    const client = await createMongoClient();
+    const dbName = getSettings().database;
+    // const user = await getUser(client, dbName, email);
+    const posts = await getPosts(client, dbName, email);
+    // const tasks = await getTasks(client, dbName, email);
+
+    // console.log(user);
+    console.log('Posts:');
+    posts.forEach(p => {
+        console.log(`- ${p.Title}: ${p.Description}`);
+    });
+
+    // const newPostId = await createPost(client, dbName, email, {
+    //     id: '',
+    //     title: 'New Post Title',
+    //     description: 'This is the description of the new post.'
+    // })
+    // console.log(`Created new post with ID: ${newPostId}`);
+
+    // const newPostIds = await createPosts(client, dbName, email, [
+    //     {
+    //         id: '',
+    //         title: 'Bulk Post 1',
+    //         description: 'Description for Bulk Post 1'
+    //     },
+    //     {
+    //         id: '',
+    //         title: 'Bulk Post 2',
+    //         description: 'Description for Bulk Post 2'
+    //     }
+    // ]);
+    // console.log(`Created new posts with IDs: ${newPostIds.join(', ')}`);
+
+    // deletePost(client, dbName, '').then(success => {
+    //     console.log(`Deleted post: ${success}`);
+    // });
+
+    // console.log('Tasks:');
+    // tasks.forEach(t => {
+    //     console.log(`- ${t.Title}: ${t.Description} [State: ${t.State}]`);
+    // });
+}
+
+const run2 = async () => {
+    const client = await createMongoClient();
+    const dbName = getSettings().database;
+    const authors = await getAuthors(client, dbName);
+    const bookmarks = await getBookmarks(client, dbName);
+    console.log('Authors:');
+    authors.forEach(a => {
+        console.log(`- ${a.Name}, ${a.Title}, ${a.Region}, ${a.Address}`);
+    });
+    console.log('Bookmarks:');
+    bookmarks.slice(0,2).forEach(b => {
+        console.log(`- [${b.Collection}] ${b.Title} (${b.Href}) Tags: ${b.Tags}`);
+    });
+}
+
+const run3 = async () => {
+    const client = await createMongoClient();
+    const dbName = getSettings().database;
+    // add more tests here
+    await countUsers(client, dbName).then(count => {
+        console.log(`Total users: ${count}`);
+    });
+}
+
+run();

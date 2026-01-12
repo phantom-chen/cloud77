@@ -14,7 +14,7 @@ import router from './routes/router';
 import { AccountPayload } from './models/live';
 import { createDocument, getDocument, getDocuments } from './models/document';
 import { rootData } from './models/local-data';
-import { createMongoClient, pingMongoServer } from './models/database';
+import { createMongoClient, pingMongoServer } from './models/database/client';
 import { getSettings } from './models/settings';
 import { AuthorizationMiddleware } from './middlewares/authorization';
 

@@ -47,7 +47,6 @@ namespace SuperService.Backgrounds
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            logger.LogInformation("stop service");
             if (_healthCheckTimer != null)
             {
                 _healthCheckTimer.Change(Timeout.Infinite, 0);
@@ -62,8 +61,12 @@ namespace SuperService.Backgrounds
             var size = 100;
             var count = 0;
             List<User> userList = new List<User>();
-            logger.LogInformation("start loop");
             var collection = database.GetCollection<UserMongoEntity>("Users");
+
+            if (new LocalDataModel().HasUsers)
+            {
+                logger.LogInformation("users index already exists.");
+            }
 
             while (!new LocalDataModel().HasUsers)
             {
@@ -73,15 +76,13 @@ namespace SuperService.Backgrounds
                     var users = await collection.Find(Builders<UserMongoEntity>.Filter.Empty).Skip(index * size).Limit(size).ToListAsync();
                     if (users.Count > 0)
                     {
-                        logger.LogInformation(users.First().Email);
                         count = count + users.Count;
-                        logger.LogInformation($"Users Count: {count}");
+                        //logger.LogInformation($"Users Count: {count}");
                         userList.AddRange(users.Select(u => new User() { Id = u.Id.ToString(), Email = u.Email, Name = u.Name }));
                         index++;
                     }
                     else
                     {
-                        logger.LogInformation("no more users found");
                         var content = JsonConvert.SerializeObject(userList);
                         File.WriteAllText(Path.Combine(LocalDataModel.Root, "users", "index", "users.json"), content);
                         logger.LogInformation("save users index users.json");

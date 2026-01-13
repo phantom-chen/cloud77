@@ -9,7 +9,6 @@ using System.Text;
 using UserService.Hubs;
 using UserService.Middleware;
 using UserService.Models;
-using UserService.Services;
 
 namespace UserService
 {
@@ -54,7 +53,7 @@ namespace UserService
                     Password = Environment.GetEnvironmentVariable("MQ_PASSWORD") ?? "123456"
                 };
             });
-            builder.Services.AddHostedService<DatabaseService>();
+
 
             builder.Services.AddAuthentication(option =>
             {

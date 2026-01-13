@@ -17,6 +17,7 @@ import { rootData } from './models/local-data';
 import { createMongoClient, pingMongoServer } from './models/database/client';
 import { getSettings } from './models/settings';
 import { AuthorizationMiddleware } from './middlewares/authorization';
+import bodyParser from 'body-parser';
 
 dotenv.config();
 
@@ -26,7 +27,7 @@ const app = express();
 const port = Number(PORT);
 
 app.use(express.json());
-
+app.use(bodyParser.json());
 app.get('/', (req, res) => {
     res.send('Hello, world!');
 });
@@ -56,7 +57,42 @@ app.use((req, res, next) => {
 })
 
 const server = http.createServer(app);
-const io = new Server(server);
+server.keepAliveTimeout = 65000; // 65 seconds
+server.timeout = 61000; // 61 seconds
+server.headersTimeout = 62000; // 62 seconds
+server.requestTimeout = 60000; // 60 seconds
+
+server.on('timeout', (socket) => {
+    console.log('server timeout');
+    socket.end();
+});
+
+server.on('clientError', (err, socket) => {
+    console.log('client error: ' + err.message);
+    socket.end('HTTP/1.1 400 Bad Request\r\n\r\n');
+});
+
+server.on('connection', (socket) => {
+    const start = Date.now();
+    console.log('new connection established');
+    socket.on('close', () => {
+        console.log('connection closed');
+        const duration = Date.now() - start;
+        console.log(`connection duration: ${duration} ms`);
+    });
+    socket.once('error', (err) => {
+        console.log('socket error: ' + err.message);
+    });
+});
+
+const io = new Server();
+// const io = new Server(server, {
+//     path: '/ws',
+//     cors: {
+//         origin: '*',
+//         methods: ['GET', 'POST']
+//     }
+// });
 
 if (process.env.CANTEEN_SERVICE_SOCKET_PATH) {
     console.log(`Canteen service socket path: ${process.env.CANTEEN_SERVICE_SOCKET_PATH}`);
@@ -94,6 +130,11 @@ io.on('connection', (socket) => {
         io.emit('broadcastToOthers', data.message);
     });
 
+    socket.on('token-request', (data: { username: string, password: string }) => {
+        console.log(data.username, data.password);
+        socket.emit("token-response", { succeed: true, error: 'xxx', token: issueToken(data.username) });
+    });
+
     socket.on('update-user', (data: { username: string, password: string, token: string }) => {
         console.log(data.username, data.password);
         if (data.token) {
@@ -114,10 +155,17 @@ io.on('connection', (socket) => {
 
     socket.on('join-room-request', (data: { account: AccountPayload, id: string }) => {
         console.log(data);
+        socket.join('room1');
+        // joinRoom('user1', 'room1');
+
+        socket.broadcast.to('room1').emit("room-joined", { id: 'room1', message: 'user1 joined room1' });
+        io.to('room1').emit("room-users", { users: ['user1', 'user2'] });
     });
 
     socket.on('leave-room-request', (data: { account: AccountPayload, id: string }) => {
         console.log(data);
+        // leaveRoom('user1', 'room1');
+        socket.leave('room1');
     });
 
     socket.on('add-room-request', (data: { account: AccountPayload, room: IChatRoom }) => {
@@ -176,6 +224,7 @@ io.on('connection', (socket) => {
         console.log(data);
         console.log(socket.client.request.headers['authorization']);
         console.log(socket.client.request.url);
+        socket.emit("profile", { profile: { username: '', email: '' } });
     });
 
     socket.on('disconnect', () => {
@@ -195,6 +244,7 @@ io.listen(server);
 
 server.listen(port, () => {
     console.log(`Server is running at Port ${port}`);
+    console.log(__dirname);
     console.log(process.env.CUSTOM_LOGGING);
     console.log(process.env.DB_CONNECTION);
     console.log(platform());

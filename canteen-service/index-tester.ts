@@ -11,6 +11,14 @@ import { getBookmarks } from './models/database/bookmark';
 
 dotenv.config();
 
+let isServer = false;
+process.argv.forEach((val, index) => {
+    console.log(`${index}: ${val}`);
+    if (!isServer && val === 'server') {
+        isServer = true;
+    }
+});
+
 // ready
 // get rooms
 

@@ -6,6 +6,7 @@
   "scripts": {
     "start": "nodemon index.ts",
     "start-dev": "nodemon index-dev.ts",
+    "start-dev-server": "nodemon index-dev.ts server",
     "start-tester": "nodemon index-tester.ts",
     "start-sample": "nodemon sample/index.ts",
     "start-consumer": "nodemon queue.ts server",
@@ -49,6 +50,7 @@
     "@types/mongodb": "^4.0.7",
     "@types/node": "^16.18.23",
     "@types/randomstring": "^1.1.11",
+    "@types/redis": "^4.0.11",
     "@types/serve-favicon": "^2.5.3",
     "@types/uuid": "^9.0.1",
     "@typescript-eslint/eslint-plugin": "^5.57.1",

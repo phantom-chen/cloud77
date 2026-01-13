@@ -34,7 +34,7 @@ console.log(getIPAddress());
 export function getServiceAgent(req: Request, res: Response) {
     res.json({
         service: 'canteen_service',
-        version: '1.0.0',
+        version: '1.0.0.0',
         tags: [
             `ENVIRONMENT=${process.env.NODE_ENV || 'Development'}`,
             `CUSTOM_LOGGING=${process.env.CUSTOM_LOGGING || 'txt'}`

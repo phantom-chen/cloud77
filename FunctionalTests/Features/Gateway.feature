@@ -10,7 +10,7 @@ Scenario: Gateway is running
 	Given Gateway is running
 	And gateway is health
 
-@ignore
+@set-up
 Scenario: Administrator get tokens
 	Given I am the tester admin
 	When Get my access tokens
@@ -27,9 +27,10 @@ Scenario: Services are health
 	Then Gateway gets the service agent sample
 	And Gateway gets the service agent user
 	And Gateway gets the service agent super
+	And Gateway gets the service agent canteen
   # api/values
 	And Gateway gets values from service agent sample
 	And Gateway gets values from service agent super
-	#And Gateway gets values from service agent canteen
+	And Gateway gets values from service agent canteen
 
 	And Gateway gets system information

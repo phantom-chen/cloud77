@@ -19,7 +19,7 @@ export async function issueToken(req: Request, res: Response) {
     console.log(`Retrieved user: ${JSON.stringify(user)}`);
 
     if (user && validatePassword(password, user.Password)) {
-        res.json({ agent: 'Service Agent', version: '1.0.0' });
+        res.json({ agent: 'Service Agent', version: '1.0.0.0' });
     } else {
         res.status(401).send('unauthorized');
     }

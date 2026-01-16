@@ -3,7 +3,7 @@ import { addRoom, deleteRoom, getRoom, getRooms, getRoomsForUser, getUsersInRoom
 import { issueToken, getClaims } from './models/token';
 import { countUsers, getUser } from './models/database/user';
 import { createPost, createPosts, deletePost, getPosts } from './models/database/post';
-import { createMongoClient } from './models/database/client';
+import { createMongoClient, pingMongoServer } from './models/database/client';
 import { getSettings } from './models/settings';
 import { getTasks } from './models/database/task';
 import { getAuthors } from './models/database/author';
@@ -100,16 +100,30 @@ const email = '';
 
 const run = async () => {
     const client = await createMongoClient();
-    const dbName = getSettings().database;
+    await client.connect();
+    // await pingMongoServer(client, 'dev_db');
+
+    const db = client.db('dev_db');
+    // const result = await db.collection('Messages').insertOne({ message: 'Hello, world!' });
+    // console.log(`Inserted message with ID: ${result.insertedId.toString()}`);
+
+    const messages = await db.collection('Messages').find({}).toArray()
+    console.log('Messages:');
+    messages.forEach(m => {
+        console.log(`- ${m.message}`);
+    });
+
+    await client.close();
+    // const dbName = getSettings().database;
     // const user = await getUser(client, dbName, email);
-    const posts = await getPosts(client, dbName, email);
+    // const posts = await getPosts(client, dbName, email);
     // const tasks = await getTasks(client, dbName, email);
 
     // console.log(user);
     console.log('Posts:');
-    posts.forEach(p => {
-        console.log(`- ${p.Title}: ${p.Description}`);
-    });
+    // posts.forEach(p => {
+    //     console.log(`- ${p.Title}: ${p.Description}`);
+    // });
 
     // const newPostId = await createPost(client, dbName, email, {
     //     id: '',

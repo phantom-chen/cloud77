@@ -3,7 +3,7 @@
 A short summary of the feature
 
 Background:
-  Given I am the tester admin
+  Given I am using the admininistrator account
 	Then My tokens are valid
 
 Scenario: Database

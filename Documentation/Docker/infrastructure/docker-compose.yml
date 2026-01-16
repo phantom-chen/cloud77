@@ -2,6 +2,7 @@ services:
 
   dev_db_host1:
     image:  mysql
+    restart: always
     # volumes: 
         # - ./data:/docker-entrypoint-initdb.d/
     environment:
@@ -15,6 +16,7 @@ services:
         
   dev_db_host2:
     image: mongo:4.4
+    restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: 123456
@@ -27,6 +29,7 @@ services:
 
   dev_cache_host:
     image: redis:6.2.6-alpine
+    restart: always
     command: ["redis-server", "--appendonly", "yes", "--requirepass", "123456"]
     ports:
       - "6379:6379"
@@ -36,6 +39,7 @@ services:
   dev_message_host:
     hostname: dev_message_host
     image: rabbitmq:3.9.11-alpine
+    restart: always
     environment:
       - RABBITMQ_DEFAULT_USER=admin
       - RABBITMQ_DEFAULT_PASS=123456

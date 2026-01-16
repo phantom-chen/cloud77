@@ -8,17 +8,20 @@ Scenario: Connect to RPC service
 
 @ignore
 Scenario: Create admin user
-  Given I am the tester admin
-  Then Check my account registered
-    | Existing |
-    | true     |
+	Given I am using the admininistrator account
+	Then Check my account registered
+		| Existing |
+		| true     |
 
 @ignore
 Scenario: Create user with invalid email
-  Given I am the tester invalid-user
-  Then Check my account registered
-    | Existing |
-    | false    |
-  Then Creating my account fails with exception
-    | Name         |
-    | invalid_user |
+	Given I am the user account
+		| Key      | Value            |
+		| email    | user@example.com |
+		| password | User123#         |
+	Then Check my account registered
+		| Existing |
+		| false    |
+	And Creating my account fails with exception
+		| Name         |
+		| invalid_user |

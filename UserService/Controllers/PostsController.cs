@@ -1,4 +1,5 @@
-﻿using Cloud77.Abstractions.Service;
+﻿using Cloud77.Abstractions;
+using Cloud77.Abstractions.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -81,7 +82,7 @@ namespace UserService.Controllers
 
             if (posts.Any(p => p.Id.ToString() == id))
             {
-                return Content(new LocalUserDataModel(email.Value).GetPost(id), "text/plain");
+                return Content(new UserDataModel(email.Value).GetPost(id), "text/plain");
             }
 
             return NotFound(new UserPostContentNotExisting("wip"));
@@ -102,7 +103,7 @@ namespace UserService.Controllers
                 using (var reader = new StreamReader(Request.Body))
                 {
                     var content = await reader.ReadToEndAsync();
-                    new LocalUserDataModel(email.Value).UpdatePost(id, content);
+                    new UserDataModel(email.Value).UpdatePost(id, content);
                 }
                 return Ok(new UserPostContentUpdated("wip"));
             }

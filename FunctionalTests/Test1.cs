@@ -2,12 +2,31 @@
 using System;
 using System.Diagnostics;
 using System.Text;
+using Cloud77.Abstractions;
 
 namespace FunctionalTests
 {
     [TestClass]
     public sealed class Test1
     {
+        [TestCategory("windows")]
+        [TestMethod()]
+        public void LocalDataModelTests()
+        {
+            Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+            string programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+            var root = Path.Combine(programDataPath, "MyServices_test");
+            
+            var data = new ServiceDataModel();
+            ServiceDataModel.ServiceName = "User";
+            ServiceDataModel.Platform = "Windows";
+            ServiceDataModel.Root = root;
+            ServiceDataModel.LogFileExtension = "txt";
+            ServiceDataModel.Initialize();
+
+            Assert.IsTrue(Directory.Exists(ServiceDataModel.Root));
+        }
+
         [TestMethod()]
         public void FindUsers()
         {

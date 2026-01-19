@@ -3,12 +3,16 @@ using Cloud77.Abstractions.Service;
 using Cloud77.Abstractions.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 using UserService.Collections;
 using UserService.Models;
+using Cloud77.Abstractions;
 
 namespace UserService.Controllers
 {
@@ -99,6 +103,65 @@ namespace UserService.Controllers
                 IssueAt = timestamp,
                 ExpireInHours = generator.ExpirationInHour
             });
+        }
+
+        [HttpGet]
+        [Route("validation")]
+        public IActionResult ValidateToken()
+        {
+            // the result is no-token-provided, incorrect-token, expired-token, valid-token
+
+            string? authHeader = Request.Headers["Authorization"].FirstOrDefault();
+            if (authHeader is null || !authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+            {
+                // no token provided
+                return Ok();
+            }
+
+            string token = authHeader.Substring("Bearer ".Length).Trim();
+
+            var validationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = "yourIssuer",
+                ValidAudience = "yourAudience",
+                IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("yourSecretKey"))
+            };
+
+            var handler = new JwtSecurityTokenHandler();
+
+            try
+            {
+                ClaimsPrincipal principal = handler.ValidateToken(token, validationParameters, out SecurityToken validatedToken);
+
+                if (validatedToken is JwtSecurityToken jwtToken1)
+                {
+                    // correct format
+                }
+                else
+                {
+                    // incorrect token
+                }
+
+                // Check expiration explicitly (optional, as ValidateToken does this by default)
+                if (validatedToken is JwtSecurityToken jwtToken
+                  && jwtToken.ValidTo < DateTime.UtcNow)
+                {
+                    // expired token
+                    return Ok();
+                }
+
+                return Ok();
+            }
+            catch (Exception)
+            {
+                //throw;
+            }
+
+            return NoContent();
         }
 
         [HttpPost]

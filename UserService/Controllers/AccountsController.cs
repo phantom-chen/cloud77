@@ -11,6 +11,7 @@ using System.Security.Claims;
 using System.Text;
 using UserService.Collections;
 using UserService.Models;
+using Cloud77.Abstractions;
 
 namespace UserService.Controllers
 {

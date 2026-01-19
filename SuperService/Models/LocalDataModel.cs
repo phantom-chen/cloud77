@@ -33,14 +33,7 @@ namespace SuperService.Models
             {
                 Directory.CreateDirectory(Root);
             }
-            if (!Directory.Exists(Path.Combine(Root, "logs")))
-            {
-                Directory.CreateDirectory(Path.Combine(Root, "logs"));
-            }
-            if (!Directory.Exists(Path.Combine(Root, "users")))
-            {
-                Directory.CreateDirectory(Path.Combine(Root, "users"));
-            }
+
             if (!Directory.Exists(Path.Combine(Root, "users", "index")))
             {
                 Directory.CreateDirectory(Path.Combine(Root, "users", "index"));

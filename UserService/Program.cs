@@ -1,9 +1,11 @@
+using Cloud77.Abstractions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using RabbitMQ.Client;
 using ServiceStack;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Security.Claims;
 using System.Text;
 using UserService.Hubs;
@@ -16,6 +18,23 @@ namespace UserService
     {
         public static void Main(string[] args)
         {
+            ServiceDataModel.ServiceName = "User";
+            var location = Assembly.GetExecutingAssembly().Location;
+            var root = Directory.GetParent(location)?.ToString() ?? "";
+            ServiceDataModel.LogFileExtension = Environment.GetEnvironmentVariable("CUSTOM_LOGGING") ?? "";
+            var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+            ServiceDataModel.Platform = isWindows ? "Windows" : "Linux";
+            if (isWindows)
+            {
+                string programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+                ServiceDataModel.Root = Path.Combine(programDataPath, "MyServices");
+            }
+            else
+            {
+                // for Linux system
+                ServiceDataModel.Root = Path.Combine(root, "data");
+            }
+
             new TextLoggingModel().AppendLog("User service starts");
             var builder = WebApplication.CreateBuilder(args);
             IConfiguration configuration = builder.Configuration;
@@ -27,9 +46,9 @@ namespace UserService
             builder.Services.AddScoped<MongoClient>(p =>
             {
                 var connection = Environment.GetEnvironmentVariable("DB_CONNECTION") ?? "localhost";
-                if (!string.IsNullOrEmpty(LocalDataModel.IPAddress))
+                if (!string.IsNullOrEmpty(ServiceDataModel.IPAddress))
                 {
-                    connection = connection.Replace("localhost", LocalDataModel.IPAddress);
+                    connection = connection.Replace("localhost", ServiceDataModel.IPAddress);
                 }
 
                 var settings = MongoClientSettings.FromConnectionString(connection);
@@ -41,9 +60,9 @@ namespace UserService
             builder.Services.AddScoped<ConnectionFactory>(o =>
             {
                 var hostName = Environment.GetEnvironmentVariable("MQ_HOST") ?? "localhost";
-                if (!string.IsNullOrEmpty(LocalDataModel.IPAddress))
+                if (!string.IsNullOrEmpty(ServiceDataModel.IPAddress))
                 {
-                    hostName = hostName.Replace("localhost", LocalDataModel.IPAddress);
+                    hostName = hostName.Replace("localhost", ServiceDataModel.IPAddress);
                 }
 
                 return new ConnectionFactory()

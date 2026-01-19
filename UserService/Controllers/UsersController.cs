@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using UserService.Collections;
 using UserService.Models;
+using Cloud77.Abstractions;
 
 namespace UserService.Controllers
 {

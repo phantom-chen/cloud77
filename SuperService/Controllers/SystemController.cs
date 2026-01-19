@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Cloud77.Abstractions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SuperService.Models;
 
@@ -17,14 +18,14 @@ namespace SuperService.Controllers
     [HttpGet]
     public IActionResult Get()
     {
-      var data = new LocalDataModel();
+      var data = new ServiceDataModel();
       var templates = new List<string>();
       if (data.HasPasswordResetTemplate) templates.Add("password-reset.html");
       if (data.HasEmailConfirmTemplate) templates.Add("email-confirm.html");
 
       return Ok(new
       {
-        localhost = LocalDataModel.IPAddress,
+        localhost = ServiceDataModel.IPAddress,
         database,
         usersJson = data.HasUsers.ToString(),
         templates = templates.ToArray(),
@@ -37,12 +38,12 @@ namespace SuperService.Controllers
     public IActionResult GetMailBody()
     {
       string filePath = "mail-body.txt";
-      if (!System.IO.File.Exists(Path.Combine(LocalDataModel.Root, filePath)))
+      if (!System.IO.File.Exists(Path.Combine(ServiceDataModel.Root, filePath)))
       {
         return NotFound("Mail body file not found.");
       }
 
-      string mailBody = System.IO.File.ReadAllText(Path.Combine(LocalDataModel.Root, filePath));
+      string mailBody = System.IO.File.ReadAllText(Path.Combine(ServiceDataModel.Root, filePath));
       return Content(mailBody, "text/html");
     }
 
@@ -73,9 +74,9 @@ namespace SuperService.Controllers
       
       name = char.ToUpper(name[0]) + name.Substring(1).ToLower();
 
-      if (System.IO.File.Exists(Path.Combine(LocalDataModel.Root, "logs", $"{name}-{date}.txt")))
+      if (System.IO.File.Exists(Path.Combine(ServiceDataModel.Root, "logs", $"{name}-{date}.txt")))
       {
-        return Content(System.IO.File.ReadAllText(Path.Combine(LocalDataModel.Root, "logs", $"{name}-{date}.txt")), "text/plain");
+        return Content(System.IO.File.ReadAllText(Path.Combine(ServiceDataModel.Root, "logs", $"{name}-{date}.txt")), "text/plain");
       }
 
       return BadRequest("Not find the log file");

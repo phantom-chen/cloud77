@@ -1,4 +1,5 @@
-﻿using Cloud77.Abstractions.Entity;
+﻿using Cloud77.Abstractions;
+using Cloud77.Abstractions.Entity;
 using System.Net;
 using System.Net.Mail;
 
@@ -14,7 +15,7 @@ namespace SuperService.Models
 
     public MailClient()
     {
-      var model = new LocalDataModel();
+      var model = new ServiceDataModel();
       host = model.GetSetting("smtp_client_host");
       username = model.GetSetting("smtp_client_username");
       password = model.GetSetting("smtp_client_password");
@@ -32,7 +33,7 @@ namespace SuperService.Models
       }
 
       // save mail body locally
-      File.WriteAllText(Path.Combine(LocalDataModel.Root, "mail-body.txt"), email.Body);
+      File.WriteAllText(Path.Combine(ServiceDataModel.Root, "mail-body.txt"), email.Body);
 
       // skip for empty setting
       if (string.IsNullOrEmpty(password)

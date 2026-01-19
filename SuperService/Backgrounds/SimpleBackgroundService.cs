@@ -1,4 +1,5 @@
-﻿using Cloud77.Abstractions.Entity;
+﻿using Cloud77.Abstractions;
+using Cloud77.Abstractions.Entity;
 using MongoDB.Driver;
 using Newtonsoft.Json;
 using SuperService.Collections;
@@ -24,14 +25,14 @@ namespace SuperService.Backgrounds
         public SimpleBackgroundService(ILogger<SimpleBackgroundService> logger, IConfiguration configuration)
         {
             var connection = Environment.GetEnvironmentVariable("DB_CONNECTION") ?? "localhost";
-            if (!string.IsNullOrEmpty(LocalDataModel.IPAddress))
+            if (!string.IsNullOrEmpty(ServiceDataModel.IPAddress))
             {
-                connection = connection.Replace("localhost", LocalDataModel.IPAddress);
+                connection = connection.Replace("localhost", ServiceDataModel.IPAddress);
             }
 
             var client = new MongoClient(connection);
             database = client.GetDatabase(configuration["Database"]);
-            var model = new LocalDataModel();
+            var model = new ServiceDataModel();
             checkHour = Convert.ToInt16(model.GetSetting("health_check_hour_utc") ?? "0");
 
             this.logger = logger;
@@ -63,12 +64,12 @@ namespace SuperService.Backgrounds
             List<User> userList = new List<User>();
             var collection = database.GetCollection<UserMongoEntity>("Users");
 
-            if (new LocalDataModel().HasUsers)
+            if (new ServiceDataModel().HasUsers)
             {
                 logger.LogInformation("users index already exists.");
             }
 
-            while (!new LocalDataModel().HasUsers)
+            while (!new ServiceDataModel().HasUsers)
             {
                 try
                 {
@@ -84,7 +85,7 @@ namespace SuperService.Backgrounds
                     else
                     {
                         var content = JsonConvert.SerializeObject(userList);
-                        File.WriteAllText(Path.Combine(LocalDataModel.Root, "users", "index", "users.json"), content);
+                        File.WriteAllText(Path.Combine(ServiceDataModel.Root, "users", "index", "users.json"), content);
                         logger.LogInformation("save users index users.json");
                         break;
                     }
@@ -95,7 +96,7 @@ namespace SuperService.Backgrounds
                 }
             }
 
-            if (new LocalDataModel().HasUsers)
+            if (new ServiceDataModel().HasUsers)
             {
                 //var usersJson = File.ReadAllText(Path.Combine(LocalDataModel.Root, "users", "index", "users.json"));
                 //var accounts = JsonConvert.DeserializeObject<List<User>>(usersJson);
@@ -148,7 +149,7 @@ namespace SuperService.Backgrounds
         private void Health(object state)
         {
             logger.LogInformation("health checking is running...");
-            var model = new LocalDataModel();
+            var model = new ServiceDataModel();
 
             if (Convert.ToBoolean(model.GetSetting("health_check_enable") ?? "true"))
             {

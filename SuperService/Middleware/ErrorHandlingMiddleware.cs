@@ -1,4 +1,5 @@
-﻿using Cloud77.Abstractions.Service;
+﻿using Cloud77.Abstractions;
+using Cloud77.Abstractions.Service;
 using SuperService.Models;
 
 namespace SuperService.Middleware
@@ -23,7 +24,7 @@ namespace SuperService.Middleware
         var id = Guid.NewGuid().ToString();
         if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("CUSTOM_LOGGING")))
         {
-          File.WriteAllText(Path.Combine(LocalDataModel.Root, "errors", $"{id}.txt"), ex.Message);
+          File.WriteAllText(Path.Combine(ServiceDataModel.Root, "errors", $"{id}.txt"), ex.Message);
         }
 
         context.Response.StatusCode = StatusCodes.Status500InternalServerError;

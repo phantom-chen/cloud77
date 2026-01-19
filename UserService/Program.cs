@@ -104,25 +104,25 @@ namespace UserService
                     {
                         //var auth = context.Request.Headers["Authorization"].ToString();
                         //var accessToken = auth.Replace("Bearer ", "");
-                          var accessToken = context.Request.Query["access_token"];
-                          var path = context.HttpContext.Request.Path;
-                          if (!string.IsNullOrEmpty(accessToken) &&
-                              (path.StartsWithSegments("/hubs")))
-                          {
-                              context.Token = accessToken;
-                          }
-                          return Task.CompletedTask;
-                      },
+                        var accessToken = context.Request.Query["access_token"];
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) &&
+                            (path.StartsWithSegments("/hubs")))
+                        {
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    },
                     OnChallenge = context =>
                     {
                         //此处代码为终止.Net Core默认的返回类型和数据结果，这个很重要哦，必须
-                          context.HandleResponse();
-                          var payload = new { StatusCode = 0, Message = "Authentication failed" };
-                          context.Response.ContentType = "application/json";
-                          context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                          context.Response.WriteAsync(Convert.ToString(payload));
-                          return Task.FromResult(0);
-                      }
+                        context.HandleResponse();
+                        var payload = new { StatusCode = 0, Message = "Authentication failed" };
+                        context.Response.ContentType = "application/json";
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        context.Response.WriteAsync(Convert.ToString(payload));
+                        return Task.FromResult(0);
+                    }
                 };
             });
 
@@ -130,21 +130,21 @@ namespace UserService
             {
                 options.AddPolicy("cors-policy", builder =>
           {
-                  builder.AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader();
+              builder.AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader();
               //builder.AllowCredentials();
-              });
+          });
             });
 
             builder.Services.AddAuthorization(options =>
             {
                 options.AddPolicy("require-admin", policy => policy.RequireAssertion(context =>
           {
-                  var roleClaim = context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
-                  if (roleClaim == null) return false;
-                  return roleClaim.Value == "Administrator";
-              }));
+              var roleClaim = context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
+              if (roleClaim == null) return false;
+              return roleClaim.Value == "Administrator";
+          }));
             });
 
             builder.Services.AddAuthorization();

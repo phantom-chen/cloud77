@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Cloud77.Abstractions.Entity;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -96,6 +97,20 @@ namespace Cloud77.Abstractions
             }
         }
 
+        public void AppendLog(string message, bool isWarning = false, bool timestampIgnored = false)
+        {
+            if (string.IsNullOrEmpty(LogFileExtension)) return;
+            var date = DateTime.Now;
+            var info = isWarning ? "warning" : "info";
+            lock (obj)
+            {
+                File.AppendAllLines(Path.Combine(Root, "logs", $"Super-{date.ToString("yyyyMMdd")}.txt"), new string[]
+                {
+        timestampIgnored ? message : $"[{date.ToString("yyyy-MM-dd HH:mm:ss zzz")}] [{info}] {message}"
+                });
+            }
+        }
+
         public void SaveError(string message)
         {
             var id = Guid.NewGuid().ToString();
@@ -103,6 +118,77 @@ namespace Cloud77.Abstractions
             {
                 File.WriteAllText(Path.Combine(Root, "errors", $"{id}.txt"), message);
             }
+        }
+
+        public bool HasEmailConfirmTemplate
+        {
+            get { return File.Exists(Path.Combine(Root, "email-confirm.html")); }
+        }
+
+        public bool HasPasswordResetTemplate
+        {
+            get { return File.Exists(Path.Combine(Root, "password-reset.html")); }
+        }
+
+        public bool HasUsers
+        {
+            get { return File.Exists(Path.Combine(Root, "users", "index", "users.json")); }
+        }
+
+        public string Settings
+        {
+            get
+            {
+                var path = Path.Combine(Root, "settings.json");
+                if (File.Exists(path))
+                {
+                    var content = File.ReadAllText(path);
+                    return content;
+                }
+                return "";
+            }
+        }
+
+        public IEnumerable<SettingEntity> GetSettings()
+        {
+            if (string.IsNullOrEmpty(Settings))
+            {
+                return null;
+            }
+
+            var settings = JsonConvert.DeserializeObject<IEnumerable<SettingEntity>>(Settings);
+            return settings;
+        }
+        public string GetSetting(string key)
+        {
+            if (string.IsNullOrEmpty(Settings))
+            {
+                return "";
+            }
+
+            var settings = JsonConvert.DeserializeObject<IEnumerable<SettingEntity>>(Settings);
+            var setting = settings.FirstOrDefault(s => s.Key == key);
+            return setting?.Value ?? "";
+        }
+
+        public string GenerateEmailConfirmContent(string email, string username, string link)
+        {
+            if (HasEmailConfirmTemplate)
+            {
+                var html = File.ReadAllText(Path.Combine(Root, "email-confirm.html"));
+                return html.Replace("{username}", username).Replace("{email}", email).Replace("{link}", link);
+            }
+            return $"Email: {email}\nUser Name: {username}]nLink: {link}";
+        }
+
+        public string GeneratePasswordResetContent(string link)
+        {
+            if (HasPasswordResetTemplate)
+            {
+                var html = File.ReadAllText(Path.Combine(Root, "password-reset.html"));
+                return html.Replace("{link}", link);
+            }
+            return link;
         }
     }
 

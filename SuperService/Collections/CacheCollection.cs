@@ -1,4 +1,5 @@
-﻿using ServiceStack.Redis;
+﻿using Cloud77.Abstractions;
+using ServiceStack.Redis;
 using SuperService.Models;
 
 namespace SuperService.Collections
@@ -11,9 +12,9 @@ namespace SuperService.Collections
         {
             var hostName = Environment.GetEnvironmentVariable("REDIS_HOST") ?? "localhost";
             var password = Environment.GetEnvironmentVariable("REDIS_PASSWORD") ?? "123456";
-            if (!string.IsNullOrEmpty(LocalDataModel.IPAddress))
+            if (!string.IsNullOrEmpty(ServiceDataModel.IPAddress))
             {
-                hostName = hostName.Replace("localhost", LocalDataModel.IPAddress);
+                hostName = hostName.Replace("localhost", ServiceDataModel.IPAddress);
             }
             client = new RedisClient(hostName, 6379, password);
         }

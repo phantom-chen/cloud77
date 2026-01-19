@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Cloud77.Abstractions.Entity;
 using SuperService.Models;
 using ServiceStack.Redis;
+using Cloud77.Abstractions;
 
 namespace SuperService.Backgrounds
 {
@@ -41,9 +42,9 @@ namespace SuperService.Backgrounds
         private async Task Execute()
         {
             var hostName = Environment.GetEnvironmentVariable("MQ_HOST") ?? "localhost";
-            if (!string.IsNullOrEmpty(LocalDataModel.IPAddress))
+            if (!string.IsNullOrEmpty(ServiceDataModel.IPAddress))
             {
-                hostName = hostName.Replace("localhost", LocalDataModel.IPAddress);
+                hostName = hostName.Replace("localhost", ServiceDataModel.IPAddress);
             }
 
             var factory = new ConnectionFactory()
@@ -96,9 +97,9 @@ namespace SuperService.Backgrounds
                 var message = Message2String(ea);
                 logger.LogInformation($"receive message: {message}");
                 var hostname = Environment.GetEnvironmentVariable("REDIS_HOST") ?? "localhost";
-                if (!string.IsNullOrEmpty(LocalDataModel.IPAddress))
+                if (!string.IsNullOrEmpty(ServiceDataModel.IPAddress))
                 {
-                    hostname = hostname.Replace("localhost", LocalDataModel.IPAddress);
+                    hostname = hostname.Replace("localhost", ServiceDataModel.IPAddress);
                 }
                 RedisClient client = new RedisClient(
                   hostname,
@@ -134,12 +135,12 @@ namespace SuperService.Backgrounds
                 if (userLink.Usage == "email")
                 {
                     content.Subject = "Confirm user email";
-                    content.Body = new LocalDataModel().GenerateEmailConfirmContent(userLink.Email, userLink.Name, userLink.Link);
+                    content.Body = new ServiceDataModel().GenerateEmailConfirmContent(userLink.Email, userLink.Name, userLink.Link);
                 }
                 if (userLink.Usage == "password")
                 {
                     content.Subject = "Reset user password";
-                    content.Body = new LocalDataModel().GeneratePasswordResetContent(userLink.Link);
+                    content.Body = new ServiceDataModel().GeneratePasswordResetContent(userLink.Link);
                 }
                 if (!string.IsNullOrEmpty(content.Subject))
                 {

@@ -1,4 +1,5 @@
-﻿using Cloud77.Abstractions.Service;
+﻿using Cloud77.Abstractions;
+using Cloud77.Abstractions.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -47,7 +48,7 @@ namespace SuperService.Controllers
         [Route("names")]
         public IActionResult Get()
         {
-            var content = new LocalDataModel().GetSetting("event_names");
+            var content = new ServiceDataModel().GetSetting("event_names");
             if (string.IsNullOrEmpty(content))
             {
                 return NotFound();

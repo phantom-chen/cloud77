@@ -8,6 +8,7 @@ using RabbitMQ.Client;
 using SuperService.Models;
 using System.Text;
 using Cloud77.Abstractions.Message;
+using Cloud77.Abstractions;
 
 namespace SuperService.Controllers
 {
@@ -46,7 +47,7 @@ namespace SuperService.Controllers
         logger.LogInformation("not receive form data");
       }
 
-      new LocalDataModel().AppendLog($"send message '{message}' to the queue 'my_services_default_queue'");
+      new ServiceDataModel().AppendLog($"send message '{message}' to the queue 'my_services_default_queue'");
       Send("my_services_default_queue", message);
       return Ok("message is sent to the queue");
     }

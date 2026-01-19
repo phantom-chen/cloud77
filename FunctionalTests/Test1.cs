@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Diagnostics;
 using System.Text;
 
@@ -7,6 +8,24 @@ namespace FunctionalTests
     [TestClass]
     public sealed class Test1
     {
+        [TestMethod()]
+        public void FindUsers()
+        {
+            Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+            string programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+            var root = Path.Combine(programDataPath, "MyServices");
+            var path = Path.Combine(root, "users", "index", "users.json");
+            Assert.IsTrue(File.Exists(path));
+
+            var content = File.ReadAllText(path);
+            var users = JsonConvert.DeserializeObject<List<TestUtility.User>>(content);
+            Assert.IsNotNull(users);
+            Console.WriteLine(users.Count);
+            Console.WriteLine(users.First().Email);
+            var _users = users.Where(u => u.Email.Contains("example.com")).Select(u => u.Email);
+            Console.WriteLine(string.Join(',', _users));
+        }
+
         [TestMethod]
         public void TestMethod1()
         {

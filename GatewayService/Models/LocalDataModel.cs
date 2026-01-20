@@ -69,7 +69,7 @@ namespace GatewayService.Models
       var date = DateTime.Now;
       lock (obj)
       {
-        File.AppendAllText(Path.Combine(Root, "histories", $"{date.ToString("yyyyMMdd")}.txt"), $"======\n{message}\n======\n");
+        File.AppendAllText(Path.Combine(Root, "logs", $"{date.ToString("yyyyMMdd")}.txt"), $"======\n{message}\n======\n");
       }
     }
   }

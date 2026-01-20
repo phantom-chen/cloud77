@@ -1,4 +1,5 @@
-﻿using Cloud77.Abstractions.Service;
+﻿using Cloud77.Abstractions;
+using Cloud77.Abstractions.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -31,8 +32,8 @@ namespace SampleService.Controllers
         if (addr != null) ip = addr.ToString();
       }
 
-      var tag1 = $"ENVIRONMENT={Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? ""}";
-      var tag2 = $"CUSTOM_LOGGING={Environment.GetEnvironmentVariable("CUSTOM_LOGGING") ?? ""}";
+      var tag1 = $"ENVIRONMENT={ServiceDataModel.GetVariable("ENVIRONMENT")}";
+      var tag2 = $"CUSTOM_LOGGING={ServiceDataModel.LogFileExtension}";
 
       Assembly assembly = Assembly.GetExecutingAssembly();
       FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
@@ -44,8 +45,8 @@ namespace SampleService.Controllers
         Service = "sample_service",
         Tags = new[] { tag1, tag2 },
         Machine = Environment.MachineName,
-        Environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "",
-        Logging = Environment.GetEnvironmentVariable("CUSTOM_LOGGING") ?? ""
+        Environment = ServiceDataModel.GetVariable("ENVIRONMENT"),
+        Logging = ServiceDataModel.LogFileExtension
       };
       return Ok(result);
     }

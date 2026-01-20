@@ -5,69 +5,68 @@ using System.Net.Mail;
 
 namespace SuperService.Models
 {
-  public class MailClient
-  {
-    private readonly string host;
-    private readonly string username;
-    private readonly string password;
-    private readonly string address;
-    private readonly string display;
-
-    public MailClient()
+    public class MailClient
     {
-      var model = new ServiceDataModel();
-      host = model.GetSetting("smtp_client_host");
-      username = model.GetSetting("smtp_client_username");
-      password = model.GetSetting("smtp_client_password");
-      address = model.GetSetting("email_address");
-      display = model.GetSetting("email_display_name");
-    }
+        private readonly string host;
+        private readonly string username;
+        private readonly string password;
+        private readonly string address;
+        private readonly string display;
 
-    public void Send(EmailEntity email)
-    {
-      // only send to one email address
-      var count = email.Addresses.Count();
-      if (count != 1)
-      {
-        return;
-      }
+        public MailClient()
+        {
+            host = ServiceDataModel.GetSetting("smtp_client_host");
+            username = ServiceDataModel.GetSetting("smtp_client_username");
+            password = ServiceDataModel.GetSetting("smtp_client_password");
+            address = ServiceDataModel.GetSetting("email_address");
+            display = ServiceDataModel.GetSetting("email_display_name");
+        }
 
-      // save mail body locally
-      File.WriteAllText(Path.Combine(ServiceDataModel.Root, "mail-body.txt"), email.Body);
+        public void Send(EmailEntity email)
+        {
+            // only send to one email address
+            var count = email.Addresses.Count();
+            if (count != 1)
+            {
+                return;
+            }
 
-      // skip for empty setting
-      if (string.IsNullOrEmpty(password)
+            // save mail body locally
+            ServiceDataModel.SaveLatestMailBody(email.Body);
+
+            // skip for empty setting
+            if (string.IsNullOrEmpty(password)
           || string.IsNullOrEmpty(host)
           || string.IsNullOrEmpty(username)
           || string.IsNullOrEmpty(address)
           || string.IsNullOrEmpty(display))
-      {
-        return;
-      }
+            {
+                return;
+            }
 
-      if (email.Addresses.First().ToLower().EndsWith("@example.com"))
-      {
-        return;
-      }
+            if (email.Addresses.First().ToLower().EndsWith("@example.com"))
+            {
+                return;
+            }
 
-      using (SmtpClient client = new SmtpClient(host ?? "", 80))
-      {
-        client.EnableSsl = true;
-        NetworkCredential credential = new NetworkCredential(
-            username ?? "",
-            password ?? "");
-        client.Credentials = credential;
+            using (SmtpClient client = new SmtpClient(host ?? "", 80))
+            {
+                client.EnableSsl = true;
+                NetworkCredential credential = new NetworkCredential(
+                    username ?? "",
+                    password ?? "");
+                client.Credentials = credential;
 
-        MailMessage message2 = new MailMessage();
-        message2.From = new MailAddress(
-            address ?? "",
-            display ?? "");
-        message2.Subject = email.Subject;
-        message2.Body = email.Body;
-        message2.IsBodyHtml = email.IsBodyHtml;
-        message2.To.Add(email.Addresses.First());
-        client.Send(message2);
-      }
+                MailMessage message2 = new MailMessage();
+                message2.From = new MailAddress(
+                    address ?? "",
+                    display ?? "");
+                message2.Subject = email.Subject;
+                message2.Body = email.Body;
+                message2.IsBodyHtml = email.IsBodyHtml;
+                message2.To.Add(email.Addresses.First());
+                client.Send(message2);
+            }
+        }
     }
-  }
 }

@@ -21,7 +21,7 @@ namespace UserService.Middleware
             }
             catch (Exception ex)
             {
-                new ServiceDataModel().SaveError(ex.Message);
+                new TextLoggingModel().SaveError(ex.Message);
 
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
                 context.Response.ContentType = "application/json";

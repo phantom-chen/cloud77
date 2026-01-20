@@ -41,17 +41,11 @@ namespace SuperService.Backgrounds
 
         private async Task Execute()
         {
-            var hostName = Environment.GetEnvironmentVariable("MQ_HOST") ?? "localhost";
-            if (!string.IsNullOrEmpty(ServiceDataModel.IPAddress))
-            {
-                hostName = hostName.Replace("localhost", ServiceDataModel.IPAddress);
-            }
-
             var factory = new ConnectionFactory()
             {
-                HostName = hostName,
-                UserName = Environment.GetEnvironmentVariable("MQ_USERNAME") ?? "admin",
-                Password = Environment.GetEnvironmentVariable("MQ_PASSWORD") ?? "123456"
+                HostName = ServiceDataModel.GetVariable("MQ_HOST"),
+                UserName = ServiceDataModel.GetVariable("MQ_USERNAME"),
+                Password = ServiceDataModel.GetVariable("MQ_PASSWORD")
             };
             if (factory != null)
             {
@@ -96,15 +90,10 @@ namespace SuperService.Backgrounds
             {
                 var message = Message2String(ea);
                 logger.LogInformation($"receive message: {message}");
-                var hostname = Environment.GetEnvironmentVariable("REDIS_HOST") ?? "localhost";
-                if (!string.IsNullOrEmpty(ServiceDataModel.IPAddress))
-                {
-                    hostname = hostname.Replace("localhost", ServiceDataModel.IPAddress);
-                }
                 RedisClient client = new RedisClient(
-                  hostname,
+                  ServiceDataModel.GetVariable("REDIS_HOST"),
                   6379,
-                  Environment.GetEnvironmentVariable("REDIS_PASSWORD") ?? "123456");
+                  ServiceDataModel.GetVariable("REDIS_PASSWORD"));
 
                 client.Set(defaultMessageQueue, message, TimeSpan.FromMinutes(5));
                 channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
@@ -135,12 +124,12 @@ namespace SuperService.Backgrounds
                 if (userLink.Usage == "email")
                 {
                     content.Subject = "Confirm user email";
-                    content.Body = new ServiceDataModel().GenerateEmailConfirmContent(userLink.Email, userLink.Name, userLink.Link);
+                    content.Body = ServiceDataModel.GenerateEmailConfirmContent(userLink.Email, userLink.Name, userLink.Link);
                 }
                 if (userLink.Usage == "password")
                 {
                     content.Subject = "Reset user password";
-                    content.Body = new ServiceDataModel().GeneratePasswordResetContent(userLink.Link);
+                    content.Body = ServiceDataModel.GeneratePasswordResetContent(userLink.Link);
                 }
                 if (!string.IsNullOrEmpty(content.Subject))
                 {

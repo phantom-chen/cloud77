@@ -48,7 +48,7 @@ namespace SuperService.Controllers
         [Route("names")]
         public IActionResult Get()
         {
-            var content = new ServiceDataModel().GetSetting("event_names");
+            var content = ServiceDataModel.GetSetting("event_names");
             if (string.IsNullOrEmpty(content))
             {
                 return NotFound();

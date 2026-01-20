@@ -14,27 +14,18 @@ namespace SuperService.Backgrounds
     public class SimpleBackgroundService : IHostedService
     {
         private readonly ILogger<SimpleBackgroundService> logger;
-        //private readonly MongoClient client;
         private readonly IMongoDatabase database;
-        //private readonly IMongoCollection<UserMongoEntity> collection;
-        //private Timer _timer;
 
-        private Timer _healthCheckTimer;
+        private Timer? _healthCheckTimer;
         private int checkHour = 0;
 
         public SimpleBackgroundService(ILogger<SimpleBackgroundService> logger, IConfiguration configuration)
         {
-            var connection = Environment.GetEnvironmentVariable("DB_CONNECTION") ?? "localhost";
-            if (!string.IsNullOrEmpty(ServiceDataModel.IPAddress))
-            {
-                connection = connection.Replace("localhost", ServiceDataModel.IPAddress);
-            }
-
-            var client = new MongoClient(connection);
+            var client = new MongoClient(ServiceDataModel.GetVariable("DB_CONNECTION"));
             database = client.GetDatabase(configuration["Database"]);
             var model = new ServiceDataModel();
-            checkHour = Convert.ToInt16(model.GetSetting("health_check_hour_utc") ?? "0");
 
+            checkHour = Convert.ToInt16(ServiceDataModel.GetSetting("health_check_hour_utc") ?? "0");
             this.logger = logger;
         }
 
@@ -61,15 +52,15 @@ namespace SuperService.Backgrounds
             var index = 0;
             var size = 100;
             var count = 0;
-            List<User> userList = new List<User>();
+            List<SimplifiedUser> userList = new List<SimplifiedUser>();
             var collection = database.GetCollection<UserMongoEntity>("Users");
 
-            if (new ServiceDataModel().HasUsers)
+            if (new UserDataModel().HasUsers)
             {
                 logger.LogInformation("users index already exists.");
             }
 
-            while (!new ServiceDataModel().HasUsers)
+            while (!new UserDataModel().HasUsers)
             {
                 try
                 {
@@ -79,7 +70,7 @@ namespace SuperService.Backgrounds
                     {
                         count = count + users.Count;
                         //logger.LogInformation($"Users Count: {count}");
-                        userList.AddRange(users.Select(u => new User() { Id = u.Id.ToString(), Email = u.Email, Name = u.Name }));
+                        userList.AddRange(users.Select(u => new SimplifiedUser() { Id = u.Id.ToString(), Email = u.Email, Name = u.Name }));
                         index++;
                     }
                     else
@@ -96,7 +87,7 @@ namespace SuperService.Backgrounds
                 }
             }
 
-            if (new ServiceDataModel().HasUsers)
+            if (new UserDataModel().HasUsers)
             {
                 //var usersJson = File.ReadAllText(Path.Combine(LocalDataModel.Root, "users", "index", "users.json"));
                 //var accounts = JsonConvert.DeserializeObject<List<User>>(usersJson);
@@ -149,15 +140,14 @@ namespace SuperService.Backgrounds
         private void Health(object state)
         {
             logger.LogInformation("health checking is running...");
-            var model = new ServiceDataModel();
 
-            if (Convert.ToBoolean(model.GetSetting("health_check_enable") ?? "true"))
+            if (Convert.ToBoolean(ServiceDataModel.GetSetting("health_check_enable") ?? "true"))
             {
                 EmailEntity mail = new EmailEntity()
                 {
-                    Addresses = new string[] { model.GetSetting("health_check_address") },
-                    Subject = model.GetSetting("health_check_subject"),
-                    Body = model.GetSetting("health_check_body")
+                    Addresses = new string[] { ServiceDataModel.GetSetting("health_check_address") },
+                    Subject = ServiceDataModel.GetSetting("health_check_subject"),
+                    Body = ServiceDataModel.GetSetting("health_check_body")
                 };
                 var client = new MailClient();
                 client.Send(mail);

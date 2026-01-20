@@ -1,7 +1,9 @@
 using Cloud77.Abstractions;
+using Cloud77.Abstractions.Entity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
+using Newtonsoft.Json;
 using RabbitMQ.Client;
 using ServiceStack;
 using System.Reflection;
@@ -18,22 +20,7 @@ namespace UserService
     {
         public static void Main(string[] args)
         {
-            ServiceDataModel.ServiceName = "User";
-            var location = Assembly.GetExecutingAssembly().Location;
-            var root = Directory.GetParent(location)?.ToString() ?? "";
-            ServiceDataModel.LogFileExtension = Environment.GetEnvironmentVariable("CUSTOM_LOGGING") ?? "";
-            var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-            ServiceDataModel.Platform = isWindows ? "Windows" : "Linux";
-            if (isWindows)
-            {
-                string programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-                ServiceDataModel.Root = Path.Combine(programDataPath, "MyServices");
-            }
-            else
-            {
-                // for Linux system
-                ServiceDataModel.Root = Path.Combine(root, "data");
-            }
+            Initialize();
 
             new TextLoggingModel().AppendLog("User service starts");
             var builder = WebApplication.CreateBuilder(args);
@@ -45,13 +32,7 @@ namespace UserService
             builder.Services.AddScoped<TextLoggingModel>();
             builder.Services.AddScoped<MongoClient>(p =>
             {
-                var connection = Environment.GetEnvironmentVariable("DB_CONNECTION") ?? "localhost";
-                if (!string.IsNullOrEmpty(ServiceDataModel.IPAddress))
-                {
-                    connection = connection.Replace("localhost", ServiceDataModel.IPAddress);
-                }
-
-                var settings = MongoClientSettings.FromConnectionString(connection);
+                var settings = MongoClientSettings.FromConnectionString(ServiceDataModel.GetVariable("DB_CONNECTION"));
                 settings.ConnectTimeout = TimeSpan.FromSeconds(5);
                 settings.ServerSelectionTimeout = TimeSpan.FromSeconds(5);
                 var client = new MongoClient(settings);
@@ -59,17 +40,11 @@ namespace UserService
             });
             builder.Services.AddScoped<ConnectionFactory>(o =>
             {
-                var hostName = Environment.GetEnvironmentVariable("MQ_HOST") ?? "localhost";
-                if (!string.IsNullOrEmpty(ServiceDataModel.IPAddress))
-                {
-                    hostName = hostName.Replace("localhost", ServiceDataModel.IPAddress);
-                }
-
                 return new ConnectionFactory()
                 {
-                    HostName = hostName,
-                    UserName = Environment.GetEnvironmentVariable("MQ_USERNAME") ?? "admin",
-                    Password = Environment.GetEnvironmentVariable("MQ_PASSWORD") ?? "123456"
+                    HostName = ServiceDataModel.GetVariable("MQ_HOST"),
+                    UserName = ServiceDataModel.GetVariable("MQ_USERNAME"),
+                    Password = ServiceDataModel.GetVariable("MQ_PASSWORD")
                 };
             });
 
@@ -162,6 +137,45 @@ namespace UserService
             app.MapControllers();
             app.MapHub<ChatHub>("/hubs/chat");
             app.Run();
+        }
+        
+        private static void Initialize()
+        {
+            ServiceDataModel.ServiceName = "User";
+            
+            ServiceDataModel.LogFileExtension = Environment.GetEnvironmentVariable("CUSTOM_LOGGING") ?? "";
+            
+            var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+            var location = Assembly.GetExecutingAssembly().Location;
+            var root = Directory.GetParent(location)?.ToString() ?? "";
+            ServiceDataModel.Platform = isWindows ? "Windows" : "Linux";
+
+            if (isWindows)
+            {
+                string programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+                ServiceDataModel.Root = Path.Combine(programDataPath, "MyServices");
+            }
+            else
+            {
+                // for Linux system
+                ServiceDataModel.Root = Path.Combine(root, "data");
+            }
+            
+            ServiceDataModel.Initialize();
+
+            var content = ServiceDataModel.GetContent("settings.json");
+            if (!string.IsNullOrEmpty(content))
+            {
+                ServiceDataModel.Settings = JsonConvert.DeserializeObject<List<SettingEntity>>(content);
+            }
+
+            ServiceDataModel.UpdateVariable("ENVIRONMENT", Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development");
+            ServiceDataModel.UpdateVariable("DB_CONNECTION", Environment.GetEnvironmentVariable("DB_CONNECTION") ?? "localhost");
+            ServiceDataModel.UpdateVariable("REDIS_HOST", Environment.GetEnvironmentVariable("REDIS_HOST") ?? "localhost");
+            ServiceDataModel.UpdateVariable("REDIS_PASSWORD", Environment.GetEnvironmentVariable("REDIS_PASSWORD") ?? "123456");
+            ServiceDataModel.UpdateVariable("MQ_HOST", Environment.GetEnvironmentVariable("MQ_HOST") ?? "localhost");
+            ServiceDataModel.UpdateVariable("MQ_USERNAME", Environment.GetEnvironmentVariable("MQ_USERNAME") ?? "admin");
+            ServiceDataModel.UpdateVariable("MQ_PASSWORD", Environment.GetEnvironmentVariable("MQ_PASSWORD") ?? "123456");
         }
     }
 }

@@ -2,7 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.InteropServices;
+using System.Linq;
+using System.Xml.Linq;
 
 namespace Cloud77.Abstractions
 {
@@ -28,20 +29,11 @@ namespace Cloud77.Abstractions
 
     /// <summary>
     /// Represents data related to a service operation or context.
-    /// windows or linux system
-    /// service data (system)
-    /// sample data (public)
-    /// email-confirm.html, password-reset.html
-    /// settings.json
     /// ocelot.json
-    /// mail-body.txt
-    /// localhost.txt
     /// </summary>
 
     public class ServiceDataModel
     {
-        private static readonly object obj = new object();
-
         /// <summary>
         /// Windows or Linux system platform.
         /// </summary>
@@ -52,6 +44,8 @@ namespace Cloud77.Abstractions
         public static string LogFileExtension { get; set; }
 
         public static string ServiceName { get; set; }
+
+        public static List<SettingEntity> Settings { get; set; } = new List<SettingEntity>();
 
         public static void Initialize()
         {
@@ -71,107 +65,72 @@ namespace Cloud77.Abstractions
                         Directory.CreateDirectory(Path.Combine(Root, item));
                     }
                 }
-            }
-        }
 
-        public static string IPAddress
-        {
-            get
-            {
+                HasEmailConfirmTemplate = File.Exists(Path.Combine(Root, "email-confirm.html"));
+                HasPasswordResetTemplate = File.Exists(Path.Combine(Root, "password-reset.html"));
+
                 var path = Path.Combine(Root, "localhost.txt");
                 if (File.Exists(path))
                 {
-                    return File.ReadAllLines(path)[0].Trim();
+                    IPAddress = File.ReadAllLines(path)[0].Trim();
                 }
-                return "";
             }
         }
 
-        public void AppendLogs(IEnumerable<string> logs)
+        private static Dictionary<string, string> variables = new Dictionary<string, string>();
+
+        public static void UpdateVariable(string key, string value)
         {
-            if (string.IsNullOrEmpty(LogFileExtension)) return;
-            var date = DateTime.Now;
-            lock (obj)
+            if (!string.IsNullOrEmpty(ServiceDataModel.IPAddress))
             {
-                File.AppendAllLines(Path.Combine(Root, "logs", $"{ServiceName}-{date.ToString("yyyyMMdd")}.txt"), logs);
+                value = value.Replace("localhost", ServiceDataModel.IPAddress);
             }
-        }
 
-        public void AppendLog(string message, bool isWarning = false, bool timestampIgnored = false)
-        {
-            if (string.IsNullOrEmpty(LogFileExtension)) return;
-            var date = DateTime.Now;
-            var info = isWarning ? "warning" : "info";
-            lock (obj)
+            if (variables.ContainsKey(key))
             {
-                File.AppendAllLines(Path.Combine(Root, "logs", $"Super-{date.ToString("yyyyMMdd")}.txt"), new string[]
-                {
-        timestampIgnored ? message : $"[{date.ToString("yyyy-MM-dd HH:mm:ss zzz")}] [{info}] {message}"
-                });
+                variables[key] = value;
+                return;
             }
-        }
-
-        public void SaveError(string message)
-        {
-            var id = Guid.NewGuid().ToString();
-            if (!string.IsNullOrEmpty(LogFileExtension))
+            else
             {
-                File.WriteAllText(Path.Combine(Root, "errors", $"{id}.txt"), message);
+                variables.Add(key, value);
             }
         }
 
-        public bool HasEmailConfirmTemplate
+        public static string GetVariable(string key)
         {
-            get { return File.Exists(Path.Combine(Root, "email-confirm.html")); }
-        }
-
-        public bool HasPasswordResetTemplate
-        {
-            get { return File.Exists(Path.Combine(Root, "password-reset.html")); }
-        }
-
-        public bool HasUsers
-        {
-            get { return File.Exists(Path.Combine(Root, "users", "index", "users.json")); }
-        }
-
-        public string Settings
-        {
-            get
+            if (variables.ContainsKey(key))
             {
-                var path = Path.Combine(Root, "settings.json");
-                if (File.Exists(path))
-                {
-                    var content = File.ReadAllText(path);
-                    return content;
-                }
-                return "";
+                return variables[key];
             }
+            return "";
         }
 
-        public IEnumerable<SettingEntity> GetSettings()
+        public static string GetContent(string file)
         {
-            if (string.IsNullOrEmpty(Settings))
+            var path = Path.Combine(Root, file);
+            if (File.Exists(path))
             {
-                return null;
+                return File.ReadAllText(path);
             }
-
-            var settings = JsonConvert.DeserializeObject<IEnumerable<SettingEntity>>(Settings);
-            return settings;
+            return "";
         }
-        public string GetSetting(string key)
-        {
-            if (string.IsNullOrEmpty(Settings))
-            {
-                return "";
-            }
 
-            var settings = JsonConvert.DeserializeObject<IEnumerable<SettingEntity>>(Settings);
-            var setting = settings.FirstOrDefault(s => s.Key == key);
+        public static string IPAddress { get; private set; } = "";
+
+        public static bool HasEmailConfirmTemplate { get; private set; }
+
+        public static bool HasPasswordResetTemplate { get; private set; }
+
+        public static string GetSetting(string key)
+        {
+            if (Settings.Count == 0) return "";
+
+            var setting = Settings.FirstOrDefault(s => s.Key == key);
             return setting?.Value ?? "";
         }
 
-        public string GenerateEmailConfirmContent(string email, string username, string link)
+        public static string GenerateEmailConfirmContent(string email, string username, string link)
         {
             if (HasEmailConfirmTemplate)
             {
@@ -181,7 +140,7 @@ namespace Cloud77.Abstractions
             return $"Email: {email}\nUser Name: {username}]nLink: {link}";
         }
 
-        public string GeneratePasswordResetContent(string link)
+        public static string GeneratePasswordResetContent(string link)
         {
             if (HasPasswordResetTemplate)
             {
@@ -190,8 +149,116 @@ namespace Cloud77.Abstractions
             }
             return link;
         }
+
+        public static string GetLatestMailBody()
+        {
+            if (!File.Exists(Path.Combine(Root, "mail-body.txt")))
+            {
+                return File.ReadAllText(Path.Combine(Root, "mail-body.txt"));
+            }
+            return "";
+        }
+
+        public static void SaveLatestMailBody(string content)
+        {
+            File.WriteAllText(Path.Combine(Root, "mail-body.txt"), content);
+        }
+
+        public static string[] GetUpStreamPaths()
+        {
+            if (File.Exists(Path.Combine(Root, "ocelot.json")))
+            {
+                var lines = File.ReadAllLines(Path.Combine(Root, "ocelot.json"));
+                lines = lines.Where(l => l.Contains("UpstreamPathTemplate")).ToArray();
+                lines = lines.Select(l => l.Trim().Replace("\"UpstreamPathTemplate\": ", "").Trim().Trim(',')).ToArray();
+                lines = lines.Select(l => l.Replace("\"", "")).ToArray();
+                return lines;
+            }
+            return new string[] {};
+        }
     }
 
+    public class SampleDataModel
+    {
+        public SampleDataModel()
+        {
+            var sampleFolder = Path.Combine(ServiceDataModel.Root, "sample");
+            uploadFolder = Path.Combine(sampleFolder, "uploads");
+            postFolder = Path.Combine(sampleFolder, "posts");
+            
+            if (!Directory.Exists(sampleFolder))
+            {
+                Directory.CreateDirectory(sampleFolder);
+            }
+
+            if (!Directory.Exists(uploadFolder))
+            {
+                Directory.CreateDirectory(uploadFolder);
+            }
+
+            if (!Directory.Exists(postFolder))
+            {
+                Directory.CreateDirectory(postFolder);
+            }
+        }
+
+        private string uploadFolder = "";
+
+        private string postFolder = "";
+
+        public string GetFilePath(string name)
+        {
+            return Path.Combine(uploadFolder, name);
+        }
+
+        public string[] GetFiles()
+        {
+            string[] files = Directory.GetFiles(uploadFolder).Select(f => Path.GetFileName(f)).ToArray();
+            return files;
+        }
+
+        public bool DeleteFile(string name)
+        {
+            var filePath = Path.Combine(uploadFolder, name);
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+                return true;
+            }
+            return false;
+        }
+
+        public string[] GetPosts()
+        {
+            string[] txtFiles = Directory.GetFiles(postFolder, "*.md");
+            return txtFiles.Select(f => Path.GetFileNameWithoutExtension(f)).ToArray();
+        }
+
+        public bool PostIsExisting(string name)
+        {
+            return File.Exists(Path.Combine(postFolder, name + ".md"));
+        }
+
+        public string GetPost(string name)
+        {
+            var filePath = Path.Combine(postFolder, name + ".md");
+            return File.ReadAllText(filePath);
+        }
+
+        public string SavePost(string name, string content)
+        {
+            var filePath = Path.Combine(postFolder, name + ".md");
+            File.WriteAllText(filePath, content);
+            return filePath;
+        }
+
+        public void DeletePost(string name)
+        {
+            var filePath = Path.Combine(postFolder, name + ".md");
+            File.Delete(filePath);
+        }
+    }
+        
     /// <summary>
     /// user folder, index folder.
     /// </summary>
@@ -213,14 +280,21 @@ namespace Cloud77.Abstractions
             }
         }
 
-        // users under the root
-
-        // user folder
-
-        // index folder
+        public UserDataModel()
+        {
+            if (!Directory.Exists(Path.Combine(ServiceDataModel.Root, "users", "index")))
+            {
+                Directory.CreateDirectory(Path.Combine(ServiceDataModel.Root, "users", "index"));
+            }
+        }
 
         private readonly string email;
         private readonly string userDataRoot;
+
+        public bool HasUsers
+        {
+            get { return File.Exists(Path.Combine(ServiceDataModel.Root, "users", "index", "users.json")); }
+        }
 
         public string GetPost(string id)
         {
@@ -253,40 +327,87 @@ namespace Cloud77.Abstractions
 
     public class TextLoggingModel
     {
+        private static readonly object obj = new object();
+
         public TextLoggingModel() { }
 
-        public void AppendLog(string message, bool isWarning = false)
+        private void writeLogs(IEnumerable<string> logs)
         {
-            if (string.IsNullOrEmpty(ServiceDataModel.LogFileExtension)) return;
             var date = DateTime.Now;
-            var info = isWarning ? "warning" : "info";
-            var logs = new string[]
-                {
-                    $"[{date.ToString("yyyy-MM-dd HH:mm:ss zzz")}] [{info}] {message}"
-                };
-            model.AppendLogs(logs);
+            lock (obj)
+            {
+                File.AppendAllLines(Path.Combine(ServiceDataModel.Root, "logs", $"{ServiceDataModel.ServiceName}-{date.ToString("yyyyMMdd")}.txt"), logs);
+            }
         }
 
-        private ServiceDataModel model = new ServiceDataModel();
+        public void AppendLog(string message, bool isWarning = false, DateTime? date = null)
+        {
+            var _date = date ?? DateTime.Now;
+            var info = isWarning ? "warning" : "info";
+            
+            logs.Clear();
+            logs.Add($"[{_date.ToString("yyyy-MM-dd HH:mm:ss zzz")}] [{info}] {message}");
+            writeLogs(logs);
+        }
 
         private List<string> logs = new List<string>();
 
-        public void PushLog(string message, bool isWarning = false)
+        public void PushLog(string message, bool isWarning = false, DateTime? date = null)
         {
-            var date = DateTime.Now;
+            var _date = date ?? DateTime.Now;
             var info = isWarning ? "warning" : "info";
-            logs.Add($"[{date.ToString("yyyy-MM-dd HH:mm:ss zzz")}] [{info}] {message}");
+            logs.Add($"[{_date.ToString("yyyy-MM-dd HH:mm:ss zzz")}] [{info}] {message}");
         }
 
         public void Commit()
         {
             if (string.IsNullOrEmpty(ServiceDataModel.LogFileExtension)) return;
-            var date = DateTime.Now;
             if (logs.Count > 0)
             {
-                model.AppendLogs(logs);
+                writeLogs(logs);
                 logs.Clear();
             }
+        }
+
+        public void SaveError(string message)
+        {
+            var id = Guid.NewGuid().ToString();
+            if (!string.IsNullOrEmpty(ServiceDataModel.LogFileExtension))
+            {
+                File.WriteAllText(Path.Combine(ServiceDataModel.Root, "errors", $"{id}.txt"), message);
+            }
+        }
+
+        public string GetLog(string service, string date)
+        {
+            service = service.ToLower();
+            service = char.ToUpper(service[0]) + service.Substring(1).ToLower();
+            var path = Path.Combine(ServiceDataModel.Root, "logs", $"{service}-{date}.txt");
+            if (File.Exists(path))
+            {
+                return File.ReadAllText(path);
+            }
+            return "";
+        }
+
+        public string GetError(string id)
+        {
+            var path = Path.Combine(ServiceDataModel.Root, "errors", $"{id}.txt");
+            if (File.Exists(path))
+            {
+                return File.ReadAllText(path);
+            }
+            return "";
+        }
+
+        public string GetHistory(string date)
+        {
+            var path = Path.Combine(ServiceDataModel.Root, "logs", $"{date}.txt");
+            if (File.Exists(path))
+            {
+                return File.ReadAllText(path);
+            }
+            return "";
         }
     }
 }

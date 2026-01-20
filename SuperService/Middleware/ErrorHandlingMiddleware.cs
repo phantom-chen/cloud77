@@ -4,35 +4,31 @@ using SuperService.Models;
 
 namespace SuperService.Middleware
 {
-  public class ErrorHandlingMiddleware
-  {
-    private readonly RequestDelegate next;
-
-    public ErrorHandlingMiddleware(RequestDelegate next)
+    public class ErrorHandlingMiddleware
     {
-      this.next = next;
-    }
+        private readonly RequestDelegate next;
 
-    public async Task Invoke(HttpContext context)
-    {
-      try
-      {
-        await next(context);
-      }
-      catch (Exception ex)
-      {
-        var id = Guid.NewGuid().ToString();
-        if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("CUSTOM_LOGGING")))
+        public ErrorHandlingMiddleware(RequestDelegate next)
         {
-          File.WriteAllText(Path.Combine(ServiceDataModel.Root, "errors", $"{id}.txt"), ex.Message);
+            this.next = next;
         }
 
-        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-        context.Response.ContentType = "application/json";
+        public async Task Invoke(HttpContext context)
+        {
+            try
+            {
+                await next(context);
+            }
+            catch (Exception ex)
+            {
+                new TextLoggingModel().SaveError(ex.Message);
+
+                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                context.Response.ContentType = "application/json";
                 var response = new InternalError(ex.Message);
-        var content = Newtonsoft.Json.JsonConvert.SerializeObject(response);
-        await context.Response.WriteAsync(content);
-      }
+                var content = Newtonsoft.Json.JsonConvert.SerializeObject(response);
+                await context.Response.WriteAsync(content);
+            }
+        }
     }
-  }
 }

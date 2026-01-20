@@ -10,13 +10,7 @@ namespace SuperService.Collections
 
         public CacheCollection()
         {
-            var hostName = Environment.GetEnvironmentVariable("REDIS_HOST") ?? "localhost";
-            var password = Environment.GetEnvironmentVariable("REDIS_PASSWORD") ?? "123456";
-            if (!string.IsNullOrEmpty(ServiceDataModel.IPAddress))
-            {
-                hostName = hostName.Replace("localhost", ServiceDataModel.IPAddress);
-            }
-            client = new RedisClient(hostName, 6379, password);
+            client = new RedisClient(ServiceDataModel.GetVariable("REDIS_HOST"), 6379, ServiceDataModel.GetVariable("REDIS_PASSWORD"));
         }
 
         public bool Ping()

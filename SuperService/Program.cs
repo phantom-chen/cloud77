@@ -1,19 +1,21 @@
+using Cloud77.Abstractions;
+using Cloud77.Abstractions.Entity;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
+using Newtonsoft.Json;
 using RabbitMQ.Client;
 using SuperService.Backgrounds;
+using SuperService.Middleware;
 using SuperService.Models;
 using SuperService.Services;
-using System.Security.Claims;
-using System.Text;
-using MassTransit;
 using System.Diagnostics;
 using System.Reflection;
-using SuperService.Middleware;
-using Cloud77.Abstractions;
 using System.Runtime.InteropServices;
+using System.Security.Claims;
+using System.Text;
 
 namespace SuperService
 {
@@ -21,24 +23,9 @@ namespace SuperService
     {
         public static void Main(string[] args)
         {
-            ServiceDataModel.ServiceName = "Super";
-            var location = Assembly.GetExecutingAssembly().Location;
-            var root = Directory.GetParent(location)?.ToString() ?? "";
-            ServiceDataModel.LogFileExtension = Environment.GetEnvironmentVariable("CUSTOM_LOGGING") ?? "";
-            var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-            ServiceDataModel.Platform = isWindows ? "Windows" : "Linux";
-            if (isWindows)
-            {
-                string programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-                ServiceDataModel.Root = Path.Combine(programDataPath, "MyServices");
-            }
-            else
-            {
-                // for Linux system
-                ServiceDataModel.Root = Path.Combine(root, "data");
-            }
+            Initialize();
 
-            new ServiceDataModel().AppendLog("Super service starts");
+            new TextLoggingModel().AppendLog("Super service starts");
             var builder = WebApplication.CreateBuilder(args);
 
             // Accessing IConfiguration and IWebHostEnvironment from the builder
@@ -49,49 +36,35 @@ namespace SuperService
             builder.Services.AddScoped<TokenGenerator>();
             builder.Services.AddScoped<MongoClient>(p =>
             {
-                var connection = Environment.GetEnvironmentVariable("DB_CONNECTION") ?? "localhost";
-                if (!string.IsNullOrEmpty(ServiceDataModel.IPAddress))
-                {
-                    connection = connection.Replace("localhost", ServiceDataModel.IPAddress);
-                }
-
-                return new MongoClient(connection);
+                var settings = MongoClientSettings.FromConnectionString(ServiceDataModel.GetVariable("DB_CONNECTION"));
+                settings.ConnectTimeout = TimeSpan.FromSeconds(5);
+                settings.ServerSelectionTimeout = TimeSpan.FromSeconds(5);
+                var client = new MongoClient(settings);
+                return client;
             });
             builder.Services.AddScoped<ConnectionFactory>(o =>
             {
-                var hostName = Environment.GetEnvironmentVariable("MQ_HOST") ?? "localhost";
-                if (!string.IsNullOrEmpty(ServiceDataModel.IPAddress))
-                {
-                    hostName = hostName.Replace("localhost", ServiceDataModel.IPAddress);
-                }
-
                 return new ConnectionFactory()
                 {
-                    HostName = hostName,
-                    UserName = Environment.GetEnvironmentVariable("MQ_USERNAME") ?? "admin",
-                    Password = Environment.GetEnvironmentVariable("MQ_PASSWORD") ?? "123456"
+                    HostName = ServiceDataModel.GetVariable("MQ_HOST"),
+                    UserName = ServiceDataModel.GetVariable("MQ_USERNAME"),
+                    Password = ServiceDataModel.GetVariable("MQ_PASSWORD")
                 };
             });
 
             builder.Services.AddMassTransit(x =>
-           {
-               x.UsingRabbitMq((context, cfg) =>
-         {
-                 var hostName = Environment.GetEnvironmentVariable("MQ_HOST") ?? "localhost";
-                 if (!string.IsNullOrEmpty(ServiceDataModel.IPAddress))
-                 {
-                     hostName = hostName.Replace("localhost", ServiceDataModel.IPAddress);
-                 }
+            {
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.Host(ServiceDataModel.GetVariable("MQ_HOST"), "/", h =>
+                  {
+                     h.Username(ServiceDataModel.GetVariable("MQ_USERNAME"));
+                     h.Password(ServiceDataModel.GetVariable("MQ_PASSWORD"));
+                 });
 
-                 cfg.Host(hostName, "/", h =>
-           {
-                   h.Username(Environment.GetEnvironmentVariable("MQ_USERNAME") ?? "admin");
-                   h.Password(Environment.GetEnvironmentVariable("MQ_PASSWORD") ?? "123456");
-               });
-
-                 cfg.ConfigureEndpoints(context);
-             });
-           });
+                    cfg.ConfigureEndpoints(context);
+                });
+            });
 
             builder.Services.AddAuthentication(option =>
             {
@@ -167,6 +140,45 @@ namespace SuperService
             app.MapGrpcService<AccountService>();
 
             app.Run();
+        }
+
+        private static void Initialize()
+        {
+            ServiceDataModel.ServiceName = "Super";
+
+            ServiceDataModel.LogFileExtension = Environment.GetEnvironmentVariable("CUSTOM_LOGGING") ?? "";
+
+            var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+            var location = Assembly.GetExecutingAssembly().Location;
+            var root = Directory.GetParent(location)?.ToString() ?? "";
+            ServiceDataModel.Platform = isWindows ? "Windows" : "Linux";
+
+            if (isWindows)
+            {
+                string programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+                ServiceDataModel.Root = Path.Combine(programDataPath, "MyServices");
+            }
+            else
+            {
+                // for Linux system
+                ServiceDataModel.Root = Path.Combine(root, "data");
+            }
+
+            ServiceDataModel.Initialize();
+
+            var content = ServiceDataModel.GetContent("settings.json");
+            if (!string.IsNullOrEmpty(content))
+            {
+                ServiceDataModel.Settings = JsonConvert.DeserializeObject<List<SettingEntity>>(content);
+            }
+
+            ServiceDataModel.UpdateVariable("ENVIRONMENT", Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development");
+            ServiceDataModel.UpdateVariable("DB_CONNECTION", Environment.GetEnvironmentVariable("DB_CONNECTION") ?? "localhost");
+            ServiceDataModel.UpdateVariable("REDIS_HOST", Environment.GetEnvironmentVariable("REDIS_HOST") ?? "localhost");
+            ServiceDataModel.UpdateVariable("REDIS_PASSWORD", Environment.GetEnvironmentVariable("REDIS_PASSWORD") ?? "123456");
+            ServiceDataModel.UpdateVariable("MQ_HOST", Environment.GetEnvironmentVariable("MQ_HOST") ?? "localhost");
+            ServiceDataModel.UpdateVariable("MQ_USERNAME", Environment.GetEnvironmentVariable("MQ_USERNAME") ?? "admin");
+            ServiceDataModel.UpdateVariable("MQ_PASSWORD", Environment.GetEnvironmentVariable("MQ_PASSWORD") ?? "123456");
         }
     }
 }

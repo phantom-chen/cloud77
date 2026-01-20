@@ -1,4 +1,5 @@
 ﻿using Cloud77.Abstractions;
+using Cloud77.Abstractions.Entity;
 using Cloud77.Abstractions.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -69,7 +70,7 @@ namespace SuperService.Controllers
         [Route("roles")]
         public IActionResult GetRoles()
         {
-            var content = new ServiceDataModel().GetSetting("user_roles");
+            var content = ServiceDataModel.GetSetting("user_roles");
             var roles = content.Split(",");
             return Ok(roles);
         }
@@ -83,7 +84,7 @@ namespace SuperService.Controllers
                 return NotFound();
             }
             var content = System.IO.File.ReadAllText(Path.Combine(ServiceDataModel.Root, "users", "index", "users.json"));
-            var users = JsonConvert.DeserializeObject<List<User>>(content);
+            var users = JsonConvert.DeserializeObject<List<SimplifiedUser>>(content);
             var results = users.Where(u => u.Email.Contains(search)).Take(50).Select(u => u.Email);
             return Ok(results);
         }

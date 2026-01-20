@@ -3,6 +3,7 @@ using System;
 using System.Diagnostics;
 using System.Text;
 using Cloud77.Abstractions;
+using Cloud77.Abstractions.Entity;
 
 namespace FunctionalTests
 {
@@ -15,7 +16,7 @@ namespace FunctionalTests
         {
             Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
             string programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-            var root = Path.Combine(programDataPath, "MyServices_test");
+            var root = Path.Combine(programDataPath, "MyServices");
             
             var data = new ServiceDataModel();
             ServiceDataModel.ServiceName = "User";
@@ -24,7 +25,18 @@ namespace FunctionalTests
             ServiceDataModel.LogFileExtension = "txt";
             ServiceDataModel.Initialize();
 
+            var content = ServiceDataModel.GetContent("settings.json");
+            if (!string.IsNullOrEmpty(content))
+            {
+                ServiceDataModel.Settings = JsonConvert.DeserializeObject<List<SettingEntity>>(content);
+            }
+
             Assert.IsTrue(Directory.Exists(ServiceDataModel.Root));
+            Assert.IsNotNull(ServiceDataModel.Settings);
+            Assert.IsNotEmpty(ServiceDataModel.Settings);
+            Console.WriteLine(ServiceDataModel.Settings.First().Key);
+
+            Console.WriteLine(string.Join("\n", ServiceDataModel.GetUpStreamPaths()));
         }
 
         [TestMethod()]

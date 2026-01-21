@@ -22,6 +22,7 @@ namespace SuperService.Controllers
         private readonly ConnectionFactory factory;
         private readonly IBus bus;
         private readonly TextLoggingModel textLogging;
+        private MailClient? client;
 
         public QueuesController(
             ILogger<QueuesController> logger,
@@ -40,32 +41,70 @@ namespace SuperService.Controllers
         [HttpPost]
         public IActionResult Get([FromQuery] string message)
         {
-            textLogging.PushLog(Request.HasFormContentType ? "receive form data" : "not receive form data");
-            textLogging.PushLog($"send message '{message}' to the queue '{configuration["Default_queue"]}'");
+            logger.LogInformation($"receive the message '{message}'");
 
             Send(configuration["Default_queue"] ?? "", message);
 
             return Ok("message is sent to the queue");
         }
 
-        // send daily health check email
-
         [HttpPost]
         [Route("health")]
-        public IActionResult Post()
+        public IActionResult Post([FromBody] EmailEntity body)
         {
-            throw new NotImplementedException();
-        }
+            // ignore health_check_enabled for now
+            logger.LogInformation(ServiceDataModel.GetSetting("health_check_enable"));
+            EmailEntity mail = new EmailEntity()
+            {
+                Addresses = new string[] { body.Addresses.FirstOrDefault() ?? ServiceDataModel.GetSetting("health_check_address") },
+                Subject = body.Subject ?? ServiceDataModel.GetSetting("health_check_subject"),
+                Body = body.Body ?? ServiceDataModel.GetSetting("health_check_body")
+            };
 
-        // send link to user
+            client = new MailClient();
+            client.Send(mail);
+            return Ok();
+        }
 
         [HttpPost]
         [Route("links/{usage}")]
         public IActionResult PostQueueMessages(string usage, [FromBody] UserRole body)
         {
-
-            //Send(body.Queue, body.Message);
-            throw new NotImplementedException();
+            // usage could be email or password
+            if (usage != "email" && usage != "password")
+            {
+                return BadRequest("invalid usage");
+            }
+            if (string.IsNullOrEmpty(body.Email) || string.IsNullOrEmpty(body.Name))
+            {
+                return BadRequest("missing email or name");
+            }
+            var content = new EmailEntity()
+            {
+                Addresses = new string[] { body.Email ?? "" },
+                Body = "",
+                Subject = "",
+                IsBodyHtml = true
+            };
+            var link = "https://github.com";
+            if (usage == "email")
+            {
+                //content.Subject = "Please verify your email address";
+                //content.Body = $"<p>Dear {body.Name},</p><p>Please verify your email address by clicking the link below:</p><p><a href='#'>Verify Email</a></p><p>Thank you!</p>";
+                content.Subject = "Confirm user email";
+                content.Body = ServiceDataModel.GenerateEmailConfirmContent(body.Email, body.Name, link);
+            }
+            else if (usage == "password")
+            {
+                //content.Subject = "Password Reset Request";
+                //content.Body = $"<p>Dear {body.Name},</p><p>You can reset your password by clicking the link below:</p><p><a href='#'>Reset Password</a></p><p>If you did not request a password reset, please ignore this email.</p>";
+                content.Subject = "Reset user password";
+                content.Body = ServiceDataModel.GeneratePasswordResetContent(link);
+            }
+            
+            client = new MailClient();
+            client.Send(content);
+            return Ok(new MailSent(body.Email));
         }
 
         [HttpPost]
@@ -74,11 +113,11 @@ namespace SuperService.Controllers
         {
             EmailEntity content = new EmailEntity()
             {
-                Addresses = new string[] { body.Addresses.FirstOrDefault() },
+                Addresses = new string[] { body.Addresses.FirstOrDefault() ?? "" },
                 Subject = body.Subject,
                 Body = body.Body
             };
-            Send(configuration["Mail_queue"], Newtonsoft.Json.JsonConvert.SerializeObject(content));
+            Send(configuration["Mail_queue"] ?? "", Newtonsoft.Json.JsonConvert.SerializeObject(content));
             return Ok(new MailSent(body.Addresses.FirstOrDefault()));
         }
 
@@ -97,6 +136,8 @@ namespace SuperService.Controllers
             {
                 return;
             }
+
+            textLogging.PushLog($"send message '{message}' to the queue '{queue}'");
 
             using (var connection = factory.CreateConnection())
             {

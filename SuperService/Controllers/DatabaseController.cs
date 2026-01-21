@@ -80,12 +80,5 @@ namespace SuperService.Controllers
       await client.DropDatabaseAsync(configuration["Database"]);
       return Ok(new DatabaseDeleted(configuration["Database"]));
     }
-
-    [Route("collections/{name}")]
-    [HttpDelete]
-    public IActionResult DeleteCollection(string name)
-    {
-            throw new NotImplementedException();
-    }
   }
 }

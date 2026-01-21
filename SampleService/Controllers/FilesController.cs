@@ -7,9 +7,10 @@ namespace SampleService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class FilesController : ControllerBase
+    public class FilesController : ControllerBase, IDisposable
     {
         private readonly SampleDataModel model;
+        private readonly TextLoggingModel textLogging = new TextLoggingModel();
 
         public FilesController()
         {
@@ -25,6 +26,8 @@ namespace SampleService.Controllers
         [HttpPost("")]
         public async Task<IActionResult> UploadFile(IFormFile file)
         {
+            textLogging.PushLog(Request.HasFormContentType ? "receive form data" : "not receive form data");
+
             if (file == null || file.Length == 0)
             {
                 return BadRequest("No file uploaded.");
@@ -62,6 +65,11 @@ namespace SampleService.Controllers
         {
             model.DeleteFile(fileName);
             return Ok();
+        }
+
+        public void Dispose()
+        {
+            textLogging.Commit();
         }
     }
 }

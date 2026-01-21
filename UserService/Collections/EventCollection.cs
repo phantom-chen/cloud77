@@ -88,20 +88,16 @@ namespace UserService.Collections
             return payloads;
         }
 
-        public bool DeleteOne(string id)
-        {
-            var filter = Builders<EventMongoEntity>.Filter.Eq("_id", new ObjectId(id));
-            return collection.DeleteOne(filter).IsAcknowledged;
-        }
-
         public IEnumerable<EventEntity> GetEventLogs(string name, int index, int size)
         {
-            throw new NotImplementedException();
+            // not support getting events by name here
+            return new EventEntity[] {};
         }
 
         public bool DeleteSome(string email)
         {
-            throw new NotImplementedException();
+            // not support deleting events here
+            return false;
         }
     }
 }

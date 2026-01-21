@@ -5,13 +5,14 @@ using System.Net.Mail;
 
 namespace SuperService.Models
 {
-    public class MailClient
+    public class MailClient : IDisposable
     {
         private readonly string host;
         private readonly string username;
         private readonly string password;
         private readonly string address;
         private readonly string display;
+        private readonly TextLoggingModel textLogging = new TextLoggingModel();
 
         public MailClient()
         {
@@ -22,33 +23,55 @@ namespace SuperService.Models
             display = ServiceDataModel.GetSetting("email_display_name");
         }
 
+        public void Dispose()
+        {
+            textLogging.Commit();
+        }
+
         public void Send(EmailEntity email)
         {
-            // only send to one email address
+            var date = DateTime.Now;
             var count = email.Addresses.Count();
-            if (count != 1)
+            if (count == 0)
             {
+                textLogging.PushLog("Mail Client: find no email address", true, date);
                 return;
             }
-
-            // save mail body locally
+            if (count != 1)
+            {
+                textLogging.PushLog("Mail Client: only support sending to one address at a time", true, date);
+                return;
+            }
+            if (string.IsNullOrEmpty(email.Subject))
+            {
+                textLogging.PushLog("Mail Client: email subject is empty", true, date);
+                return;
+            }
+            if (string.IsNullOrEmpty(email.Body))
+            {
+                textLogging.PushLog("Mail Client: email body is empty", true, date);
+                return;
+            }
+            textLogging.PushLog($"Mail Client: save the mail body locally");
             ServiceDataModel.SaveLatestMailBody(email.Body);
 
-            // skip for empty setting
             if (string.IsNullOrEmpty(password)
-          || string.IsNullOrEmpty(host)
-          || string.IsNullOrEmpty(username)
-          || string.IsNullOrEmpty(address)
-          || string.IsNullOrEmpty(display))
+                || string.IsNullOrEmpty(host)
+                || string.IsNullOrEmpty(username)
+                || string.IsNullOrEmpty(address)
+                || string.IsNullOrEmpty(display))
             {
+                textLogging.PushLog("Mail Client: skip sending email due to empty setting", true, date);
                 return;
             }
 
             if (email.Addresses.First().ToLower().EndsWith("@example.com"))
             {
+                textLogging.PushLog("Mail Client: skip sending email to example.com address", true, date);
                 return;
             }
 
+            textLogging.PushLog($"Mail Client: sending email to {email.Addresses.First()}", false, date);
             using (SmtpClient client = new SmtpClient(host ?? "", 80))
             {
                 client.EnableSsl = true;

@@ -1,9 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿using Cloud77.Abstractions;
+using Cloud77.Abstractions.Entity;
+using Cloud77.Abstractions.Service;
+using Cloud77.Abstractions.Utility;
+using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 using System.Text;
-using Cloud77.Abstractions;
-using Cloud77.Abstractions.Entity;
 
 namespace FunctionalTests
 {
@@ -37,6 +39,14 @@ namespace FunctionalTests
             Console.WriteLine(ServiceDataModel.Settings.First().Key);
 
             Console.WriteLine(string.Join("\n", ServiceDataModel.GetUpStreamPaths()));
+
+            var model = new UserDataModel();
+            var date = DateTime.UtcNow;
+            var timestamp = date.ToString("yyyyMMddHHmmss");
+            var expiration = date.AddDays(14).ToString("yyyyMMddHHmmss");
+            var salt = new TokenSalt() { Value = CodeGenerator.GenerateCode(16), Expiration = expiration };
+
+            model.SaveSalt(timestamp, JsonConvert.SerializeObject(salt));
         }
 
         [TestMethod()]

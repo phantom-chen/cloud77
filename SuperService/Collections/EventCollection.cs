@@ -68,7 +68,6 @@ namespace SuperService.Collections
         public bool DeleteSome(string email)
         {
             var filter = Builders<EventMongoEntity>.Filter.Eq("Email", email);
-            //var filter = Builders<EventMongoEntity>.Filter.Eq("_id", new ObjectId(id));
             return collection.DeleteMany(filter).IsAcknowledged;
         }
 

@@ -23,9 +23,9 @@ namespace SuperService.Backgrounds
                 IConfiguration configuration)
         {
             this.logger = logger;
-            defaultMessageQueue = configuration["Default_queue"];
-            mailMessageQueue = configuration["Mail_queue"];
-            userLinkMessageQueue = configuration["User_link_queue"];
+            defaultMessageQueue = configuration["Default_queue"] ?? "";
+            mailMessageQueue = configuration["Mail_queue"] ?? "";
+            userLinkMessageQueue = configuration["User_link_queue"] ?? "";
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -113,10 +113,14 @@ namespace SuperService.Backgrounds
                 logger.LogInformation(message);
 
                 var userLink = JsonConvert.DeserializeObject<UserLink>(message);
-
+                if (userLink == null)
+                {
+                    channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
+                    return;
+                }
                 var content = new EmailEntity()
                 {
-                    Addresses = new string[] { userLink.Email },
+                    Addresses = new string[] { userLink.Email ?? "" },
                     Body = "",
                     Subject = "",
                     IsBodyHtml = true
@@ -147,7 +151,7 @@ namespace SuperService.Backgrounds
             var consumer = new EventingBasicConsumer(channel);
             consumer.Received += (model, ea) =>
             {
-                var message = Message2String(ea);
+                var message = Message2String(ea) ?? "";
                 logger.LogInformation(message);
                 EmailEntity content = JsonConvert.DeserializeObject<EmailEntity>(message);
 

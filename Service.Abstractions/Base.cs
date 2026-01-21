@@ -1,4 +1,5 @@
 ﻿using Cloud77.Abstractions.Entity;
+using Cloud77.Abstractions.Service;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -278,6 +279,11 @@ namespace Cloud77.Abstractions
             {
                 Directory.CreateDirectory(Path.Combine(userDataRoot, "posts"));
             }
+
+            if (!Directory.Exists(Path.Combine(userDataRoot, "salts")))
+            {
+                Directory.CreateDirectory(Path.Combine(userDataRoot, "salts"));
+            }
         }
 
         public UserDataModel()
@@ -322,6 +328,28 @@ namespace Cloud77.Abstractions
             {
                 File.Delete(filePath);
             }
+        }
+    
+        public void SaveSalt(string timestamp, string value)
+        {
+            var filePath = Path.Combine(userDataRoot, "salts", $"{timestamp}.json");
+            File.WriteAllText(filePath, value);
+        }
+        
+        public string ReadSalt(string timestamp)
+        {
+            var filePath = Path.Combine(userDataRoot, "salts", $"{timestamp}.json");
+            return File.ReadAllText(filePath);
+        }
+
+        public void LockUser()
+        {
+            // write lock.json
+        }
+
+        public void UnlockUser()
+        {
+            // delete lock.json
         }
     }
 

@@ -66,7 +66,7 @@ namespace UserService
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateLifetime = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["SecurityKey"])),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["SecurityKey"] ?? "")),
                     ValidIssuer = configuration["Issuer"],
                     ValidAudience = configuration["Audience"],
                     ClockSkew = TimeSpan.FromSeconds(30),
@@ -95,7 +95,7 @@ namespace UserService
                         var payload = new { StatusCode = 0, Message = "Authentication failed" };
                         context.Response.ContentType = "application/json";
                         context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                        context.Response.WriteAsync(Convert.ToString(payload));
+                        context.Response.WriteAsync(Convert.ToString(payload) ?? "");
                         return Task.FromResult(0);
                     }
                 };

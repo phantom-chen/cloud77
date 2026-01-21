@@ -20,6 +20,12 @@ namespace Cloud77.Abstractions.Service
         public int ExpireInHours { get; set; }
     }
 
+    public class TokenSalt
+    {
+        public string Value { get; set; }
+        public string Expiration { get; set; }
+    }
+
     public class UserRole : IUserResult
     {
         public string Email { get; set; }

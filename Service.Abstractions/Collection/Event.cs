@@ -12,7 +12,6 @@ namespace Cloud77.Abstractions.Collection
         string AppendEventLog(EventEntity entity);
         string CreateVerificationCode(string email);
         IEnumerable<TokenPayload> GetTokenPayloads(string email);
-        bool DeleteOne(string id);
         bool DeleteSome(string email);
     }
 }

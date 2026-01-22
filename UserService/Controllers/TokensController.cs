@@ -88,6 +88,15 @@ namespace UserService.Controllers
                 // validate refresh token
                 // get the timestamp, salt from refresh token
                 // check the token validity
+
+                if (string.IsNullOrEmpty(email))
+                {
+                    return BadRequest();
+                }
+
+                var d = generator.ValidateRefreshToken(email, refresh_token);
+                //d["timestamp"];
+                //d["expiration"];
             }
             else
             {

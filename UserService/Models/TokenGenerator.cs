@@ -55,23 +55,43 @@ namespace UserService.Models
             return token;
         }
 
+        // refresh token format: {email}_{salt value}_{timestamp}_{salt expiration}
+
         public string IssueRefreshToken(string email, string timestamp, string expiration, string salt)
         {
             var key = Encoding.ASCII.GetBytes(desKey);
             var iv = Encoding.ASCII.GetBytes(desIV);
 
-            var data = string.Format("{0}_{1}_{2}", email, timestamp, CodeGenerator.GenerateDigitalCode(6));
+            var data = string.Join("_", new string[] { email, salt, timestamp, expiration });
             string _key = CodeGenerator.Encrypt(key, iv, data);
             return _key;
         }
 
-        public bool ValidateRefreshToken(string email, string token)
+        public Dictionary<string, string> ValidateRefreshToken(string email, string token)
         {
             var key = Encoding.ASCII.GetBytes(desKey);
             var iv = Encoding.ASCII.GetBytes(desIV);
+            var result = new Dictionary<string, string>();
 
-            var data = CodeGenerator.Decrypt(key, iv, token);
-            return data.Split("_")[0] == email;
+            try
+            {
+                var data = CodeGenerator.Decrypt(key, iv, token);
+                var parts = data.Split("_");
+
+                if (parts.Length == 4 && parts[0] == email)
+                {
+                    result["email"] = parts[0];
+                    result["salt"] = parts[1];
+                    result["timestamp"] = parts[2];
+                    result["expiration"] = parts[3];
+                }
+
+                return result;
+            }
+            catch (Exception)
+            {
+                return result;
+            }
         }
     }
 }

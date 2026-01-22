@@ -26,6 +26,19 @@ namespace Cloud77.Abstractions.Service
         public string Expiration { get; set; }
     }
 
+    public enum LoginType
+    {
+        Email,
+        Username
+    }
+
+    public enum LoginMethod
+    {
+        Password,
+        OneTimeToken,
+        RefreshToken,
+    }
+
     public class UserRole : IUserResult
     {
         public string Email { get; set; }

@@ -5,6 +5,7 @@ using Cloud77.Abstractions.Utility;
 using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Text;
 
 namespace FunctionalTests
@@ -40,13 +41,15 @@ namespace FunctionalTests
 
             Console.WriteLine(string.Join("\n", ServiceDataModel.GetUpStreamPaths()));
 
-            var model = new UserDataModel();
+            var model = new UserDataModel("user1@example.com");
             var date = DateTime.UtcNow;
             var timestamp = date.ToString("yyyyMMddHHmmss");
             var expiration = date.AddDays(14).ToString("yyyyMMddHHmmss");
             var salt = new TokenSalt() { Value = CodeGenerator.GenerateCode(16), Expiration = expiration };
 
-            model.SaveSalt(timestamp, JsonConvert.SerializeObject(salt));
+            model.SaveTokenHistory(timestamp, LoginMethod.Password, salt);
+
+            var date2 = DateTime.ParseExact("", "yyyyMMddHHmmss", CultureInfo.InvariantCulture);
         }
 
         [TestMethod()]

@@ -279,11 +279,6 @@ namespace Cloud77.Abstractions
             {
                 Directory.CreateDirectory(Path.Combine(userDataRoot, "posts"));
             }
-
-            if (!Directory.Exists(Path.Combine(userDataRoot, "salts")))
-            {
-                Directory.CreateDirectory(Path.Combine(userDataRoot, "salts"));
-            }
         }
 
         public UserDataModel()
@@ -330,16 +325,33 @@ namespace Cloud77.Abstractions
             }
         }
     
-        public void SaveSalt(string timestamp, string value)
+        public void SaveTokenHistory(string timestamp, LoginMethod method, TokenSalt salt)
         {
-            var filePath = Path.Combine(userDataRoot, "salts", $"{timestamp}.json");
-            File.WriteAllText(filePath, value);
+            // {timestamp} {password or refresh_token} {salt value} {salt value expiration}
+            var loginMethod = method == LoginMethod.Password ? "password" : "refresh_token";
+            var filePath = Path.Combine(userDataRoot, "token_history.txt");
+            File.AppendAllLines(filePath, new string[] { $"{timestamp} {loginMethod} {salt.Value} {salt.Expiration}"});
         }
         
-        public string ReadSalt(string timestamp)
+        public string ReadTokenHistory(string timestamp)
         {
-            var filePath = Path.Combine(userDataRoot, "salts", $"{timestamp}.json");
-            return File.ReadAllText(filePath);
+            var filePath = Path.Combine(userDataRoot, "token_history.txt");
+            var lines = File.ReadAllLines(filePath);
+            return lines.FirstOrDefault(l => l.StartsWith(timestamp));
+        }
+
+        public TokenSalt GetSalt(string timestamp)
+        {
+            var record = ReadTokenHistory(timestamp);
+            if (!string.IsNullOrEmpty(record))
+            {
+                var parts = record.Split(' ');
+                if (parts.Length == 4)
+                {
+                    return new TokenSalt() { Value = parts[2], Expiration = parts[3] };
+                }
+            }
+            return null;
         }
 
         public void LockUser()

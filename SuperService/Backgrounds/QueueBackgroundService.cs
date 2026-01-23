@@ -10,16 +10,16 @@ using Cloud77.Abstractions;
 
 namespace SuperService.Backgrounds
 {
-    public class MessageQueueBackgroundService : IHostedService
+    public class QueueBackgroundService : IHostedService
     {
-        private readonly ILogger<MessageQueueBackgroundService> logger;
+        private readonly ILogger<QueueBackgroundService> logger;
 
         private readonly string defaultMessageQueue;
         private readonly string mailMessageQueue;
         private readonly string userLinkMessageQueue;
 
-        public MessageQueueBackgroundService(
-                ILogger<MessageQueueBackgroundService> logger,
+        public QueueBackgroundService(
+                ILogger<QueueBackgroundService> logger,
                 IConfiguration configuration)
         {
             this.logger = logger;

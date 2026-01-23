@@ -56,91 +56,103 @@ namespace UserService.Controllers
 
             Request.Headers.TryGetValue("x-refresh-token", out var refreshTokenHeader);
             string refresh_token = refreshTokenHeader.ToString();
-            if (!string.IsNullOrEmpty(refresh_token))
-            {
-                logger.LogDebug($"find refresh token in request for user {email}");
-                textLogging.PushLog($"find refresh token in request for user {email}");
-
-                return BadRequest(new NotImplementedException("refresh token flow is not implemented yet"));
-            }
 
             if (string.IsNullOrEmpty(email) && string.IsNullOrEmpty(username))
             {
+                textLogging.PushLog($"Tokens: no email or user name provided in request");
                 return BadRequest(new EmptyAccount());
             }
 
             if (string.IsNullOrEmpty(password) &&
                 string.IsNullOrEmpty(refresh_token))
             {
+                textLogging.PushLog($"Tokens: no password or refresh token provided in request");
                 return BadRequest(new EmptyPassword());
             }
 
-            UserEntity user = users.GetUser(email);
+            UserEntity user;
+            if (string.IsNullOrEmpty(email))
+            {
+                user = users.GetUserByName(username);
+                if (user != null)
+                {
+                    email = user.Email;
+                }
+            }
+            else
+            {
+                user = users.GetUser(email);
+            }
+
             if (user == null)
             {
-                logger.LogDebug($"cannot find user entity for user {email}");
-                textLogging.PushLog($"cannot find user entity for user {email}");
+                textLogging.PushLog($"Tokens: user entity not found for email '{email}' or name '{username}'", true);
                 return BadRequest(new UserNotExisting(body.Email));
             }
 
+            var method = "";
+            var userData = new UserDataModel(email);
+            TokenSalt? previousSalt = null;
             if (!string.IsNullOrEmpty(refresh_token))
             {
-                // validate refresh token
-                // get the timestamp, salt from refresh token
-                // check the token validity
-
-                if (string.IsNullOrEmpty(email))
+                var d = generator.ValidateRefreshToken(email, refresh_token);
+                previousSalt = userData.GetRefreshTokenSalt(d["timestamp"] ?? "");
+                if (previousSalt.Value != d["salt"])
                 {
-                    return BadRequest();
+                    return BadRequest(new RefreshTokenSaltMismatch());
+                }
+                if (email != d["email"])
+                {
+                    return BadRequest(new RefreshTokenEmailMismatch());
                 }
 
-                var d = generator.ValidateRefreshToken(email, refresh_token);
-                //d["timestamp"];
-                //d["expiration"];
+                if (userData.RefreshTokenSaltIsExpired(previousSalt))
+                {
+                    return BadRequest(new RefreshTokenExpired());
+                }
+
+                if (userData.RefreshTokenSaltIsUsed(previousSalt))
+                {
+                    return BadRequest(new RefreshTokenUsed());
+                }
+
+                method = "refresh token";
+                textLogging.PushLog($"Tokens: refresh token is valid for user {email}");
             }
             else
             {
                 if (CodeGenerator.HashString(password) != user.Password)
                 {
-                    logger.LogDebug($"password incorrect for user {email}");
-                    textLogging.PushLog($"password incorrect for user {email}");
+                    textLogging.PushLog($"Tokens: password is incorrect for user {email}");
                     return BadRequest(new InCorrectPassword(user.Email));
                 }
+
+                method = "password";
+                textLogging.PushLog($"Tokens: password is correct for user {email}");
             }
 
-            // password or refresh token is valid
+            textLogging.PushLog($"Tokens: user {email} logins successfully via {method}");
+
+            var saltLength = Convert.ToInt16(configuration["Token_salt_length"] ?? "8");
             var date = DateTime.UtcNow;
             var timestamp = date.ToString("yyyyMMddHHmmss");
-            var expiration = date.AddDays(14).ToString("yyyyMMddHHmmss");
 
-            // salt length is 16
+            var accessSaltExpiredDate = date.AddMinutes(Convert.ToInt16(configuration["Token_expiration_minute"] ?? "10"));
+            var accessSalt = new TokenSalt() { Value = CodeGenerator.GenerateCode(saltLength), Expiration = accessSaltExpiredDate.ToString("yyyyMMddHHmmss") };
 
-            // access token valid for several minutes
-            // user entity (email, role, name, confirmed), salt, timestamp, expiration (10 minutes)
+            var refreshSaltExpiredDate = date.AddMinutes(Convert.ToInt16(configuration["Token_expiration_day"] ?? "3"));
+            var refreshSalt = new TokenSalt() { Value = CodeGenerator.GenerateCode(saltLength), Expiration = refreshSaltExpiredDate.ToString("yyyyMMddHHmmss") };
 
-            // refresh token salt
-            // refresh token valid for several days
+            var token = generator.IssueToken(user, accessSalt.Value, date, accessSaltExpiredDate);
+            var refreshToken = generator.IssueRefreshToken(user.Email, refreshSalt.Value, date, refreshSaltExpiredDate);
 
-            // email, salt, timestamp, expiration (7 days)
+            textLogging.PushLog($"Tokens: issue access token and refresh token for user {email}");
 
-            // user folder
-            // lock.json (prevent user requests), who locked and when, reason, unlock code, expiration
-            // {"manager":"xxx@example.com","timestamp":"xxx","reason":"too many requests","expiration":""} empty means permantent lock
-            // input wrong password too many times
+            var loginMethod = string.IsNullOrEmpty(password) ? LoginMethod.RefreshToken : LoginMethod.Password;
+            userData.SaveAccessTokenHistory(timestamp, accessSalt);
+            userData.SaveRefreshTokenHistory(timestamp, loginMethod, refreshSalt, previousSalt);
 
-            // how to lock the user, disable user request via tokens?
-            // check token salts are enabled
-
-            var salt = new TokenSalt() { Value = CodeGenerator.GenerateCode(16), Expiration = expiration };
-            var token = generator.IssueToken(user);
-            var refreshToken = generator.IssueRefreshToken(user.Email, timestamp, expiration, salt.Value);
-
-            // save salt to user folder
-            // 20260101120030.json {timestamp}.json
-            // salt value=xxx expiration=xxx
-
-            logger.LogDebug($"issue token for user {email}");
-            textLogging.PushLog($"issue token for user {email}");
+            textLogging.PushLog($"Tokens: save access token salt and refresh token salt for user {email}");
 
             return Ok(new UserToken()
             {
@@ -148,7 +160,7 @@ namespace UserService.Controllers
                 Value = token,
                 RefreshToken = refreshToken,
                 IssueAt = timestamp,
-                ExpireInHours = generator.ExpirationInHour
+                ExpireInHours = 0
             });
         }
 
@@ -216,10 +228,17 @@ namespace UserService.Controllers
             var user = users.GetUser(email);
             if (user == null)
             {
-                logger.LogDebug($"cannot find user entity for user {email}");
-                textLogging.PushLog($"cannot find user entity for user {email}");
+                textLogging.PushLog($"Tokens: user entity not found for email '{email}'", true);
                 return BadRequest(new UserNotExisting(email));
             }
+
+            // get all events for email token and reset password
+            // get payloads
+            // check is payload is created in minutes
+
+            var logs = events.GetEventLogs(email);
+            logs = logs.Where(l => l.Name == "Issue-Email-Token");
+            logs = logs.Where(l => l.Payload.Contains("reset-password"));
 
             var usage = "reset-password";
             var date = DateTime.UtcNow;
@@ -240,13 +259,11 @@ namespace UserService.Controllers
                 Date = date,
             });
 
-            logger.LogDebug($"issue password reset token for user {email}");
-            textLogging.PushLog($"issue password reset token for user {email}");
+            var urlPath = $"reset-password?email={user.Email}&token={token}";
+            var link = $"{ssoURL}/{urlPath}";
 
-            // {sso_url}/reset-password?email=xxx&token=xxx
-            var link = $"{ssoURL}/reset-password?email={user.Email}&token={token}";
-            logger.LogDebug($"the password reset link is {link}");
-            textLogging.PushLog($"the password reset link is {link}");
+            logger.LogDebug($"the path to reset password is ‘{urlPath}‘");
+            textLogging.PushLog($"Tokens: password reset link for user {email} is {link}");
 
             SendUserLink(userLinkQueue, new UserLink() { Email = email, Link = link, Name = "", Usage = "password" });
             return Ok(new OneTimeTokenCreated(email, "Password Reset"));

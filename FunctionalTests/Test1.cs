@@ -1,11 +1,6 @@
-﻿using Cloud77.Abstractions;
-using Cloud77.Abstractions.Entity;
-using Cloud77.Abstractions.Service;
-using Cloud77.Abstractions.Utility;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
-using System.Globalization;
 using System.Text;
 
 namespace FunctionalTests
@@ -13,45 +8,6 @@ namespace FunctionalTests
     [TestClass]
     public sealed class Test1
     {
-        [TestCategory("windows")]
-        [TestMethod()]
-        public void LocalDataModelTests()
-        {
-            Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-            string programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-            var root = Path.Combine(programDataPath, "MyServices");
-            
-            var data = new ServiceDataModel();
-            ServiceDataModel.ServiceName = "User";
-            ServiceDataModel.Platform = "Windows";
-            ServiceDataModel.Root = root;
-            ServiceDataModel.LogFileExtension = "txt";
-            ServiceDataModel.Initialize();
-
-            var content = ServiceDataModel.GetContent("settings.json");
-            if (!string.IsNullOrEmpty(content))
-            {
-                ServiceDataModel.Settings = JsonConvert.DeserializeObject<List<SettingEntity>>(content);
-            }
-
-            Assert.IsTrue(Directory.Exists(ServiceDataModel.Root));
-            Assert.IsNotNull(ServiceDataModel.Settings);
-            Assert.IsNotEmpty(ServiceDataModel.Settings);
-            Console.WriteLine(ServiceDataModel.Settings.First().Key);
-
-            Console.WriteLine(string.Join("\n", ServiceDataModel.GetUpStreamPaths()));
-
-            var model = new UserDataModel("user1@example.com");
-            var date = DateTime.UtcNow;
-            var timestamp = date.ToString("yyyyMMddHHmmss");
-            var expiration = date.AddDays(14).ToString("yyyyMMddHHmmss");
-            var salt = new TokenSalt() { Value = CodeGenerator.GenerateCode(16), Expiration = expiration };
-
-            model.SaveTokenHistory(timestamp, LoginMethod.Password, salt);
-
-            var date2 = DateTime.ParseExact("", "yyyyMMddHHmmss", CultureInfo.InvariantCulture);
-        }
-
         [TestMethod()]
         public void FindUsers()
         {
@@ -89,7 +45,8 @@ namespace FunctionalTests
 
             task.Start();
 
-            Thread thread = new Thread(() => {
+            Thread thread = new Thread(() =>
+            {
                 Debug.WriteLine("test from another thread // " + Thread.CurrentThread.Name + " // " + Thread.CurrentThread.CurrentUICulture.Name);
             });
             thread.Name = "customThread";
@@ -101,7 +58,7 @@ namespace FunctionalTests
             task.Wait();
             Debug.WriteLine(task.Id);
         }
-    
+
         private void EmailContent()
         {
             string mailSubject = "Email confirmation - Company Name";
@@ -132,22 +89,6 @@ namespace FunctionalTests
             _message = "The token has been expired. Please resend a password reset email in software.";
             _message = "The password has been successfully reset.";
         }
-    }
 
-    [TestClass]
-    public sealed class TesterTest
-    {
-        [TestMethod]
-        public void Test()
-        {
-            string root = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                "MyServer", "users");
-
-            if (!Directory.Exists(root))
-            {
-                Directory.CreateDirectory(root);
-            }
-        }
     }
 }

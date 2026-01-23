@@ -292,6 +292,8 @@ namespace Cloud77.Abstractions
         private readonly string email;
         private readonly string userDataRoot;
 
+        public string Folder => userDataRoot;
+
         public bool HasUsers
         {
             get { return File.Exists(Path.Combine(ServiceDataModel.Root, "users", "index", "users.json")); }
@@ -324,25 +326,68 @@ namespace Cloud77.Abstractions
                 File.Delete(filePath);
             }
         }
-    
-        public void SaveTokenHistory(string timestamp, LoginMethod method, TokenSalt salt)
+
+        public void DeletePosts()
         {
-            // {timestamp} {password or refresh_token} {salt value} {salt value expiration}
+            if (Directory.Exists(Path.Combine(userDataRoot, "posts")))
+            {
+                foreach (var item in Directory.GetFiles(Path.Combine(userDataRoot, "posts")))
+                {
+                    File.Delete(item);
+                }
+            }
+        }
+
+        public void SaveAccessTokenHistory(string timestamp, TokenSalt salt)
+        {
+            var filePath = Path.Combine(userDataRoot, "access_token_history.txt");
+            File.AppendAllLines(filePath, new string[] { $"{timestamp} {salt.Value} {salt.Expiration}" });
+        }
+
+        public void SaveRefreshTokenHistory(string timestamp, LoginMethod method, TokenSalt salt, TokenSalt previousSalt = null)
+        {
             var loginMethod = method == LoginMethod.Password ? "password" : "refresh_token";
-            var filePath = Path.Combine(userDataRoot, "token_history.txt");
+            if (method == LoginMethod.RefreshToken)
+            {
+                loginMethod = loginMethod + ":" + previousSalt?.Value;
+            }
+            var filePath = Path.Combine(userDataRoot, "refresh_token_history.txt");
             File.AppendAllLines(filePath, new string[] { $"{timestamp} {loginMethod} {salt.Value} {salt.Expiration}"});
         }
-        
-        public string ReadTokenHistory(string timestamp)
+
+        public void SaveLogoutHistory(string timestamp, TokenSalt accessSalt, TokenSalt refreshSalt)
         {
-            var filePath = Path.Combine(userDataRoot, "token_history.txt");
+            var filePath = Path.Combine(userDataRoot, "logout_history.txt");
+            File.AppendAllLines(filePath, new string[] { $"{timestamp} {accessSalt.Value} {refreshSalt.Value}" });
+        }
+
+        public bool RefreshTokenSaltIsUsed(TokenSalt salt)
+        {
+            var filePath = Path.Combine(userDataRoot, "refresh_token_history.txt");
+            var lines = File.ReadAllLines(filePath);
+            return lines.Any(l => l.Contains($"refresh_token:{salt.Value}"));
+        }
+
+        public bool RefreshTokenSaltIsExpired(TokenSalt salt)
+        {
+            var expiration = salt.Expiration;
+            if (DateTime.TryParseExact(expiration, "yyyyMMddHHmmss", null, System.Globalization.DateTimeStyles.None, out DateTime expDate))
+            {
+                return expDate < DateTime.UtcNow;
+            }
+            return true;
+        }
+
+        public string ReadRefreshTokenHistory(string timestamp)
+        {
+            var filePath = Path.Combine(userDataRoot, "refresh_token_history.txt");
             var lines = File.ReadAllLines(filePath);
             return lines.FirstOrDefault(l => l.StartsWith(timestamp));
         }
 
-        public TokenSalt GetSalt(string timestamp)
+        public TokenSalt GetRefreshTokenSalt(string timestamp)
         {
-            var record = ReadTokenHistory(timestamp);
+            var record = ReadRefreshTokenHistory(timestamp);
             if (!string.IsNullOrEmpty(record))
             {
                 var parts = record.Split(' ');
@@ -354,14 +399,37 @@ namespace Cloud77.Abstractions
             return null;
         }
 
-        public void LockUser()
+        public void LockUser(string lockEvent)
         {
             // write lock.json
+            File.WriteAllText(Path.Combine(userDataRoot, "lock.json"), lockEvent);
         }
 
         public void UnlockUser()
         {
             // delete lock.json
+            File.Delete(Path.Combine(userDataRoot, "lock.json"));
+        }
+
+        public bool UserIsLocked()
+        {
+            return File.Exists(Path.Combine(userDataRoot, "lock.json"));
+        }
+
+        public bool Remove()
+        {
+            DeletePosts();
+            Directory.Delete(Path.Combine(userDataRoot, "posts"));
+
+            File.Delete(Path.Combine(userDataRoot, "lock.json"));
+
+            File.Delete(Path.Combine(userDataRoot, "logout_history.txt"));
+            File.Delete(Path.Combine(userDataRoot, "access_token_history.txt"));
+            File.Delete(Path.Combine(userDataRoot, "refresh_token_history.txt"));
+
+            Directory.Delete(userDataRoot);
+
+            return true;
         }
     }
 

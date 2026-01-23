@@ -48,4 +48,40 @@ namespace Cloud77.Abstractions.Service
             Message = $"The token is valid until {validTo.ToString("yyyy-MM-dd HH:mm:ss zzz")}";
         }
     }
+
+    public class RefreshTokenUsed : ServiceResponse
+    {
+        public RefreshTokenUsed()
+        {
+            Code = "refresh_token_used";
+            Message = "The refresh token has been used.";
+        }
+    }
+
+    public class RefreshTokenExpired : ServiceResponse
+    {
+        public RefreshTokenExpired()
+        {
+            Code = "refresh_token_expired";
+            Message = "The refresh token has expired.";
+        }
+    }
+
+    public class RefreshTokenSaltMismatch : ServiceResponse
+    {
+        public RefreshTokenSaltMismatch()
+        {
+            Code = "refresh_token_salt_mismatch";
+            Message = "The refresh token salt does not match.";
+        }
+    }
+
+    public class RefreshTokenEmailMismatch : ServiceResponse
+    {
+        public RefreshTokenEmailMismatch()
+        {
+            Code = "refresh_token_email_mismatch";
+            Message = "The refresh token email does not match.";
+        }
+    }
 }

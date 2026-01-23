@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using UserService.Collections;
 using UserService.Models;
 using Cloud77.Abstractions;
+using ServiceStack.Script;
 
 namespace UserService.Controllers
 {
@@ -22,7 +23,7 @@ namespace UserService.Controllers
     {
         private readonly ILogger<UsersController> logger;
         private readonly ConnectionFactory factory;
-        private readonly TextLoggingModel model;
+        private readonly TextLoggingModel textLogging;
         private readonly string defaultRole;
         private readonly UserCollection users;
         private readonly EventCollection events;
@@ -33,14 +34,13 @@ namespace UserService.Controllers
             ILogger<UsersController> logger,
             IConfiguration configuration,
             MongoClient client,
-            ConnectionFactory factory,
-            TextLoggingModel model
+            ConnectionFactory factory
             )
         {
             defaultRole = configuration["Default_role"] ?? "";
             this.logger = logger;
             this.factory = factory;
-            this.model = model;
+            textLogging = new TextLoggingModel();
             users = new UserCollection(client, configuration);
             events = new EventCollection(client, configuration);
             ssoURL = configuration["SSO_url"] ?? "";
@@ -72,8 +72,7 @@ namespace UserService.Controllers
 
             if (user == null)
             {
-                logger.LogDebug($"cannot find user entity for user {email}");
-                model.AppendLog($"cannot find user entity for user {email}");
+                textLogging.PushLog($"Users: user entity not found for email '{email}' or name '{username}'", true);
                 return Ok(new UserEmail()
                 {
                     Email = "",
@@ -100,48 +99,52 @@ namespace UserService.Controllers
             user.Email = user.Email.ToLower().Trim();
             user.Name = user.Name.ToLower().Trim();
 
-            logger.LogDebug($"{user.Email} is in correct email format: {ValidateEmail(user.Email).ToString()}");
-            model.AppendLog($"{user.Email} is in correct email format: {ValidateEmail(user.Email).ToString()}");
-
-            var role = defaultRole;
-            if (user.Name == "admin")
-            {
-                role = "Administrator";
-            }
-
             if (string.IsNullOrEmpty(user.Email) || string.IsNullOrEmpty(user.Name))
             {
+                textLogging.PushLog("Users: empty email or username in create user request");
                 return BadRequest(new EmptyAccount());
             }
 
             if (string.IsNullOrEmpty(user.Password))
             {
+                textLogging.PushLog("Users: empty password in create user request");
                 return BadRequest(new EmptyPassword());
+            }
+
+            if (!UserUtility.IsEmailFormat(user.Email))
+            {
+                textLogging.PushLog($"Users: {user.Email} is not in correct email format");
+                return BadRequest(new BadEmailFormat(user.Email));
+            }
+
+            var minLength = 10;
+            if (!UserUtility.PasswordIsComplex(user.Password, minLength))
+            {
+                logger.LogWarning("password is a bit short");
+                logger.LogDebug("check password complexity");
+                textLogging.PushLog($"Users: password is not complex enough");
+                return BadRequest(new WeakPassword($"it should be longer than {minLength} characters and contain upper case, lower case, digit and special character"));
+            }
+
+            var role = defaultRole;
+            if (user.Name == "admin")
+            {
+                role = "Administrator";
+                textLogging.PushLog($"Users: grant the administrator role to the user {user.Name}", true);
             }
 
             var entity = users.GetUser(user.Email);
             if (entity != null)
             {
-                logger.LogWarning($"user {user.Email} already exists");
-                model.AppendLog($"user {user.Email} already exists");
+                textLogging.PushLog($"Users: user entity not found for email '{user.Email}'", true);
                 return BadRequest(new UserExisting(user.Email, ""));
             }
             entity = users.GetUserByName(user.Name);
             if (entity != null)
             {
-                logger.LogWarning($"user {user.Email} already exists");
-                model.AppendLog($"user {user.Email} already exists");
+                textLogging.PushLog($"Users: user entity not found for name '{user.Name}'", true);
                 return BadRequest(new UserExisting("", user.Name));
             }
-
-            if (user.Password.Length < 6)
-            {
-                logger.LogWarning("password is a bit short");
-                model.AppendLog("password is a bit short");
-            }
-
-            logger.LogDebug("check password complexity");
-            model.AppendLog("check password complexity");
 
             var id = users.CreateUser(new UserEntity()
             {
@@ -151,9 +154,8 @@ namespace UserService.Controllers
                 Role = role,
             });
 
-            logger.LogDebug($"user entity {user.Email} is created with id {id}");
-            model.AppendLog($"user entity {user.Email} is created with id {id}");
-
+            textLogging.PushLog($"Users: user entity {user.Email} is created with id {id}");
+ 
             if (string.IsNullOrEmpty(id))
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new DatabaseError($"fail to create user for email {user.Email.ToLower()}"));
@@ -170,11 +172,12 @@ namespace UserService.Controllers
             events.AppendEventLog(log);
 
             var token = events.CreateVerificationCode(user.Email);
-            // {sso_url}/confirm-email?email=xxx&token=xxx
-            var link = $"{ssoURL}/confirm-email?email={user.Email}&token={token}";  
 
-            logger.LogDebug($"the email confirm link is {link}");
-            model.AppendLog($"the email confirm link is {link}");
+            var urlPath = $"confirm-email?email={user.Email}&token={token}";
+            var link = $"{ssoURL}/{urlPath}";  
+
+            logger.LogDebug($"the path to confirm email is '{urlPath}'");
+            textLogging.PushLog($"Users: email verification link for user {user.Email} is {link}");
 
             SendUserLink(userLinkQueue, new UserLink() { Email = user.Email, Link = link, Name = user.Name, Usage = "email" });
 
@@ -190,67 +193,68 @@ namespace UserService.Controllers
         public IActionResult UpdatePassword([FromBody] UserPassword body)
         {
             Request.Headers.TryGetValue("x-onetime-token", out var token);
-            logger.LogDebug($"one time token in request is {token}");
-            model.AppendLog($"one time token in request is {token}");
 
             if (string.IsNullOrEmpty(token))
             {
+                textLogging.PushLog("Users: empty one time token in reset password request");
                 return BadRequest(new EmptyOneTimeToken());
             }
             if (string.IsNullOrEmpty(body.Password))
             {
+                textLogging.PushLog("Users: empty password in reset password request");
                 return BadRequest(new EmptyPassword());
             }
             if (string.IsNullOrEmpty(body.Email))
             {
+                textLogging.PushLog("Users: empty email in reset password request");
                 return BadRequest(new EmptyEmail());
             }
 
             var user = users.GetUser(body.Email);
             if (user == null)
             {
-                logger.LogDebug($"cannot find user entity for user {body.Email}");
-                model.AppendLog($"cannot find user entity for user {body.Email}");
+                textLogging.PushLog("Users: user entity not found for email '" + body.Email + "'", true);
                 return BadRequest(new UserNotExisting(body.Email));
+            }
+
+            if (!UserUtility.PasswordIsComplex(body.Password, minLength: 10))
+            {
+                textLogging.PushLog("Users: password is not complex enough in reset password request");
+                return BadRequest(new WeakPassword("it should be longer than 10 characters and contain upper case, lower case, digit and special character"));
             }
 
             var payloads = events.GetTokenPayloads(body.Email.Trim().ToLower());
             if (payloads == null || !payloads.Any())
             {
-                logger.LogDebug("no one time token found for user " + body.Email);
-                model.AppendLog("no one time token found for user " + body.Email);
+                textLogging.PushLog("Users: no one time token found for user '" + body.Email + "'", true);
                 return BadRequest(new OneTimeTokenNotFound("Password Reset"));
             }
 
             payloads = payloads.Where(p => p.Token == token && p.Usage == "reset-password");
             if (payloads == null || !payloads.Any())
             {
-                logger.LogDebug("no one time token found for user " + body.Email + " with token " + token);
-                model.AppendLog("no one time token found for user " + body.Email + " with token " + token);
+                textLogging.PushLog("Users: no one time token found for user '" + body.Email + "' with token '" + token + "'", true);
                 return BadRequest(new OneTimeTokenNotFound("Password Reset"));
             }
 
             var payload = payloads.FirstOrDefault(x => x.Token == token && x.Exp.Year > 1);
-            if (DateTime.Compare((DateTime)payload.Exp, DateTime.UtcNow) < 0)
+            if (payload != null && DateTime.Compare((DateTime)payload.Exp, DateTime.UtcNow) < 0)
             {
-                // expired
-                logger.LogDebug("one time token expired for user " + body.Email + " with token " + token);
-                model.AppendLog("one time token expired for user " + body.Email + " with token " + token);
+                textLogging.PushLog("Users: one time token expired for user '" + body.Email + "' with token '" + token + "'", true);
                 return BadRequest(new OneTimeTokenExpired("Password Reset"));
             }
 
             payload = payloads.FirstOrDefault(x => x.Token == token && x.Exp.Year == 1);
             if (payload != null)
             {
-                logger.LogDebug("one time token used for user " + body.Email + " with token " + token);
-                model.AppendLog("one time token used for user " + body.Email + " with token " + token);
+                textLogging.PushLog("Users: one time token used for user '" + body.Email + "' with token '" + token + "'", true);
                 return BadRequest(new OneTimeTokenUsed("Password Reset"));
             }
+
             var state = users.UpdatePassword(body.Email, CodeGenerator.HashString(body.Password));
             if (state)
             {
-                logger.LogDebug("password reset for user " + body.Email);
-                model.AppendLog("password reset for user " + body.Email);
+                textLogging.PushLog("Users: successfully reset password for user '" + body.Email + "'");
                 events.AppendEventLog(new EventEntity()
                 {
                     Name = "Reset-Password",
@@ -278,50 +282,54 @@ namespace UserService.Controllers
         public IActionResult VerifyEmail([FromQuery] string email)
         {
             Request.Headers.TryGetValue("x-onetime-token", out var token);
-            logger.LogDebug($"one time token in request is {token}");
-            model.AppendLog($"one time token in request is {token}");
+
+            var user = users.GetUser(email);
+            if (user == null)
+            {
+                textLogging.PushLog("Users: user entity not found for email " + email, true);
+                return BadRequest(new UserNotExisting(email));
+            }
+
+            if (user.Confirmed != null && (bool)user.Confirmed)
+            {
+                textLogging.PushLog("Users: user email " + email + " is already verified", true);
+                return BadRequest(new UserHasConfirmed(email));
+            }
 
             var payloads = events.GetTokenPayloads(email);
             if (payloads == null || !payloads.Any())
             {
-                logger.LogDebug($"cannot find user entity for user {email}");
-                model.AppendLog($"cannot find user entity for user {email}");
+                textLogging.PushLog($"Users: no one time token found for user {email}", true);
                 return BadRequest(new OneTimeTokenNotFound("Email Verification"));
             }
 
             payloads = payloads.Where(p => p.Token == token && p.Usage == "verify-email");
             if (payloads == null || !payloads.Any())
             {
-                logger.LogDebug("no one time token found for user " + email + " with token " + token);
-                model.AppendLog("no one time token found for user " + email + " with token " + token);
+                textLogging.PushLog("Users: no one time token found for user " + email + " with token " + token, true);
                 return BadRequest(new OneTimeTokenNotFound("Email Verification"));
             }
 
             var payload = payloads.FirstOrDefault(x => x.Token == token && x.Exp.Year > 1);
 
-            if (DateTime.Compare((DateTime)payload.Exp, DateTime.UtcNow) < 0)
+            if (payload != null && DateTime.Compare((DateTime)payload.Exp, DateTime.UtcNow) < 0)
             {
-                // expired
-                logger.LogDebug("one time token expired for user " + email + " with token " + token);
-                model.AppendLog("one time token expired for user " + email + " with token " + token);
+                textLogging.PushLog("Users: one time token expired for user " + email + " with token " + token, true);
                 return BadRequest(new OneTimeTokenExpired("Email Verification"));
             }
 
             payload = payloads.FirstOrDefault(x => x.Token == token && x.Exp.Year == 1);
             if (payload != null)
             {
-                logger.LogDebug("one time token used for user " + email + " with token " + token);
-                model.AppendLog("one time token used for user " + email + " with token " + token);
+                textLogging.PushLog("Users: one time token used for user " + email + " with token " + token, true);
                 return BadRequest(new OneTimeTokenUsed("Email Verification"));
             }
 
-            // update user confirmed
             var ack = users.ConfirmUser(email, true);
 
             if (ack)
             {
-                logger.LogDebug("email verified for user " + email);
-                model.AppendLog("email verified for user " + email);
+                textLogging.PushLog("Users: successfully verify email for user " + email);
                 events.AppendEventLog(new EventEntity()
                 {
                     Name = "Verify-Email",
@@ -337,12 +345,6 @@ namespace UserService.Controllers
             }
 
             return Ok(new UserConfirmed(email));
-        }
-
-        private bool ValidateEmail(string email)
-        {
-            string pattern = @"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$";
-            return Regex.IsMatch(email, pattern);
         }
 
         private void SendUserLink(string queue, UserLink link)
@@ -361,7 +363,7 @@ namespace UserService.Controllers
 
         public void Dispose()
         {
-            model.Commit();
+            textLogging.Commit();
         }
     }
 }

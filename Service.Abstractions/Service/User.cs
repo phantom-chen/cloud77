@@ -26,6 +26,23 @@ namespace Cloud77.Abstractions.Service
         public string Expiration { get; set; }
     }
 
+    public class LockedAccount : ServiceResponse
+    {
+        public LockedAccount(string email)
+        {
+            Code = "locked-account";
+            Message = $"your account {email} is locked due to multiple incorrect login attempts, please try again later or contact support";
+        }
+    }
+
+    public class LockUserEvent
+    {
+        public string Manager { get; set; }
+        public string Timestamp { get; set; }
+        public string Reason { get; set; }
+        public string Expiration { get; set; }  // empty means permantent lock
+    }
+
     public enum LoginType
     {
         Email,
@@ -51,6 +68,15 @@ namespace Cloud77.Abstractions.Service
         public string Email { get; set; }
         public string Name { get; set; }
         public string Password { get; set; }
+    }
+
+    public class BadEmailFormat : ServiceResponse
+    {
+        public BadEmailFormat(string email)
+        {
+            Code = "bad-email-format";
+            Message = $"your email {email} is not in a valid format, please correct it";
+        }
     }
 
     public class EmptyEmail : ServiceResponse
@@ -87,10 +113,11 @@ namespace Cloud77.Abstractions.Service
 
     public class WeakPassword : ServiceResponse
     {
-        public WeakPassword()
+        public WeakPassword(string message)
         {
             Code = "weak-password";
             Message = "your password is too weak, please use a stronger password";
+            Message = message;
         }
     }
 
@@ -198,6 +225,15 @@ namespace Cloud77.Abstractions.Service
         {
             Code = "user-confirmed";
             Message = $"Your account is confirmed successfully for {email}";
+        }
+    }
+
+    public class UserHasConfirmed : ServiceResponse
+    {
+        public UserHasConfirmed(string email)
+        {
+            Code = "user-has-confirmed";
+            Message = $"Your account has already been confirmed for {email}";
         }
     }
 

@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Claims;
 using System.Text;
+using UserService.Backgrounds;
 using UserService.Hubs;
 using UserService.Middleware;
 using UserService.Models;
@@ -125,6 +126,8 @@ namespace UserService
             builder.Services.AddAuthorization();
             builder.Services.AddSignalR();
             builder.Services.AddHealthChecks();
+            builder.Services.AddHostedService<QueueBackgroundService>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

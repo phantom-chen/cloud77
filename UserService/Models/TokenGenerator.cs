@@ -26,13 +26,11 @@ namespace UserService.Models
             desIV = configuration["DES_IV"] ?? "";
         }
 
-        public string IssueToken(UserEntity user)
+        public string IssueToken(UserEntity user, string salt, DateTime date, DateTime expiredDate)
         {
             var handler = new JwtSecurityTokenHandler();
             var k = new SymmetricSecurityKey(key);
             var c = new SigningCredentials(k, SecurityAlgorithms.HmacSha256);
-
-            // add salt, timestamp, expiration
 
             var description = new SecurityTokenDescriptor()
             {
@@ -41,13 +39,15 @@ namespace UserService.Models
                     new Claim(ClaimTypes.Email, user.Email),
                     new Claim(ClaimTypes.Role, user.Role),
                     new Claim(ClaimTypes.Name, user.Name ?? ""),
-                    new Claim(ClaimTypes.Expiration, DateTime.UtcNow.AddHours(ExpirationInHour).ToString("yyyyMMddHHmmss")),
-                    new Claim("confirmed", (user.Confirmed ?? false).ToString())
+                    new Claim(ClaimTypes.Expiration, expiredDate.ToString("yyyyMMddHHmmss")),
+                    new Claim("confirmed", (user.Confirmed ?? false).ToString()),
+                    new Claim("salt", salt),
+                    new Claim("timestamp", date.ToString("yyyyMMddHHmmss"))
                 }),
                 Issuer = issuer,
                 Audience = audience,
-                IssuedAt = DateTime.UtcNow,
-                Expires = DateTime.UtcNow.AddHours(ExpirationInHour),
+                IssuedAt = date,
+                Expires = expiredDate,
                 SigningCredentials = c
             };
             var token = handler.WriteToken(handler.CreateToken(description));
@@ -55,14 +55,12 @@ namespace UserService.Models
             return token;
         }
 
-        // refresh token format: {email}_{salt value}_{timestamp}_{salt expiration}
-
-        public string IssueRefreshToken(string email, string timestamp, string expiration, string salt)
+        public string IssueRefreshToken(string email, string salt, DateTime date, DateTime expiredDate)
         {
             var key = Encoding.ASCII.GetBytes(desKey);
             var iv = Encoding.ASCII.GetBytes(desIV);
 
-            var data = string.Join("_", new string[] { email, salt, timestamp, expiration });
+            var data = string.Join("_", new string[] { email, salt, date.ToString("yyyyMMddHHmmss"), expiredDate.ToString("yyyyMMddHHmmss") });
             string _key = CodeGenerator.Encrypt(key, iv, data);
             return _key;
         }

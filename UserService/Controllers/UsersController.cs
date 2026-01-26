@@ -193,6 +193,7 @@ namespace UserService.Controllers
         public IActionResult UpdatePassword([FromBody] UserPassword body)
         {
             Request.Headers.TryGetValue("x-onetime-token", out var token);
+            Request.Headers.TryGetValue("x-onetime-token-id", out var tokenId);
 
             if (string.IsNullOrEmpty(token))
             {
@@ -230,21 +231,21 @@ namespace UserService.Controllers
                 return BadRequest(new OneTimeTokenNotFound("Password Reset"));
             }
 
-            payloads = payloads.Where(p => p.Token == token && p.Usage == "reset-password");
+            payloads = payloads.Where(p => p.Token == token);
             if (payloads == null || !payloads.Any())
             {
                 textLogging.PushLog("Users: no one time token found for user '" + body.Email + "' with token '" + token + "'", true);
                 return BadRequest(new OneTimeTokenNotFound("Password Reset"));
             }
 
-            var payload = payloads.FirstOrDefault(x => x.Token == token && x.Exp.Year > 1);
-            if (payload != null && DateTime.Compare((DateTime)payload.Exp, DateTime.UtcNow) < 0)
+            var payload = payloads.FirstOrDefault(x => x.Token == token && x.Expiration.Year > 1);
+            if (payload != null && DateTime.Compare((DateTime)payload.Expiration, DateTime.UtcNow) < 0)
             {
                 textLogging.PushLog("Users: one time token expired for user '" + body.Email + "' with token '" + token + "'", true);
                 return BadRequest(new OneTimeTokenExpired("Password Reset"));
             }
 
-            payload = payloads.FirstOrDefault(x => x.Token == token && x.Exp.Year == 1);
+            payload = payloads.FirstOrDefault(x => x.Token == token && x.Expiration.Year == 1);
             if (payload != null)
             {
                 textLogging.PushLog("Users: one time token used for user '" + body.Email + "' with token '" + token + "'", true);
@@ -260,11 +261,7 @@ namespace UserService.Controllers
                     Name = "Reset-Password",
                     UserEmail = body.Email,
                     Email = body.Email,
-                    Payload = JsonConvert.SerializeObject(new TokenPayload()
-                    {
-                        Token = token,
-                        Usage = "reset-password",
-                    }),
+                    Payload = token,
                     Date = DateTime.UtcNow
                 });
                 return Ok(new UserPasswordReset(body.Email));
@@ -282,6 +279,7 @@ namespace UserService.Controllers
         public IActionResult VerifyEmail([FromQuery] string email)
         {
             Request.Headers.TryGetValue("x-onetime-token", out var token);
+            Request.Headers.TryGetValue("x-onetime-token-id", out var tokenId);
 
             var user = users.GetUser(email);
             if (user == null)
@@ -303,22 +301,22 @@ namespace UserService.Controllers
                 return BadRequest(new OneTimeTokenNotFound("Email Verification"));
             }
 
-            payloads = payloads.Where(p => p.Token == token && p.Usage == "verify-email");
+            payloads = payloads.Where(p => p.Token == token);
             if (payloads == null || !payloads.Any())
             {
                 textLogging.PushLog("Users: no one time token found for user " + email + " with token " + token, true);
                 return BadRequest(new OneTimeTokenNotFound("Email Verification"));
             }
 
-            var payload = payloads.FirstOrDefault(x => x.Token == token && x.Exp.Year > 1);
+            var payload = payloads.FirstOrDefault(x => x.Token == token && x.Expiration.Year > 1);
 
-            if (payload != null && DateTime.Compare((DateTime)payload.Exp, DateTime.UtcNow) < 0)
+            if (payload != null && DateTime.Compare((DateTime)payload.Expiration, DateTime.UtcNow) < 0)
             {
                 textLogging.PushLog("Users: one time token expired for user " + email + " with token " + token, true);
                 return BadRequest(new OneTimeTokenExpired("Email Verification"));
             }
 
-            payload = payloads.FirstOrDefault(x => x.Token == token && x.Exp.Year == 1);
+            payload = payloads.FirstOrDefault(x => x.Token == token && x.Expiration.Year == 1);
             if (payload != null)
             {
                 textLogging.PushLog("Users: one time token used for user " + email + " with token " + token, true);
@@ -335,11 +333,7 @@ namespace UserService.Controllers
                     Name = "Verify-Email",
                     UserEmail = email,
                     Email = email,
-                    Payload = JsonConvert.SerializeObject(new TokenPayload()
-                    {
-                        Token = token,
-                        Usage = "verify-email",
-                    }),
+                    Payload = token,
                     Date = DateTime.UtcNow
                 });
             }

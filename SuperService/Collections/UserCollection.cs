@@ -62,16 +62,14 @@ namespace SuperService.Collections
         {
             var date = DateTime.UtcNow;
             string token = CodeGenerator.HashString(email.ToLower() + date.Millisecond.ToString()); // TODO add salt or secret
-            var usage = "verify-email";
             var payload = new TokenPayload()
             {
-                Usage = usage,
                 Token = token,
-                Exp = date.AddHours(1)
+                Expiration = date.AddHours(1)
             };
             events.AppendEventLog(new EventEntity()
             {
-                Name = "Issue-Email-Token",
+                Name = "Email-Token",
                 UserEmail = email,
                 Email = email,
                 Payload = JsonConvert.SerializeObject(payload),
@@ -94,11 +92,7 @@ namespace SuperService.Collections
                     Name = "Verify-Email",
                     UserEmail = email,
                     Email = email,
-                    Payload = JsonConvert.SerializeObject(new TokenPayload()
-                    {
-                        Token = token,
-                        Usage = "verify-email",
-                    }),
+                    Payload = token,
                     Date = DateTime.UtcNow
                 });
             }

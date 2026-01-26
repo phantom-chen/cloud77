@@ -237,29 +237,26 @@ namespace UserService.Controllers
             // check is payload is created in minutes
 
             var logs = events.GetEventLogs(email);
-            logs = logs.Where(l => l.Name == "Issue-Email-Token");
-            logs = logs.Where(l => l.Payload.Contains("reset-password"));
+            logs = logs.Where(l => l.Name == "Password-Token");
 
-            var usage = "reset-password";
             var date = DateTime.UtcNow;
             string token = CodeGenerator.HashString(email.ToLower() + date.Millisecond.ToString() + CodeGenerator.GenerateDigitalCode(6));
             var payload = new TokenPayload()
             {
-                Usage = usage,
                 Token = token,
-                Exp = date.AddHours(1)
+                Expiration = date.AddHours(1)
             };
 
-            events.AppendEventLog(new EventEntity()
+            var token_id = events.AppendEventLog(new EventEntity()
             {
-                Name = "Issue-Email-Token",
+                Name = "Password-Token",
                 UserEmail = email,
                 Email = email,
                 Payload = JsonConvert.SerializeObject(payload),
                 Date = date,
             });
 
-            var urlPath = $"reset-password?email={user.Email}&token={token}";
+            var urlPath = $"reset-password?email={user.Email}&token={token}&id={token_id}";
             var link = $"{ssoURL}/{urlPath}";
 
             logger.LogDebug($"the path to reset password is ‘{urlPath}‘");

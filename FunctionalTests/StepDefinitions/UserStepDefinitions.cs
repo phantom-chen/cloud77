@@ -112,7 +112,7 @@ namespace FunctionalTests.StepDefinitions
             Console.WriteLine(result);
         }
 
-        private async Task<Cloud77.Abstractions.Entity.TokenPayload> GetEmailTokenAsync(string usage)
+        private async Task<Cloud77.Abstractions.Entity.TokenPayload> GetEmailTokenAsync(string name)
         {
             // token used for verifying email or resetting password
             var uri = $"/api/events/{client.Tester.User.Email.ToLower()}";
@@ -123,33 +123,33 @@ namespace FunctionalTests.StepDefinitions
             var result = await response.Content.ReadAsStringAsync();
 
             var events = JsonConvert.DeserializeObject<Cloud77.Abstractions.Service.EventsQueryResult>(result).Data.ToList();
-            events = events.Where(e => e.Name == "Issue-Email-Token").ToList();
+            events = events.Where(e => e.Name == name).ToList();
             var payloads = events.Select(e => JsonConvert.DeserializeObject<Cloud77.Abstractions.Entity.TokenPayload>(e.Payload)).ToList();
-            var payload = payloads.FirstOrDefault(p => p.Usage == usage); // first is the latest
+            var payload = payloads.FirstOrDefault(); // first is the latest
             return payload;
         }
 
         [Then(@"I have the email verify token from mailbox \(mock up\)")]
         public async Task VerificationTokenAsync()
         {
-            var payload = await GetEmailTokenAsync("verify-email");
-            Console.WriteLine(payload.Usage);
+            var payload = await GetEmailTokenAsync("Email-Token");
+            Console.WriteLine("Email-Token");
             Console.WriteLine(payload.Token);
         }
 
         [Then(@"I have the password reset token from mailbox \(mock up\)")]
         public async Task PasswordTokenAsync()
         {
-            var payload = await GetEmailTokenAsync("reset-password");
-            Console.WriteLine(payload.Usage);
+            var payload = await GetEmailTokenAsync("Password-Token");
+            Console.WriteLine("Password-Token");
             Console.WriteLine(payload.Token);
         }
 
         [When("Verify my email with the token from email")]
         public async Task VerifyEmailAsync()
         {
-            var payload = await GetEmailTokenAsync("verify-email");
-            Console.WriteLine(payload.Usage);
+            var payload = await GetEmailTokenAsync("Email-Token");
+            Console.WriteLine("Email-Token");
             Console.WriteLine(payload.Token);
 
             var uri = $"/api/sso/users/verification?email={client.Tester.User.Email.ToLower()}";

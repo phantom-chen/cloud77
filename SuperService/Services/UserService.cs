@@ -96,21 +96,25 @@ namespace SuperService.Services
         {
             var header = context.GetHttpContext().Request.Headers["x-onetime-token"];
             var token = header.ToString().Trim();
+
+            var header2 = context.GetHttpContext().Request.Headers["x-onetime-token-id"];
+            var id= header2.ToString().Trim();
+
             logger.LogInformation(token);
             
             var payloads = database.GetTokenPayloads(request.Email);
 
-            payloads = payloads.Where(p => p.Token == token && p.Usage == "verify-email");
+            payloads = payloads.Where(p => p.Token == token);
             if (payloads == null || !payloads.Any())
             {
                 throw new RpcException(new Status());
             }
-            var payload = payloads.FirstOrDefault(x => x.Token == token && x.Exp.Year > 1);
-            if (DateTime.Compare((DateTime)payload.Exp, DateTime.UtcNow) < 0)
+            var payload = payloads.FirstOrDefault(x => x.Token == token && x.Expiration.Year > 1);
+            if (DateTime.Compare((DateTime)payload.Expiration, DateTime.UtcNow) < 0)
             {
                 throw new RpcException(new Status());
             }
-            payload = payloads.FirstOrDefault(x => x.Token == token && x.Exp.Year == 1);
+            payload = payloads.FirstOrDefault(x => x.Token == token && x.Expiration.Year == 1);
             if (payload != null)
             {
                 throw new RpcException(new Status());

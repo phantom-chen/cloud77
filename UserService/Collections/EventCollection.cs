@@ -63,16 +63,14 @@ namespace UserService.Collections
         {
             var date = DateTime.UtcNow;
             string token = CodeGenerator.HashString(email.ToLower() + date.Millisecond.ToString() + CodeGenerator.GenerateDigitalCode(6));
-            var usage = "verify-email";
             var payload = new TokenPayload()
             {
-                Usage = usage,
                 Token = token,
-                Exp = date.AddHours(1)
+                Expiration = date.AddHours(1)
             };
             AppendEventLog(new EventEntity()
             {
-                Name = "Issue-Email-Token",
+                Name = "Email-Token",
                 UserEmail = email,
                 Email = email,
                 Payload = JsonConvert.SerializeObject(payload),

@@ -40,11 +40,11 @@ namespace FunctionalTests
             Assert.IsNotNull(events);
 
             var payloads = events.Data
-                .Where(e => e.Name == "Issue-Email-Token")
+                .Where(e => e.Name == "Password-Token")
                 .Select(e => JsonConvert.DeserializeObject<TokenPayload>(e.Payload));
             Assert.IsNotNull(payloads);
             Assert.IsTrue(payloads.Count() > 0);
-            var payload = payloads.Where(p => p.Usage == "reset-password").LastOrDefault();
+            var payload = payloads.LastOrDefault();
             Assert.IsNotNull(payload);
             Assert.IsTrue(!string.IsNullOrEmpty(payload.Token));
             Console.WriteLine(payload.Token);

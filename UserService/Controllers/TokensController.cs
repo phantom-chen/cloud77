@@ -236,11 +236,11 @@ namespace UserService.Controllers
             // get payloads
             // check is payload is created in minutes
 
-            var logs = events.GetEventLogs(email);
+            var logs = events.GetEventLogs(email, "Password-Token");
             logs = logs.Where(l => l.Name == "Password-Token");
 
             var date = DateTime.UtcNow;
-            string token = CodeGenerator.HashString(email.ToLower() + date.Millisecond.ToString() + CodeGenerator.GenerateDigitalCode(6));
+            string token = CodeGenerator.GenerateVerificationCode(email, date);
             var payload = new TokenPayload()
             {
                 Token = token,

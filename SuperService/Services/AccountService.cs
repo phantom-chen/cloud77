@@ -1,4 +1,5 @@
 ﻿using Cloud77.Abstractions.Entity;
+using Cloud77.Abstractions.Utility;
 using Grpc.Core;
 using Microsoft.AspNetCore.Authorization;
 using MongoDB.Driver;
@@ -57,7 +58,7 @@ namespace SuperService.Services
         public override Task<ServiceReply> CreateVerificationCode(UserEmail request, ServerCallContext context)
         {
             // send email
-            var token = database.CreateVerificationCode(request.Email);
+            var token = CodeGenerator.GenerateVerificationCode(request.Email, DateTime.UtcNow);
             logger.LogInformation(token);
             return Task.FromResult(new ServiceReply()
             {

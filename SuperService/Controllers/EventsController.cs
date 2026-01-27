@@ -66,7 +66,7 @@ namespace SuperService.Controllers
         {
             var index = 1;
             var size = 10;
-            var events = collection.GetEventLogs(email);
+            var events = collection.GetEventLogs(email, "");
             return Ok(new EventsQueryResult()
             {
                 Index = index,
@@ -81,7 +81,7 @@ namespace SuperService.Controllers
         [Route("{email}")]
         public IActionResult Delete(string email)
         {
-            collection.DeleteSome(email);
+            collection.DeleteEventLogs(email, "");
             return Ok(new AuthorDeleted("abc"));
         }
     }

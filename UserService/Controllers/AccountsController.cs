@@ -212,7 +212,7 @@ namespace UserService.Controllers
             // user is not confirmed, check if token is generated in several minutes
 
             // create verification code, add to events
-            var token = events.CreateVerificationCode(email);
+            var token = CodeGenerator.GenerateVerificationCode(email, DateTime.UtcNow);
 
             // {sso_url}/confirm-email?email=xxx&token=xxx
             var link = $"{configuration["SSO_url"] ?? ""}/confirm-email?email={user.Email}&token={token}";

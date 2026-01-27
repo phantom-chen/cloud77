@@ -1,9 +1,6 @@
-﻿using Cloud77.Abstractions.Utility;
-using Cloud77.Abstractions.Entity;
+﻿using Cloud77.Abstractions.Entity;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using Newtonsoft.Json;
-using Cloud77.Abstractions.Collection;
 
 namespace UserService.Collections
 {
@@ -21,7 +18,7 @@ namespace UserService.Collections
         public string Role { get; set; } = "";
     }
 
-    public class EventCollection : IEventCollection
+    public class EventCollection
     {
         private readonly IMongoCollection<EventMongoEntity> collection;
 
@@ -50,7 +47,7 @@ namespace UserService.Collections
             return document.Id.ToString();
         }
 
-        public IEnumerable<EventEntity> GetEventLogs(string email)
+        public IEnumerable<EventEntity> GetEventLogs(string email, string name)
         {
             var filter = Builders<EventMongoEntity>.Filter.Eq("Email", email);
             return collection
@@ -59,43 +56,18 @@ namespace UserService.Collections
               .ToList();
         }
 
-        public string CreateVerificationCode(string email)
+        public string UpdateEventLog(string id, string payload)
         {
-            var date = DateTime.UtcNow;
-            string token = CodeGenerator.HashString(email.ToLower() + date.Millisecond.ToString() + CodeGenerator.GenerateDigitalCode(6));
-            var payload = new TokenPayload()
-            {
-                Token = token,
-                Expiration = date.AddHours(1)
-            };
-            AppendEventLog(new EventEntity()
-            {
-                Name = "Email-Token",
-                UserEmail = email,
-                Email = email,
-                Payload = JsonConvert.SerializeObject(payload),
-                Date = date,
-            });
-            return token;
+            var filter = Builders<EventMongoEntity>.Filter.Eq("_id", new ObjectId(id));
+            var update = Builders<EventMongoEntity>.Update.Set("Payload", payload);
+            collection.UpdateOne(filter, update);
+            return id;
         }
 
-        public IEnumerable<TokenPayload> GetTokenPayloads(string email)
+        public EventEntity GetEventLog(string id)
         {
-            var logs = GetEventLogs(email).Where(l => l.Name == "Issue-Email-Token");
-            var payloads = logs.Select(e => JsonConvert.DeserializeObject<TokenPayload>(e.Payload));
-            return payloads;
-        }
-
-        public IEnumerable<EventEntity> GetEventLogs(string name, int index, int size)
-        {
-            // not support getting events by name here
-            return new EventEntity[] {};
-        }
-
-        public bool DeleteSome(string email)
-        {
-            // not support deleting events here
-            return false;
+            var filter = Builders<EventMongoEntity>.Filter.Eq("_id", new ObjectId(id));
+            return collection.Find(filter).Limit(1).FirstOrDefault();
         }
     }
 }

@@ -171,7 +171,7 @@ namespace UserService.Controllers
             };
             events.AppendEventLog(log);
 
-            var token = events.CreateVerificationCode(user.Email);
+            var token = CodeGenerator.GenerateVerificationCode(user.Email, date);
 
             var urlPath = $"confirm-email?email={user.Email}&token={token}";
             var link = $"{ssoURL}/{urlPath}";  
@@ -195,6 +195,11 @@ namespace UserService.Controllers
             Request.Headers.TryGetValue("x-onetime-token", out var token);
             Request.Headers.TryGetValue("x-onetime-token-id", out var tokenId);
 
+            if (string.IsNullOrEmpty(tokenId))
+            {
+                return BadRequest("token id is empty");
+            }
+
             if (string.IsNullOrEmpty(token))
             {
                 textLogging.PushLog("Users: empty one time token in reset password request");
@@ -211,6 +216,13 @@ namespace UserService.Controllers
                 return BadRequest(new EmptyEmail());
             }
 
+            // get the event by token id (event id)
+            var eventEntity = events.GetEventLog(tokenId.ToString());
+            if (eventEntity == null)
+            {
+                return BadRequest("token is not found by the id");
+            }
+
             var user = users.GetUser(body.Email);
             if (user == null)
             {
@@ -224,37 +236,31 @@ namespace UserService.Controllers
                 return BadRequest(new WeakPassword("it should be longer than 10 characters and contain upper case, lower case, digit and special character"));
             }
 
-            var payloads = events.GetTokenPayloads(body.Email.Trim().ToLower());
-            if (payloads == null || !payloads.Any())
+            var payload = JsonConvert.DeserializeObject<TokenPayload>(eventEntity.Payload);
+            if (payload.Token != token.ToString())
             {
                 textLogging.PushLog("Users: no one time token found for user '" + body.Email + "'", true);
                 return BadRequest(new OneTimeTokenNotFound("Password Reset"));
             }
 
-            payloads = payloads.Where(p => p.Token == token);
-            if (payloads == null || !payloads.Any())
+            if (!string.IsNullOrEmpty(payload.Consumed))
             {
-                textLogging.PushLog("Users: no one time token found for user '" + body.Email + "' with token '" + token + "'", true);
-                return BadRequest(new OneTimeTokenNotFound("Password Reset"));
+                textLogging.PushLog("Users: one time token used for user '" + body.Email + "' with token '" + token + "'", true);
+                return BadRequest(new OneTimeTokenUsed("Password Reset"));
             }
 
-            var payload = payloads.FirstOrDefault(x => x.Token == token && x.Expiration.Year > 1);
             if (payload != null && DateTime.Compare((DateTime)payload.Expiration, DateTime.UtcNow) < 0)
             {
                 textLogging.PushLog("Users: one time token expired for user '" + body.Email + "' with token '" + token + "'", true);
                 return BadRequest(new OneTimeTokenExpired("Password Reset"));
             }
 
-            payload = payloads.FirstOrDefault(x => x.Token == token && x.Expiration.Year == 1);
-            if (payload != null)
-            {
-                textLogging.PushLog("Users: one time token used for user '" + body.Email + "' with token '" + token + "'", true);
-                return BadRequest(new OneTimeTokenUsed("Password Reset"));
-            }
-
             var state = users.UpdatePassword(body.Email, CodeGenerator.HashString(body.Password));
             if (state)
             {
+                // update token consumed
+                payload.Consumed = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
+                events.UpdateEventLog(tokenId, JsonConvert.SerializeObject(payload));
                 textLogging.PushLog("Users: successfully reset password for user '" + body.Email + "'");
                 events.AppendEventLog(new EventEntity()
                 {
@@ -281,6 +287,40 @@ namespace UserService.Controllers
             Request.Headers.TryGetValue("x-onetime-token", out var token);
             Request.Headers.TryGetValue("x-onetime-token-id", out var tokenId);
 
+            if (string.IsNullOrEmpty(tokenId) || string.IsNullOrEmpty(token))
+            {
+                return BadRequest("token id or token is empty");
+            }
+
+            var eventEntity = events.GetEventLog(tokenId.ToString());
+            if (eventEntity == null)
+            {
+                return BadRequest("token is not found by the id");
+            }
+
+            var payload = JsonConvert.DeserializeObject<TokenPayload>(eventEntity.Payload);
+            if (payload == null)
+            {
+                textLogging.PushLog($"Users: no one time token found for user {email}", true);
+                return BadRequest(new OneTimeTokenNotFound("Email Verification"));
+            }
+
+            if (payload.Token != token.ToString())
+            {
+                return BadRequest("token mismatch");
+            }
+
+            if (!string.IsNullOrEmpty(payload.Consumed))
+            {
+                return BadRequest("token is used");
+            }
+
+            if (payload != null && DateTime.Compare((DateTime)payload.Expiration, DateTime.UtcNow) < 0)
+            {
+                textLogging.PushLog("Users: one time token expired for user " + email + " with token " + token, true);
+                return BadRequest(new OneTimeTokenExpired("Email Verification"));
+            }
+
             var user = users.GetUser(email);
             if (user == null)
             {
@@ -294,39 +334,12 @@ namespace UserService.Controllers
                 return BadRequest(new UserHasConfirmed(email));
             }
 
-            var payloads = events.GetTokenPayloads(email);
-            if (payloads == null || !payloads.Any())
-            {
-                textLogging.PushLog($"Users: no one time token found for user {email}", true);
-                return BadRequest(new OneTimeTokenNotFound("Email Verification"));
-            }
-
-            payloads = payloads.Where(p => p.Token == token);
-            if (payloads == null || !payloads.Any())
-            {
-                textLogging.PushLog("Users: no one time token found for user " + email + " with token " + token, true);
-                return BadRequest(new OneTimeTokenNotFound("Email Verification"));
-            }
-
-            var payload = payloads.FirstOrDefault(x => x.Token == token && x.Expiration.Year > 1);
-
-            if (payload != null && DateTime.Compare((DateTime)payload.Expiration, DateTime.UtcNow) < 0)
-            {
-                textLogging.PushLog("Users: one time token expired for user " + email + " with token " + token, true);
-                return BadRequest(new OneTimeTokenExpired("Email Verification"));
-            }
-
-            payload = payloads.FirstOrDefault(x => x.Token == token && x.Expiration.Year == 1);
-            if (payload != null)
-            {
-                textLogging.PushLog("Users: one time token used for user " + email + " with token " + token, true);
-                return BadRequest(new OneTimeTokenUsed("Email Verification"));
-            }
-
             var ack = users.ConfirmUser(email, true);
 
             if (ack)
             {
+                payload.Consumed = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
+                events.UpdateEventLog(tokenId, JsonConvert.SerializeObject(payload));
                 textLogging.PushLog("Users: successfully verify email for user " + email);
                 events.AppendEventLog(new EventEntity()
                 {

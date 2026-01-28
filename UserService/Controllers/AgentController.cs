@@ -8,7 +8,7 @@ using System.Reflection;
 
 namespace UserService.Controllers
 {
-  [Route("api/[controller]")]
+  [Route("user/[controller]")]
   [ApiController]
   public class AgentController : ControllerBase
   {

@@ -7,7 +7,7 @@ using UserService.Collections;
 
 namespace UserService.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("user/[controller]")]
     [Authorize]
     [ApiController]
     public class TasksController : ControllerBase

@@ -91,7 +91,6 @@ namespace UserService.Backgrounds
                 
                 if (user != null && !string.IsNullOrEmpty(user.Email))
                 {
-                    // Handle user resource message
                     new TaskCollection(database).DeleteSome(user.Email);
 
                     new PostCollection(database).DeleteSome(user.Email);

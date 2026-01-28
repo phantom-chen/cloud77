@@ -26,6 +26,14 @@ namespace Cloud77.Abstractions.Service
         public string Expiration { get; set; }
     }
 
+    public class UserLink
+    {
+        public string Usage { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public string Link { get; set; }
+    }
+
     public class LockedAccount : ServiceResponse
     {
         public LockedAccount(string email)

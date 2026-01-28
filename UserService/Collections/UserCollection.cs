@@ -10,7 +10,7 @@ namespace UserService.Collections
         public ObjectId Id { get; set; }
     }
 
-    public class UserCollection : IUserCollection
+    public class UserCollection
     {
         private readonly IMongoCollection<UserMongoEntity> collection;
 
@@ -39,11 +39,6 @@ namespace UserService.Collections
             return document.Id.ToString();
         }
 
-        public IEnumerable<UserEntity> GetUsers(int index, int size, string sort)
-        {
-            throw new NotImplementedException();
-        }
-
         public UserEntity GetUser(string email)
         {
             return collection.Find(Builders<UserMongoEntity>.Filter.Eq("Email", email)).FirstOrDefault();
@@ -54,7 +49,6 @@ namespace UserService.Collections
             return collection.Find(Builders<UserMongoEntity>.Filter.Eq("Name", name)).FirstOrDefault();
         }
 
-        // update user.confirmed
         public bool ConfirmUser(string email, bool confirmed)
         {
             var filter = Builders<UserMongoEntity>.Filter.Eq("Email", email);
@@ -64,7 +58,6 @@ namespace UserService.Collections
             return ack;
         }
 
-        // update user.profile
         public bool UpdateProfile(string email, ProfileEntity profile)
         {
             var filter = Builders<UserMongoEntity>.Filter.Eq("Email", email);
@@ -72,7 +65,6 @@ namespace UserService.Collections
             return collection.UpdateOne(filter, update).IsAcknowledged;
         }
 
-        // update user.password
         public bool UpdatePassword(string email, string password)
         {
             var filter = Builders<UserMongoEntity>.Filter.Eq("Email", email);
@@ -82,7 +74,6 @@ namespace UserService.Collections
             return ack;
         }
 
-        // update user.role
         public bool UpdateRole(string email, string role)
         {
             var filter = Builders<UserMongoEntity>.Filter.Eq("Email", email);
@@ -91,7 +82,6 @@ namespace UserService.Collections
             return ack;
         }
 
-        // update user.name
         public bool UpdateName(string email, string name)
         {
             var filter = Builders<UserMongoEntity>.Filter.Eq("Email", email);

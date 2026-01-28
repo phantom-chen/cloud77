@@ -11,7 +11,7 @@ using SuperService.Models;
 
 namespace SuperService.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("super/[controller]")]
     [Authorize]
     [ApiController]
     public class AccountsController : ControllerBase
@@ -85,8 +85,13 @@ namespace SuperService.Controllers
             }
             var content = System.IO.File.ReadAllText(Path.Combine(ServiceDataModel.Root, "users", "index", "users.json"));
             var users = JsonConvert.DeserializeObject<List<SimplifiedUser>>(content);
-            var results = users.Where(u => u.Email.Contains(search)).Take(50).Select(u => u.Email);
-            return Ok(results);
+            if (users != null)
+            {
+                var results = users.Where(u => u.Email.Contains(search)).Take(50).Select(u => u.Email);
+                return Ok(results);
+            }
+
+            return Ok(new List<string>());
         }
     }
 }

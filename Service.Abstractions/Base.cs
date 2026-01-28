@@ -421,11 +421,16 @@ namespace Cloud77.Abstractions
             DeletePosts();
             Directory.Delete(Path.Combine(userDataRoot, "posts"));
 
-            File.Delete(Path.Combine(userDataRoot, "lock.json"));
+            foreach (var item in Directory.GetFiles(Path.Combine(userDataRoot)))
+            {
+                File.Delete(item);
+            }
 
-            File.Delete(Path.Combine(userDataRoot, "logout_history.txt"));
-            File.Delete(Path.Combine(userDataRoot, "access_token_history.txt"));
-            File.Delete(Path.Combine(userDataRoot, "refresh_token_history.txt"));
+            //File.Delete(Path.Combine(userDataRoot, "lock.json"));
+
+            //File.Delete(Path.Combine(userDataRoot, "logout_history.txt"));
+            //File.Delete(Path.Combine(userDataRoot, "access_token_history.txt"));
+            //File.Delete(Path.Combine(userDataRoot, "refresh_token_history.txt"));
 
             Directory.Delete(userDataRoot);
 

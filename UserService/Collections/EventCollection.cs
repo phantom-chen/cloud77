@@ -9,15 +9,6 @@ namespace UserService.Collections
         public ObjectId Id { get; set; }
     }
 
-    public class TokenPayloadBase
-    {
-        public string Token { get; set; } = "";
-    }
-    public class RolePayload
-    {
-        public string Role { get; set; } = "";
-    }
-
     public class EventCollection
     {
         private readonly IMongoCollection<EventMongoEntity> collection;

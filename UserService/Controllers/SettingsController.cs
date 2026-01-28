@@ -12,7 +12,7 @@ namespace UserService.Controllers
     /// Help manage service settings.
     /// It can only be accessible for admin users.
     /// </summary>
-    [Route("api/[controller]")]
+    [Route("user/[controller]")]
     [Authorize]
     [ApiController]
     public class SettingsController : ControllerBase

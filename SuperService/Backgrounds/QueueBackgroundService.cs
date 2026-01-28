@@ -7,6 +7,7 @@ using Cloud77.Abstractions.Entity;
 using SuperService.Models;
 using ServiceStack.Redis;
 using Cloud77.Abstractions;
+using Cloud77.Abstractions.Service;
 
 namespace SuperService.Backgrounds
 {
@@ -152,10 +153,14 @@ namespace SuperService.Backgrounds
             consumer.Received += (model, ea) =>
             {
                 var message = Message2String(ea) ?? "";
-                logger.LogInformation(message);
-                EmailEntity content = JsonConvert.DeserializeObject<EmailEntity>(message);
+                if (!string.IsNullOrEmpty(message))
+                {
+                    logger.LogInformation(message);
 
-                SendMail(content);
+                    EmailEntity? content = JsonConvert.DeserializeObject<EmailEntity>(message);
+                    if (content != null)
+                        SendMail(content);
+                }
 
                 channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
             };

@@ -2,7 +2,6 @@
 using Cloud77.Abstractions.Service;
 using MassTransit;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RabbitMQ.Client;
 using SuperService.Models;
@@ -12,7 +11,7 @@ using Cloud77.Abstractions;
 
 namespace SuperService.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("super/[controller]")]
     [Authorize]
     [ApiController]
     public class QueuesController : ControllerBase, IDisposable

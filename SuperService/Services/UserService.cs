@@ -16,7 +16,7 @@ namespace SuperService.Services
         private readonly ILogger<UserService> logger;
         private readonly TokenGenerator generator;
         private readonly UserCollection database;
-        private readonly EventCollection events;
+        private EventCollection events;
         private readonly string defaultRole;
 
         public UserService(
@@ -80,7 +80,7 @@ namespace SuperService.Services
                 Token = token,
                 Expiration = date.AddHours(1)
             };
-            events.AppendEventLog(new EventEntity()
+            var tokenId = events.AppendEventLog(new EventEntity()
             {
                 Name = "Email-Token",
                 UserEmail = request.Email.ToLower(),
@@ -88,7 +88,8 @@ namespace SuperService.Services
                 Payload = JsonConvert.SerializeObject(payload),
                 Date = date,
             });
-
+            logger.LogInformation(tokenId);
+            logger.LogInformation(token);
             // TODO send code via email
 
             return Task.FromResult(new ServiceReply()

@@ -137,7 +137,7 @@ namespace SuperService.Backgrounds
             _healthCheckTimer = new Timer(Health, null, TimeSpan.Zero, TimeSpan.FromDays(1));
         }
 
-        private void Health(object state)
+        private void Health(object? state)
         {
             logger.LogInformation("health checking is running...");
 

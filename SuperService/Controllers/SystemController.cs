@@ -5,7 +5,7 @@ using SuperService.Models;
 
 namespace SuperService.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("super/[controller]")]
     [ApiController]
     public class SystemController : ControllerBase
     {

@@ -6,11 +6,8 @@ using MongoDB.Driver;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using System.Text;
-using System.Text.RegularExpressions;
 using UserService.Collections;
-using UserService.Models;
 using Cloud77.Abstractions;
-using ServiceStack.Script;
 
 namespace UserService.Controllers
 {
@@ -172,8 +169,21 @@ namespace UserService.Controllers
             events.AppendEventLog(log);
 
             var token = CodeGenerator.GenerateVerificationCode(user.Email, date);
+            var payload = new TokenPayload()
+            {
+                Token = token,
+                Expiration = date.AddHours(1)
+            };
+            var tokenId = events.AppendEventLog(new EventEntity()
+            {
+                Name = "Email-Token",
+                UserEmail = user.Email.ToLower(),
+                Email = user.Email.ToLower(),
+                Payload = JsonConvert.SerializeObject(payload),
+                Date = date,
+            });
 
-            var urlPath = $"confirm-email?email={user.Email}&token={token}";
+            var urlPath = $"confirm-email?email={user.Email}&token={token}&id={tokenId}";
             var link = $"{ssoURL}/{urlPath}";  
 
             logger.LogDebug($"the path to confirm email is '{urlPath}'");

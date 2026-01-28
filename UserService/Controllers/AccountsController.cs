@@ -18,7 +18,7 @@ namespace UserService.Controllers
     /// <summary>
     /// Help update user account.
     /// </summary>
-    [Route("api/[controller]")]
+    [Route("user/[controller]")]
     [Authorize]
     [ApiController]
     public class AccountsController : ControllerBase, IDisposable
@@ -210,12 +210,25 @@ namespace UserService.Controllers
             }
 
             // user is not confirmed, check if token is generated in several minutes
-
+            var date = DateTime.UtcNow;
             // create verification code, add to events
-            var token = CodeGenerator.GenerateVerificationCode(email, DateTime.UtcNow);
+            var token = CodeGenerator.GenerateVerificationCode(email, date);
+            var payload = new TokenPayload()
+            {
+                Token = token,
+                Expiration = date.AddHours(1)
+            };
+            var tokenId = events.AppendEventLog(new EventEntity()
+            {
+                Name = "Email-Token",
+                UserEmail = email.ToLower(),
+                Email = email.ToLower(),
+                Payload = JsonConvert.SerializeObject(payload),
+                Date = date,
+            });
 
             // {sso_url}/confirm-email?email=xxx&token=xxx
-            var link = $"{configuration["SSO_url"] ?? ""}/confirm-email?email={user.Email}&token={token}";
+            var link = $"{configuration["SSO_url"] ?? ""}/confirm-email?email={user.Email}&token={token}&id={tokenId}";
 
             logger.LogDebug($"the email confirm link is {link}");
             model.AppendLog($"the email confirm link is {link}");
@@ -306,6 +319,32 @@ namespace UserService.Controllers
                 {
                     return BadRequest("deleting user resources");
                 }
+                else
+                {
+                    // deleted
+                    // next step
+                    // remove *.txt
+                    // remove *.json
+                    new UserDataModel(email).Remove();
+
+                    var date = DateTime.UtcNow;
+                    // add events
+                    var log = new EventEntity()
+                    {
+                        Name = "Delete-User",
+                        UserEmail = email,  // TODO get the email from claims
+                        Email = email,
+                        Date = date,
+                    };
+                    events.AppendEventLog(log);
+
+                    logger.LogDebug($"delete user {email} at {date}");
+
+                    // users
+                    users.DeleteUser(email);
+
+                    return Ok(new UserDeleted(email));
+                }
             }
             else
             {
@@ -337,30 +376,9 @@ namespace UserService.Controllers
 
                 // add something to user_resource_deleting.txt, means background starts deleting user resources
                 System.IO.File.AppendAllLines(Path.Combine(ServiceDataModel.Root, "users", email, "user_resource_deleting.txt"), lines.ToArray());
+
+                return BadRequest("deleting user resources");
             }
-
-            // next step
-            // remove *.txt
-            // remove *.json
-            new UserDataModel(email).Remove();
-
-            var date = DateTime.UtcNow;
-            // add events
-            var log = new EventEntity()
-            {
-                Name = "Delete-User",
-                UserEmail = email,  // TODO get the email from claims
-                Email = email,
-                Date = date,
-            };
-            events.AppendEventLog(log);
-
-            logger.LogDebug($"delete user {email} at {date}");
-
-            // users
-            users.DeleteUser(email);
-
-            return Ok(new UserDeleted(email));
         }
 
         private void SendUserLink(string queue, UserLink link)

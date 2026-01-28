@@ -3,6 +3,7 @@ using Cloud77.Abstractions.Utility;
 using Grpc.Core;
 using Microsoft.AspNetCore.Authorization;
 using MongoDB.Driver;
+using Newtonsoft.Json;
 using SuperService.Collections;
 using SuperService.Models;
 using SuperService.Protos;
@@ -14,8 +15,8 @@ namespace SuperService.Services
     public class AccountService : Protos.AccountService.AccountServiceBase
     {
         private readonly ILogger<AccountService> logger;
-        private readonly TokenGenerator generator;
         private readonly UserCollection database;
+        private readonly EventCollection events;
         public AccountService(
             IConfiguration configuration,
             MongoClient client,
@@ -23,6 +24,7 @@ namespace SuperService.Services
         {
             this.logger = logger;
             this.database = new UserCollection(client, configuration);
+            events = new EventCollection(client, configuration);
         }
 
         public override Task<UserRole> GetRole(UserEmail request, ServerCallContext context)
@@ -58,7 +60,22 @@ namespace SuperService.Services
         public override Task<ServiceReply> CreateVerificationCode(UserEmail request, ServerCallContext context)
         {
             // send email
-            var token = CodeGenerator.GenerateVerificationCode(request.Email, DateTime.UtcNow);
+            var date = DateTime.UtcNow;
+            var token = CodeGenerator.GenerateVerificationCode(request.Email, date);
+            var payload = new TokenPayload()
+            {
+                Token = token,
+                Expiration = date.AddHours(1)
+            };
+            var tokenId = events.AppendEventLog(new EventEntity()
+            {
+                Name = "Email-Token",
+                UserEmail = request.Email.ToLower(),
+                Email = request.Email.ToLower(),
+                Payload = JsonConvert.SerializeObject(payload),
+                Date = date,
+            });
+            logger.LogInformation(tokenId);
             logger.LogInformation(token);
             return Task.FromResult(new ServiceReply()
             {

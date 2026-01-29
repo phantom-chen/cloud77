@@ -1,4 +1,4 @@
-name: build-desktop
+name: publish-desktop-app
 
 on:
 

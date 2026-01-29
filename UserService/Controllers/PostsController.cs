@@ -1,15 +1,17 @@
-﻿using Cloud77.Abstractions.Service;
+﻿using Cloud77.Abstractions;
+using Cloud77.Abstractions.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using UserService.Collections;
 using UserService.Models;
 
 namespace UserService.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("user/[controller]")]
     [Authorize]
     [ApiController]
     public class PostsController : ControllerBase
@@ -64,9 +66,17 @@ namespace UserService.Controllers
         }
 
         [HttpPut]
-        public IActionResult Put()
+        public IActionResult Put([FromBody] UserPost body)
         {
-            throw new NotImplementedException();
+            var result = collection.Update(body.Id, body.Title, body.Description);
+            if (result)
+            {
+                return Ok(new UserTaskUpdated(body.Id));
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new DatabaseError("fail to update post"));
+            }
         }
 
         [HttpGet]
@@ -81,7 +91,7 @@ namespace UserService.Controllers
 
             if (posts.Any(p => p.Id.ToString() == id))
             {
-                return Content(new LocalUserDataModel(email.Value).GetPost(id), "text/plain");
+                return Content(new UserDataModel(email.Value).GetPost(id), "text/plain");
             }
 
             return NotFound(new UserPostContentNotExisting("wip"));
@@ -102,7 +112,7 @@ namespace UserService.Controllers
                 using (var reader = new StreamReader(Request.Body))
                 {
                     var content = await reader.ReadToEndAsync();
-                    new LocalUserDataModel(email.Value).UpdatePost(id, content);
+                    new UserDataModel(email.Value).UpdatePost(id, content);
                 }
                 return Ok(new UserPostContentUpdated("wip"));
             }
@@ -114,6 +124,9 @@ namespace UserService.Controllers
         [Route("{id}")]
         public IActionResult Delete(string id)
         {
+            var emailClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+            var model = new UserDataModel(emailClaim.Value);
+            model.DeletePost(id);
             collection.Delete(id);
             return Ok(new UserPostDeleted("wip"));
         }

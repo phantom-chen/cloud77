@@ -1,4 +1,5 @@
-﻿using Cloud77.Abstractions.Service;
+﻿using Cloud77.Abstractions;
+using Cloud77.Abstractions.Service;
 using SampleService.Models;
 
 namespace SampleService.Middleware
@@ -24,11 +25,7 @@ namespace SampleService.Middleware
             }
             catch (Exception ex)
             {
-                var id = Guid.NewGuid().ToString();
-                if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("CUSTOM_LOGGING")))
-                {
-                    File.WriteAllText(Path.Combine(LocalDataModel.Root, "errors", $"{id}.txt"), ex.Message);
-                }
+                new TextLoggingModel().SaveError(ex.Message);
 
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
                 context.Response.ContentType = "application/json";

@@ -1,0 +1,11 @@
+services:
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    networks:
+      - my_dev_apps
+
+networks:
+  my_dev_apps:
+    external: true

@@ -1,4 +1,6 @@
-﻿using Cloud77.Abstractions.Service;
+﻿using Cloud77.Abstractions;
+using Cloud77.Abstractions.Entity;
+using Cloud77.Abstractions.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +11,7 @@ using SuperService.Models;
 
 namespace SuperService.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("super/[controller]")]
     [Authorize]
     [ApiController]
     public class AccountsController : ControllerBase
@@ -68,7 +70,7 @@ namespace SuperService.Controllers
         [Route("roles")]
         public IActionResult GetRoles()
         {
-            var content = new LocalDataModel().GetSetting("user_roles");
+            var content = ServiceDataModel.GetSetting("user_roles");
             var roles = content.Split(",");
             return Ok(roles);
         }
@@ -77,14 +79,19 @@ namespace SuperService.Controllers
         [Route("emails")]
         public IActionResult GetEmails([FromQuery] string search)
         {
-            if (!System.IO.File.Exists(Path.Combine(LocalDataModel.Root, "users","index", "users.json")))
+            if (!System.IO.File.Exists(Path.Combine(ServiceDataModel.Root, "users","index", "users.json")))
             {
                 return NotFound();
             }
-            var content = System.IO.File.ReadAllText(Path.Combine(LocalDataModel.Root, "users", "index", "users.json"));
-            var users = JsonConvert.DeserializeObject<List<User>>(content);
-            var results = users.Where(u => u.Email.Contains(search)).Take(50).Select(u => u.Email);
-            return Ok(results);
+            var content = System.IO.File.ReadAllText(Path.Combine(ServiceDataModel.Root, "users", "index", "users.json"));
+            var users = JsonConvert.DeserializeObject<List<SimplifiedUser>>(content);
+            if (users != null)
+            {
+                var results = users.Where(u => u.Email.Contains(search)).Take(50).Select(u => u.Email);
+                return Ok(results);
+            }
+
+            return Ok(new List<string>());
         }
     }
 }

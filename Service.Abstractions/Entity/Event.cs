@@ -16,8 +16,8 @@ namespace Cloud77.Abstractions.Entity
 
     public class TokenPayload
     {
-        public string Usage { get; set; } = "";
         public string Token { get; set; } = "";
-        public DateTime Exp { get; set; }
+        public DateTime Expiration { get; set; }
+        public string Consumed { get; set; }
     }
 }

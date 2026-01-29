@@ -4,18 +4,20 @@ import { Server } from 'socket.io';
 import http from 'http';
 import fileUpload from "express-fileupload";
 
-import { appendConnection, connectedUsers, removeConnection, serverConnected, serverDisConnected } from './models/online';
+import { connectedUsers, serverConnected, serverDisConnected } from './models/online';
 import { generateID } from './models/guid';
 import { platform, type } from 'os';
 import { getUser, issueToken } from './models/user';
-import { addRoom, getRooms, IChatRoom, removeRoom } from './models/room';
+import { addRoom, getRooms, IChatRoom } from './models/room';
 import { appendLog } from './models/logging';
 import router from './routes/router';
 import { AccountPayload } from './models/live';
 import { createDocument, getDocument, getDocuments } from './models/document';
 import { rootData } from './models/local-data';
-import { createMongoClient, pingMongoServer } from './models/database';
+import { createMongoClient, pingMongoServer } from './models/database/client';
 import { getSettings } from './models/settings';
+import { AuthorizationMiddleware } from './middlewares/authorization';
+import bodyParser from 'body-parser';
 
 dotenv.config();
 
@@ -24,19 +26,73 @@ console.log(`Canteen service port: ${PORT}`);
 const app = express();
 const port = Number(PORT);
 
+app.use(express.json());
+app.use(bodyParser.json());
 app.get('/', (req, res) => {
     res.send('Hello, world!');
+});
+
+app.get('/api/health', (req, res) => {
+    res.send('Healthy');
 });
 
 app.get('/api/values', (req, res) => {
     res.json(['canteen service value1', 'canteen service value2', 'canteen service value3']);
 });
 
-app.use('/api', router);
+app.use('/api', AuthorizationMiddleware, router);
 app.use(fileUpload);
 
+// global error middleware
+app.use((req, res, next) => {
+    try {
+        next();
+    } catch (error) {
+        res.status(500).send({
+            code: 'internal-server-error',
+            id: '',
+            message: (error as Error).message
+        })
+    }
+})
+
 const server = http.createServer(app);
-const io = new Server(server);
+server.keepAliveTimeout = 65000; // 65 seconds
+server.timeout = 61000; // 61 seconds
+server.headersTimeout = 62000; // 62 seconds
+server.requestTimeout = 60000; // 60 seconds
+
+server.on('timeout', (socket) => {
+    console.log('server timeout');
+    socket.end();
+});
+
+server.on('clientError', (err, socket) => {
+    console.log('client error: ' + err.message);
+    socket.end('HTTP/1.1 400 Bad Request\r\n\r\n');
+});
+
+server.on('connection', (socket) => {
+    const start = Date.now();
+    console.log('new connection established');
+    socket.on('close', () => {
+        console.log('connection closed');
+        const duration = Date.now() - start;
+        console.log(`connection duration: ${duration} ms`);
+    });
+    socket.once('error', (err) => {
+        console.log('socket error: ' + err.message);
+    });
+});
+
+const io = new Server();
+// const io = new Server(server, {
+//     path: '/ws',
+//     cors: {
+//         origin: '*',
+//         methods: ['GET', 'POST']
+//     }
+// });
 
 if (process.env.CANTEEN_SERVICE_SOCKET_PATH) {
     console.log(`Canteen service socket path: ${process.env.CANTEEN_SERVICE_SOCKET_PATH}`);
@@ -53,8 +109,6 @@ io.on('connection', (socket) => {
     socket.emit('session-id', { id: socket.id });   // assign session id
 
     // session-token, issue the token and save in session storage
-
-    appendConnection(socket.id);
 
     socket.emit("online", { online: serverConnected() });
 
@@ -76,6 +130,11 @@ io.on('connection', (socket) => {
         io.emit('broadcastToOthers', data.message);
     });
 
+    socket.on('token-request', (data: { username: string, password: string }) => {
+        console.log(data.username, data.password);
+        socket.emit("token-response", { succeed: true, error: 'xxx', token: issueToken(data.username) });
+    });
+
     socket.on('update-user', (data: { username: string, password: string, token: string }) => {
         console.log(data.username, data.password);
         if (data.token) {
@@ -83,7 +142,6 @@ io.on('connection', (socket) => {
         } else {
             socket.emit("update-user-response", { succeed: true, error: 'xxx', username: '', token: issueToken(data.username) });
         }
-        appendConnection(socket.id, data.username);
     })
 
     socket.on('create-user-request', (data: { user: string, email: string, password: string }) => {
@@ -97,10 +155,17 @@ io.on('connection', (socket) => {
 
     socket.on('join-room-request', (data: { account: AccountPayload, id: string }) => {
         console.log(data);
+        socket.join('room1');
+        // joinRoom('user1', 'room1');
+
+        socket.broadcast.to('room1').emit("room-joined", { id: 'room1', message: 'user1 joined room1' });
+        io.to('room1').emit("room-users", { users: ['user1', 'user2'] });
     });
 
     socket.on('leave-room-request', (data: { account: AccountPayload, id: string }) => {
         console.log(data);
+        // leaveRoom('user1', 'room1');
+        socket.leave('room1');
     });
 
     socket.on('add-room-request', (data: { account: AccountPayload, room: IChatRoom }) => {
@@ -159,11 +224,11 @@ io.on('connection', (socket) => {
         console.log(data);
         console.log(socket.client.request.headers['authorization']);
         console.log(socket.client.request.url);
+        socket.emit("profile", { profile: { username: '', email: '' } });
     });
 
     socket.on('disconnect', () => {
         console.log('user disconnected');
-        removeConnection(socket.id);
         socket.broadcast.emit("online", { online: serverDisConnected() });
     });
 });
@@ -179,6 +244,7 @@ io.listen(server);
 
 server.listen(port, () => {
     console.log(`Server is running at Port ${port}`);
+    console.log(__dirname);
     console.log(process.env.CUSTOM_LOGGING);
     console.log(process.env.DB_CONNECTION);
     console.log(platform());
@@ -187,13 +253,15 @@ server.listen(port, () => {
     console.log(getSettings().database);
     appendLog('Canteen service starts', 'warning');
     
-    pingMongoServer(createMongoClient(), 'tester')
-    .then(() => {
-        console.log('MongoDB server is reachable.');
-    })
-    .catch((err) => {
-        console.error('Error connecting to MongoDB server:', err);
-    });
+    if (process.env.DB_CONNECTION) {
+        pingMongoServer(createMongoClient(), 'tester')
+            .then(() => {
+                console.log('MongoDB server is reachable.');
+            })
+            .catch((err) => {
+                console.error('Error connecting to MongoDB server:', err);
+            });
+    }
 
     if (type() === 'Linux') {
         setInterval(() => {

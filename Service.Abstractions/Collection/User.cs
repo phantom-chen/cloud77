@@ -5,7 +5,7 @@ using Cloud77.Abstractions.Entity;
 
 namespace Cloud77.Abstractions.Collection
 {
-    public interface IUserCollection
+    internal interface IUserCollection
     {
         IEnumerable<UserEntity> GetUsers(int index, int size, string sort);
         UserEntity GetUser(string email);

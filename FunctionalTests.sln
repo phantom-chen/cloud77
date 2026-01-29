@@ -1,0 +1,56 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11222.15 d18.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service.Abstractions", "Service.Abstractions\Service.Abstractions.csproj", "{CA353DC8-9DF3-3A3D-5FB9-26C705438149}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestUtility", "TestUtility\TestUtility.csproj", "{27804A22-9799-5872-E1AA-A118016770C5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunctionalTests", "FunctionalTests\FunctionalTests.csproj", "{61B01855-1BFC-2693-85E6-6BAE66944BB2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunctionalTests.GRPC", "FunctionalTests.GRPC\FunctionalTests.GRPC.csproj", "{F53FAB77-1CFE-01B4-9764-0DEC1C9CF773}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{32980DD0-A66B-44F8-BEE4-5967E5047679}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		Documentation\API.md = Documentation\API.md
+		Documentation\Deployment.md = Documentation\Deployment.md
+		ps-development-build.ps1 = ps-development-build.ps1
+		ps-docker-build.ps1 = ps-docker-build.ps1
+		ps-windows-build.ps1 = ps-windows-build.ps1
+		README.md = README.md
+		Documentation\Response.md = Documentation\Response.md
+		version.ps1 = version.ps1
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CA353DC8-9DF3-3A3D-5FB9-26C705438149}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA353DC8-9DF3-3A3D-5FB9-26C705438149}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA353DC8-9DF3-3A3D-5FB9-26C705438149}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA353DC8-9DF3-3A3D-5FB9-26C705438149}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27804A22-9799-5872-E1AA-A118016770C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27804A22-9799-5872-E1AA-A118016770C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27804A22-9799-5872-E1AA-A118016770C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27804A22-9799-5872-E1AA-A118016770C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61B01855-1BFC-2693-85E6-6BAE66944BB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61B01855-1BFC-2693-85E6-6BAE66944BB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61B01855-1BFC-2693-85E6-6BAE66944BB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61B01855-1BFC-2693-85E6-6BAE66944BB2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F53FAB77-1CFE-01B4-9764-0DEC1C9CF773}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F53FAB77-1CFE-01B4-9764-0DEC1C9CF773}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F53FAB77-1CFE-01B4-9764-0DEC1C9CF773}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F53FAB77-1CFE-01B4-9764-0DEC1C9CF773}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E3C1B612-CFC5-434E-9448-BC39E20F72B1}
+	EndGlobalSection
+EndGlobal

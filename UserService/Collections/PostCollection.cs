@@ -45,6 +45,15 @@ namespace UserService.Collections
             return doc.Id.ToString();
         }
 
+        public bool Update(string id, string title, string description)
+        {
+            var filter = Builders<PostMongoEntity>.Filter.Eq("_id", new ObjectId(id));
+            var update = Builders<PostMongoEntity>.Update
+                .Set("Title", title)
+                .Set("Description", description);
+            return collection.UpdateOne(filter, update).IsAcknowledged;
+        }
+
         public bool DeleteSome(string email)
         {
             var filter = Builders<PostMongoEntity>.Filter.Eq("Email", email);

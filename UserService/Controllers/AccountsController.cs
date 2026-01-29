@@ -1,5 +1,6 @@
-﻿using Cloud77.Abstractions.Service;
+﻿using Cloud77.Abstractions;
 using Cloud77.Abstractions.Entity;
+using Cloud77.Abstractions.Service;
 using Cloud77.Abstractions.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +18,7 @@ namespace UserService.Controllers
     /// <summary>
     /// Help update user account.
     /// </summary>
-    [Route("api/[controller]")]
+    [Route("user/[controller]")]
     [Authorize]
     [ApiController]
     public class AccountsController : ControllerBase, IDisposable
@@ -47,7 +48,6 @@ namespace UserService.Controllers
             events = new EventCollection(database);
         }
 
-        // check if user's token is valid
         [Route("role")]
         [HttpGet]
         public IActionResult GetRole()
@@ -210,12 +210,25 @@ namespace UserService.Controllers
             }
 
             // user is not confirmed, check if token is generated in several minutes
-
+            var date = DateTime.UtcNow;
             // create verification code, add to events
-            var token = events.CreateVerificationCode(email);
+            var token = CodeGenerator.GenerateVerificationCode(email, date);
+            var payload = new TokenPayload()
+            {
+                Token = token,
+                Expiration = date.AddHours(1)
+            };
+            var tokenId = events.AppendEventLog(new EventEntity()
+            {
+                Name = "Email-Token",
+                UserEmail = email.ToLower(),
+                Email = email.ToLower(),
+                Payload = JsonConvert.SerializeObject(payload),
+                Date = date,
+            });
 
             // {sso_url}/confirm-email?email=xxx&token=xxx
-            var link = $"{configuration["SSO_url"] ?? ""}/confirm-email?email={user.Email}&token={token}";
+            var link = $"{configuration["SSO_url"] ?? ""}/confirm-email?email={user.Email}&token={token}&id={tokenId}";
 
             logger.LogDebug($"the email confirm link is {link}");
             model.AppendLog($"the email confirm link is {link}");
@@ -226,119 +239,146 @@ namespace UserService.Controllers
             return Ok(new OneTimeTokenCreated(email, "Email Verification"));
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("logout")]
-        public IActionResult Logout([FromQuery] string code)
+        public IActionResult Logout()
         {
+            // get salts from access token, refresh token
+            // append history to logout_history
             if (Request.Headers.ContainsKey("x-refresh-token"))
             {
-                StringValues token;
-                Request.Headers.TryGetValue("x-refresh-token", out token);
+                var email = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
 
-                var des_key = configuration["DES_Key"];
-                var des_iv = configuration["DES_IV"];
+                StringValues refreshToken;
+                Request.Headers.TryGetValue("x-refresh-token", out refreshToken);
+                User.Claims.FirstOrDefault(c => c.Type == "salt");
+                User.Claims.FirstOrDefault(c => c.Type == "timestamp");
+                var desKey = configuration["DES_Key"] ?? "";
+                var desIV = configuration["DES_IV"] ?? "";
 
-                var key = ASCIIEncoding.ASCII.GetBytes(des_key);
-                var iv = ASCIIEncoding.ASCII.GetBytes(des_iv);
+                var key = Encoding.ASCII.GetBytes(desKey);
+                var iv = Encoding.ASCII.GetBytes(desIV);
+                var result = new Dictionary<string, string>();
+                var data = CodeGenerator.Decrypt(key, iv, refreshToken);
 
-                string data = CodeGenerator.Decrypt(key, iv, token); // email_xxx_000000
-                var d = data.Split("_");
+                var parts = data.Split("_");
+                result["email"] = parts[0];
+                result["salt"] = parts[1];
+                result["timestamp"] = parts[2];
+                result["expiration"] = parts[3];
 
-                if (string.IsNullOrEmpty(code))
-                {
-                    //return Ok(new ServiceResponse("valid-logout-code", d[2], "logout with the id value (?code=id)"));
-                }
-                if (code.Length == 6)
-                {
-                    // pattern {code from user} {code from service}
-                    //string cachevalue = cache.GetValue<string>(string.Format("refresh-token-{0}-{1}", d[0], d[1])); // 000000
-                    string cachevalue = "xxx";
-                    if (string.IsNullOrEmpty(cachevalue))
-                    {
-                        return BadRequest(
-                        //new ServiceResponse("invalid-logout-code", "", "logout code of refresh token is removed")
-                        );
-                    }
-                    else
-                    {
-                        // remove cache
-                        //cache.RemoveValue(string.Format("refresh-token-{0}-{1}", d[0], d[1]));
-                        //return Ok(
-                        //    new ServiceResponse("logout-code-removed")
-                        //    );
-                    }
-                }
-                return BadRequest(
-                    //new ServiceResponse("invalid-logout-code", "", "incorrect logout code")
-                    );
+                new UserDataModel(email.Value)
+                    .SaveLogoutHistory(
+                    parts[2],
+                    new TokenSalt() { Value = User.Claims.FirstOrDefault(c => c.Type == "salt").Value },
+                    new TokenSalt() { Value = parts[1] });
+
+                return Ok();
             }
             else
             {
-                return BadRequest(
-                //new ServiceResponse("empty-refresh-token")
-                );
+                return BadRequest();
             }
-            throw new NotImplementedException();
         }
+
+        //[HttpPost]
+        // issue one-time token for deleting user
+        // token expire in several minutes
+        // save in redis cache
 
         [HttpDelete]
         [Route("{email}")]
         public IActionResult Delete(string email)
         {
             // need confirmed token ??
+            // get token from headers or query string
+            // get token from cache, compare
 
-            // posts
-            var posts = new PostCollection(database);
-            posts.DeleteSome(email);
-
-            logger.LogDebug($"delete posts for user {email}");
-
-            // tasks
-            var tasks = new TaskCollection(database);
-            tasks.DeleteSome(email);
-
-            logger.LogDebug($"delete tasks for user {email}");
-
-            var date = DateTime.UtcNow;
-            // add events
-            var log = new EventEntity()
+            var resourceServers = ServiceDataModel.GetSetting("user_resource_servers").Split(",");
+            if (resourceServers.Length == 0)
             {
-                Name = "Delete-User",
-                UserEmail = email,  // TODO get the email from claims
-                Email = email,
-                Date = date,
-            };
-            events.AppendEventLog(log);
-
-            logger.LogDebug($"delete user {email} at {date}");
-
-            // users
-            users.DeleteUser(email);
-
-            var role = new UserRole()
-            {
-                Email = email,
-                Name = "",
-                Role = ""
-            };
-            var message = JsonConvert.SerializeObject(role);
-
-            // my_services_user_deleted
-            var queue = configuration["User_deleted_queue"] ?? "";
-
-            using (var connection = factory.CreateConnection())
-            using (var channel = connection.CreateModel())
-            {
-                var properties = channel.CreateBasicProperties();
-                properties.Persistent = true;
-                channel.QueueDeclare(queue: queue, durable: true, exclusive: false, autoDelete: false, arguments: null);
-                var body = Encoding.UTF8.GetBytes(message);
-                channel.BasicPublish(exchange: "", routingKey: queue, basicProperties: properties, body: body);
+                return BadRequest();
             }
+            var pending = System.IO.File.Exists(Path.Combine(ServiceDataModel.Root, "users", email, "user_resource_deleting.txt"));
+            if (pending)
+            {
+                // check if user resource is deleted
+                var path = Path.Combine(ServiceDataModel.Root, "users", email, "user_resource_deleted.txt");
+                // get the content from user_resource_deleted.txt
+                var lines = System.IO.File.ReadAllLines(path);
+                var allDeleted = true;
+                foreach (var resourceServer in resourceServers)
+                {
+                    if (!lines.Contains($"{email}_resource_deleted_{resourceServer}"))
+                    {
+                        allDeleted = false;
+                    }
+                }
 
-            logger.LogDebug("send user deleted message to queue " + queue);
+                if (!allDeleted)
+                {
+                    return BadRequest("deleting user resources");
+                }
+                else
+                {
+                    // deleted
+                    // next step
+                    // remove *.txt
+                    // remove *.json
+                    new UserDataModel(email).Remove();
 
-            return Ok(new UserDeleted(email));
+                    var date = DateTime.UtcNow;
+                    // add events
+                    var log = new EventEntity()
+                    {
+                        Name = "Delete-User",
+                        UserEmail = email,  // TODO get the email from claims
+                        Email = email,
+                        Date = date,
+                    };
+                    events.AppendEventLog(log);
+
+                    logger.LogDebug($"delete user {email} at {date}");
+
+                    // users
+                    users.DeleteUser(email);
+
+                    return Ok(new UserDeleted(email));
+                }
+            }
+            else
+            {
+                var role = new UserRole()
+                {
+                    Email = email,
+                    Name = "",
+                    Role = ""
+                };
+                var message = JsonConvert.SerializeObject(role);
+                var body = Encoding.UTF8.GetBytes(message);
+
+                var lines = new List<string>();
+                using (var connection = factory.CreateConnection())
+                {
+                    using (var channel = connection.CreateModel())
+                    {
+                        var properties = channel.CreateBasicProperties();
+                        properties.Persistent = true;
+
+                        foreach (var resourceServer in resourceServers)
+                        {
+                            channel.QueueDeclare(queue: resourceServer, durable: true, exclusive: false, autoDelete: false, arguments: null);
+                            channel.BasicPublish(exchange: "", routingKey: resourceServer, basicProperties: properties, body: body);
+                            lines.Add($"{email}_resource_deleting_{resourceServer}");
+                        }
+                    }
+                }
+
+                // add something to user_resource_deleting.txt, means background starts deleting user resources
+                System.IO.File.AppendAllLines(Path.Combine(ServiceDataModel.Root, "users", email, "user_resource_deleting.txt"), lines.ToArray());
+
+                return BadRequest("deleting user resources");
+            }
         }
 
         private void SendUserLink(string queue, UserLink link)

@@ -1,4 +1,5 @@
-﻿using Cloud77.Abstractions.Entity;
+﻿using Cloud77.Abstractions;
+using Cloud77.Abstractions.Entity;
 using MongoDB.Driver;
 using Newtonsoft.Json;
 using SuperService.Collections;
@@ -13,27 +14,18 @@ namespace SuperService.Backgrounds
     public class SimpleBackgroundService : IHostedService
     {
         private readonly ILogger<SimpleBackgroundService> logger;
-        //private readonly MongoClient client;
         private readonly IMongoDatabase database;
-        //private readonly IMongoCollection<UserMongoEntity> collection;
-        //private Timer _timer;
 
-        private Timer _healthCheckTimer;
+        private Timer? _healthCheckTimer;
         private int checkHour = 0;
 
         public SimpleBackgroundService(ILogger<SimpleBackgroundService> logger, IConfiguration configuration)
         {
-            var connection = Environment.GetEnvironmentVariable("DB_CONNECTION") ?? "localhost";
-            if (!string.IsNullOrEmpty(LocalDataModel.IPAddress))
-            {
-                connection = connection.Replace("localhost", LocalDataModel.IPAddress);
-            }
-
-            var client = new MongoClient(connection);
+            var client = new MongoClient(ServiceDataModel.GetVariable("DB_CONNECTION"));
             database = client.GetDatabase(configuration["Database"]);
-            var model = new LocalDataModel();
-            checkHour = Convert.ToInt16(model.GetSetting("health_check_hour_utc") ?? "0");
+            var model = new ServiceDataModel();
 
+            checkHour = Convert.ToInt16(ServiceDataModel.GetSetting("health_check_hour_utc") ?? "0");
             this.logger = logger;
         }
 
@@ -47,7 +39,6 @@ namespace SuperService.Backgrounds
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            logger.LogInformation("stop service");
             if (_healthCheckTimer != null)
             {
                 _healthCheckTimer.Change(Timeout.Infinite, 0);
@@ -61,11 +52,15 @@ namespace SuperService.Backgrounds
             var index = 0;
             var size = 100;
             var count = 0;
-            List<User> userList = new List<User>();
-            logger.LogInformation("start loop");
+            List<SimplifiedUser> userList = new List<SimplifiedUser>();
             var collection = database.GetCollection<UserMongoEntity>("Users");
 
-            while (!new LocalDataModel().HasUsers)
+            if (new UserDataModel().HasUsers)
+            {
+                logger.LogInformation("users index already exists.");
+            }
+
+            while (!new UserDataModel().HasUsers)
             {
                 try
                 {
@@ -73,17 +68,15 @@ namespace SuperService.Backgrounds
                     var users = await collection.Find(Builders<UserMongoEntity>.Filter.Empty).Skip(index * size).Limit(size).ToListAsync();
                     if (users.Count > 0)
                     {
-                        logger.LogInformation(users.First().Email);
                         count = count + users.Count;
-                        logger.LogInformation($"Users Count: {count}");
-                        userList.AddRange(users.Select(u => new User() { Id = u.Id.ToString(), Email = u.Email, Name = u.Name }));
+                        //logger.LogInformation($"Users Count: {count}");
+                        userList.AddRange(users.Select(u => new SimplifiedUser() { Id = u.Id.ToString(), Email = u.Email, Name = u.Name }));
                         index++;
                     }
                     else
                     {
-                        logger.LogInformation("no more users found");
                         var content = JsonConvert.SerializeObject(userList);
-                        File.WriteAllText(Path.Combine(LocalDataModel.Root, "users", "index", "users.json"), content);
+                        File.WriteAllText(Path.Combine(ServiceDataModel.Root, "users", "index", "users.json"), content);
                         logger.LogInformation("save users index users.json");
                         break;
                     }
@@ -94,7 +87,7 @@ namespace SuperService.Backgrounds
                 }
             }
 
-            if (new LocalDataModel().HasUsers)
+            if (new UserDataModel().HasUsers)
             {
                 //var usersJson = File.ReadAllText(Path.Combine(LocalDataModel.Root, "users", "index", "users.json"));
                 //var accounts = JsonConvert.DeserializeObject<List<User>>(usersJson);
@@ -144,18 +137,17 @@ namespace SuperService.Backgrounds
             _healthCheckTimer = new Timer(Health, null, TimeSpan.Zero, TimeSpan.FromDays(1));
         }
 
-        private void Health(object state)
+        private void Health(object? state)
         {
             logger.LogInformation("health checking is running...");
-            var model = new LocalDataModel();
 
-            if (Convert.ToBoolean(model.GetSetting("health_check_enable") ?? "true"))
+            if (Convert.ToBoolean(ServiceDataModel.GetSetting("health_check_enable") ?? "true"))
             {
                 EmailEntity mail = new EmailEntity()
                 {
-                    Addresses = new string[] { model.GetSetting("health_check_address") },
-                    Subject = model.GetSetting("health_check_subject"),
-                    Body = model.GetSetting("health_check_body")
+                    Addresses = new string[] { ServiceDataModel.GetSetting("health_check_address") },
+                    Subject = ServiceDataModel.GetSetting("health_check_subject"),
+                    Body = ServiceDataModel.GetSetting("health_check_body")
                 };
                 var client = new MailClient();
                 client.Send(mail);

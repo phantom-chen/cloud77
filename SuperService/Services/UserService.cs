@@ -7,6 +7,7 @@ using UserEmail = SuperService.Protos.UserEmail;
 using UserPassword = SuperService.Protos.UserPassword;
 using SuperService.Models;
 using SuperService.Collections;
+using Newtonsoft.Json;
 
 namespace SuperService.Services
 {
@@ -15,6 +16,7 @@ namespace SuperService.Services
         private readonly ILogger<UserService> logger;
         private readonly TokenGenerator generator;
         private readonly UserCollection database;
+        private EventCollection events;
         private readonly string defaultRole;
 
         public UserService(
@@ -61,8 +63,35 @@ namespace SuperService.Services
                 Password = CodeGenerator.HashString(request.Password),
                 Role = role,
             });
-            var token = database.CreateVerificationCode(request.Email);
+
+            var date = DateTime.UtcNow;
+            var log = new EventEntity()
+            {
+                Name = "Create-User",
+                UserEmail = request.Email.ToLower(),
+                Email = request.Email.ToLower(),
+                Date = date,
+            };
+            events.AppendEventLog(log);
+
+            string token = CodeGenerator.GenerateVerificationCode(request.Email, date);
+            var payload = new TokenPayload()
+            {
+                Token = token,
+                Expiration = date.AddHours(1)
+            };
+            var tokenId = events.AppendEventLog(new EventEntity()
+            {
+                Name = "Email-Token",
+                UserEmail = request.Email.ToLower(),
+                Email = request.Email.ToLower(),
+                Payload = JsonConvert.SerializeObject(payload),
+                Date = date,
+            });
+            logger.LogInformation(tokenId);
+            logger.LogInformation(token);
             // TODO send code via email
+
             return Task.FromResult(new ServiceReply()
             {
                 Code = "user-entity-created",
@@ -96,27 +125,50 @@ namespace SuperService.Services
         {
             var header = context.GetHttpContext().Request.Headers["x-onetime-token"];
             var token = header.ToString().Trim();
-            logger.LogInformation(token);
-            
-            var payloads = database.GetTokenPayloads(request.Email);
 
-            payloads = payloads.Where(p => p.Token == token && p.Usage == "verify-email");
-            if (payloads == null || !payloads.Any())
+            var header2 = context.GetHttpContext().Request.Headers["x-onetime-token-id"];
+            var id= header2.ToString().Trim();
+
+            logger.LogInformation(token);
+
+            var eventLog = events.GetEventLog(id);
+            if (eventLog == null)
             {
                 throw new RpcException(new Status());
             }
-            var payload = payloads.FirstOrDefault(x => x.Token == token && x.Exp.Year > 1);
-            if (DateTime.Compare((DateTime)payload.Exp, DateTime.UtcNow) < 0)
+
+            var payload = JsonConvert.DeserializeObject<TokenPayload>(eventLog.Payload);
+            if (payload.Token != token)
             {
                 throw new RpcException(new Status());
             }
-            payload = payloads.FirstOrDefault(x => x.Token == token && x.Exp.Year == 1);
-            if (payload != null)
+
+            if (!string.IsNullOrEmpty(payload.Consumed))
             {
                 throw new RpcException(new Status());
             }
-            database.UpdateUser(request.Email, true, token);
+
+            if (DateTime.Compare((DateTime)payload.Expiration, DateTime.UtcNow) < 0)
+            {
+                throw new RpcException(new Status());
+            }
             
+            var result = database.UpdateUser(request.Email, true, token);
+            if (result)
+            {
+                // update token consumed
+                payload.Consumed = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
+                events.UpdateEventLog(id, JsonConvert.SerializeObject(payload));
+                events.AppendEventLog(new EventEntity()
+                {
+                    Name = "Verify-Email",
+                    UserEmail = request.Email.ToLower(),
+                    Email = request.Email.ToLower(),
+                    Payload = token,
+                    Date = DateTime.UtcNow
+                });
+            }
+
             return Task.FromResult(new ServiceReply()
             {
                 Code = "user-email-verified",

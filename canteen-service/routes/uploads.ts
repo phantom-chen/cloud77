@@ -2,8 +2,9 @@ import { Request, Response } from "express";
 import fileUpload from "express-fileupload";
 import { join } from "path";
 import { localData } from "../models/local-data";
-import { existsSync } from "fs";
+import { accessSync, existsSync, unlinkSync } from "fs";
 import { getFiles } from "../models/files";
+
 export function uploadFile(req: Request, res: Response) {
   console.log("uploadFile");
   console.log(req.files);
@@ -58,5 +59,47 @@ export async function getUploads(req: Request, res: Response) {
       .json({ code: "empty-file", id: "", message: "not found files" });
   } else {
     res.status(200).json(files);
+  }
+}
+
+export function downloadFile(req: Request, res: Response) {
+  const name = String(req.params['name']);
+  const filePath = join(localData(), "uploads", name);
+  if (existsSync(filePath)) {
+    res.download(filePath);
+  } else {
+    res.status(404).json({
+      code: "file-not-found",
+      id: "",
+      message: "file not found",
+    });
+  }
+}
+
+export function deleteFile(req: Request, res: Response) {
+  const name = String(req.params['name']);
+  const filePath = join(localData(), "uploads", name);
+  if (existsSync(filePath)) {
+    try {
+      accessSync(filePath);
+      unlinkSync(filePath);
+      res.status(200).json({
+        code: "file-deleted",
+        id: "",
+        message: "file deleted successfully",
+      });
+    } catch (error) {
+      res.status(500).json({
+        code: "file-delete-error",
+        id: "",
+        message: "error deleting file",
+      });
+    }
+  } else {
+    res.status(404).json({
+      code: "file-not-found",
+      id: "",
+      message: "file not found",
+    });
   }
 }

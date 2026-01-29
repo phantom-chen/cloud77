@@ -11,4 +11,11 @@ namespace Cloud77.Abstractions.Entity
         public bool? Confirmed { get; set; }
         public ProfileEntity Profile { get; set; }
     }
+
+    public class SimplifiedUser
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
+    }
 }

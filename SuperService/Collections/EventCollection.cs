@@ -10,7 +10,7 @@ namespace SuperService.Collections
         public ObjectId Id { get; set; }
     }
 
-    public class EventCollection : IEventCollection
+    public class EventCollection
     {
         private readonly IMongoCollection<EventMongoEntity> collection;
 
@@ -39,6 +39,14 @@ namespace SuperService.Collections
             return document.Id.ToString();
         }
 
+        public string UpdateEventLog(string id, string payload)
+        {
+            var filter = Builders<EventMongoEntity>.Filter.Eq("_id", new ObjectId(id));
+            var update = Builders<EventMongoEntity>.Update.Set("Payload", payload);
+            collection.UpdateOne(filter, update);
+            return id;
+        }
+
         public IEnumerable<EventEntity> GetEventLogs(string name, int index, int size)
         {
             return collection
@@ -49,15 +57,8 @@ namespace SuperService.Collections
               .ToList();
         }
 
-        public IEnumerable<EventEntity> GetEventLogs(string email)
+        public IEnumerable<EventEntity> GetEventLogs(string email, string name)
         {
-            // TODO event logs related to user self
-            //var filter = Builders<EventMongoEntity>.Filter.And(
-            //    Builders<EventMongoEntity>.Filter.Eq("Email", email),
-            //    Builders<EventMongoEntity>.Filter.Or(
-            //        Builders<EventMongoEntity>.Filter.Eq("Name", "Issue-Email-Token"),
-            //        Builders<EventMongoEntity>.Filter.Eq("Name", "Verify-Email"),
-            //        Builders<EventMongoEntity>.Filter.Eq("Name", "Reset-Password")));
             var filter = Builders<EventMongoEntity>.Filter.Eq("Email", email);
             return collection
               .Find(filter)
@@ -65,26 +66,28 @@ namespace SuperService.Collections
               .ToList();
         }
 
-        public bool DeleteSome(string email)
+        public EventEntity GetEventLog(string id)
+        {
+            var filter = Builders<EventMongoEntity>.Filter.Eq("_id", new ObjectId(id));
+            return collection.Find(filter).Limit(1).FirstOrDefault();
+        }
+
+        public bool DeleteEventLog(string id)
+        {
+            var filter = Builders<EventMongoEntity>.Filter.Eq("_id", new ObjectId(id));
+            return collection.DeleteOne(filter).IsAcknowledged;
+        }
+
+        public bool DeleteEventLogs(string email, string name)
         {
             var filter = Builders<EventMongoEntity>.Filter.Eq("Email", email);
-            //var filter = Builders<EventMongoEntity>.Filter.Eq("_id", new ObjectId(id));
+            if (!string.IsNullOrEmpty(name))
+            {
+                filter = Builders<EventMongoEntity>.Filter.And(
+                    Builders<EventMongoEntity>.Filter.Eq("Email", email),
+                    Builders<EventMongoEntity>.Filter.Eq("Name", name));
+            }
             return collection.DeleteMany(filter).IsAcknowledged;
-        }
-
-        public string CreateVerificationCode(string email)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<TokenPayload> GetTokenPayloads(string email)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool DeleteOne(string id)
-        {
-            throw new NotImplementedException();
         }
     }
 }

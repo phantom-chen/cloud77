@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Cloud77.Abstractions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace SampleService.Controllers
@@ -19,7 +20,7 @@ namespace SampleService.Controllers
     {
       return Ok(new
       {
-        environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "",
+        environment = ServiceDataModel.GetVariable("ENVIRONMENT"),
         key = configuration["APIKey"] ?? "",
         home = configuration["Home_url"] ?? "",
         sso = configuration["SSO_url"] ?? "",

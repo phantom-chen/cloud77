@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Cloud77.Abstractions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SampleService.Models;
 
@@ -9,10 +10,12 @@ namespace SampleService.Controllers
     public class PostsController : ControllerBase, IDisposable
     {
         private readonly TextLoggingModel model;
+        private readonly SampleDataModel sampleData;
 
         public PostsController(TextLoggingModel model)
         {
             this.model = model;
+            sampleData = new SampleDataModel();
         }
 
         [HttpGet]
@@ -22,14 +25,14 @@ namespace SampleService.Controllers
             model.PushLog("check something");
             model.PushLog("check something again");
             model.PushLog("ready to return correct response");
-            return Ok(new LocalDataModel().GetPosts());
+            return Ok(sampleData.GetPosts());
         }
 
         [HttpGet("{name}")]
         public IActionResult GetContent(string name)
         {
             string content = "Sample text content";
-            new LocalDataModel().GetPost(name);
+            sampleData.GetPost(name);
             return Content(content, "text/plain");
         }
 
@@ -39,7 +42,7 @@ namespace SampleService.Controllers
             using (var reader = new StreamReader(Request.Body))
             {
                 var content = await reader.ReadToEndAsync();
-                new LocalDataModel().SavePost(name, content);
+                sampleData.SavePost(name, content);
                 return Ok(new { Content = content });
             }
         }
@@ -47,7 +50,7 @@ namespace SampleService.Controllers
         [HttpDelete("{name}")]
         public IActionResult Delete(string name)
         {
-            new LocalDataModel().DeletePost(name);
+            sampleData.DeletePost(name);
             return Ok();
         }
 

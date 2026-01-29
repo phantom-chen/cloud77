@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Diagnostics;
 using System.Text;
 
@@ -7,6 +8,24 @@ namespace FunctionalTests
     [TestClass]
     public sealed class Test1
     {
+        [TestMethod()]
+        public void FindUsers()
+        {
+            Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+            string programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+            var root = Path.Combine(programDataPath, "MyServices");
+            var path = Path.Combine(root, "users", "index", "users.json");
+            Assert.IsTrue(File.Exists(path));
+
+            var content = File.ReadAllText(path);
+            var users = JsonConvert.DeserializeObject<List<TestUtility.User>>(content);
+            Assert.IsNotNull(users);
+            Console.WriteLine(users.Count);
+            Console.WriteLine(users.First().Email);
+            var _users = users.Where(u => u.Email.Contains("example.com")).Select(u => u.Email);
+            Console.WriteLine(string.Join(',', _users));
+        }
+
         [TestMethod]
         public void TestMethod1()
         {
@@ -26,7 +45,8 @@ namespace FunctionalTests
 
             task.Start();
 
-            Thread thread = new Thread(() => {
+            Thread thread = new Thread(() =>
+            {
                 Debug.WriteLine("test from another thread // " + Thread.CurrentThread.Name + " // " + Thread.CurrentThread.CurrentUICulture.Name);
             });
             thread.Name = "customThread";
@@ -38,7 +58,7 @@ namespace FunctionalTests
             task.Wait();
             Debug.WriteLine(task.Id);
         }
-    
+
         private void EmailContent()
         {
             string mailSubject = "Email confirmation - Company Name";
@@ -69,22 +89,6 @@ namespace FunctionalTests
             _message = "The token has been expired. Please resend a password reset email in software.";
             _message = "The password has been successfully reset.";
         }
-    }
 
-    [TestClass]
-    public sealed class TesterTest
-    {
-        [TestMethod]
-        public void Test()
-        {
-            string root = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                "MyServer", "users");
-
-            if (!Directory.Exists(root))
-            {
-                Directory.CreateDirectory(root);
-            }
-        }
     }
 }

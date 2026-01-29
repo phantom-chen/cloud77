@@ -3,12 +3,16 @@ using Cloud77.Abstractions.Service;
 using Cloud77.Abstractions.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 using UserService.Collections;
 using UserService.Models;
+using Cloud77.Abstractions;
 
 namespace UserService.Controllers
 {
@@ -17,7 +21,8 @@ namespace UserService.Controllers
     public class TokensController : ControllerBase, IDisposable
     {
         private readonly ILogger<TokensController> logger;
-        private readonly TextLoggingModel model;
+        private readonly IConfiguration configuration;
+        private readonly TextLoggingModel textLogging = new TextLoggingModel();
         private readonly ConnectionFactory factory;
         private readonly UserCollection users;
         private readonly EventCollection events;
@@ -27,14 +32,13 @@ namespace UserService.Controllers
 
         public TokensController(
             ILogger<TokensController> logger,
-            TextLoggingModel model,
             IConfiguration configuration,
             MongoClient client,
             ConnectionFactory factory
             )
         {
             this.logger = logger;
-            this.model = model;
+            this.configuration = configuration;
             this.factory = factory;
             users = new UserCollection(client, configuration);
             events = new EventCollection(client, configuration);
@@ -52,44 +56,103 @@ namespace UserService.Controllers
 
             Request.Headers.TryGetValue("x-refresh-token", out var refreshTokenHeader);
             string refresh_token = refreshTokenHeader.ToString();
-            if (!string.IsNullOrEmpty(refresh_token))
-            {
-                logger.LogDebug($"find refresh token in request for user {email}");
-                model.AppendLog($"find refresh token in request for user {email}");
-            }
 
             if (string.IsNullOrEmpty(email) && string.IsNullOrEmpty(username))
             {
+                textLogging.PushLog($"Tokens: no email or user name provided in request");
                 return BadRequest(new EmptyAccount());
             }
 
             if (string.IsNullOrEmpty(password) &&
                 string.IsNullOrEmpty(refresh_token))
             {
+                textLogging.PushLog($"Tokens: no password or refresh token provided in request");
                 return BadRequest(new EmptyPassword());
             }
 
-            UserEntity user = users.GetUser(email);
+            UserEntity user;
+            if (string.IsNullOrEmpty(email))
+            {
+                user = users.GetUserByName(username);
+                if (user != null)
+                {
+                    email = user.Email;
+                }
+            }
+            else
+            {
+                user = users.GetUser(email);
+            }
+
             if (user == null)
             {
-                logger.LogDebug($"cannot find user entity for user {email}");
-                model.AppendLog($"cannot find user entity for user {email}");
+                textLogging.PushLog($"Tokens: user entity not found for email '{email}' or name '{username}'", true);
                 return BadRequest(new UserNotExisting(body.Email));
             }
 
-            if (CodeGenerator.HashString(password) != user.Password)
+            var method = "";
+            var userData = new UserDataModel(email);
+            TokenSalt? previousSalt = null;
+            if (!string.IsNullOrEmpty(refresh_token))
             {
-                logger.LogDebug($"password incorrect for user {email}");
-                model.AppendLog($"password incorrect for user {email}");
-                return BadRequest(new InCorrectPassword(user.Email));
+                var d = generator.ValidateRefreshToken(email, refresh_token);
+                previousSalt = userData.GetRefreshTokenSalt(d["timestamp"] ?? "");
+                if (previousSalt.Value != d["salt"])
+                {
+                    return BadRequest(new RefreshTokenSaltMismatch());
+                }
+                if (email != d["email"])
+                {
+                    return BadRequest(new RefreshTokenEmailMismatch());
+                }
+
+                if (userData.RefreshTokenSaltIsExpired(previousSalt))
+                {
+                    return BadRequest(new RefreshTokenExpired());
+                }
+
+                if (userData.RefreshTokenSaltIsUsed(previousSalt))
+                {
+                    return BadRequest(new RefreshTokenUsed());
+                }
+
+                method = "refresh token";
+                textLogging.PushLog($"Tokens: refresh token is valid for user {email}");
+            }
+            else
+            {
+                if (CodeGenerator.HashString(password) != user.Password)
+                {
+                    textLogging.PushLog($"Tokens: password is incorrect for user {email}");
+                    return BadRequest(new InCorrectPassword(user.Email));
+                }
+
+                method = "password";
+                textLogging.PushLog($"Tokens: password is correct for user {email}");
             }
 
-            var timestamp = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
-            var token = generator.IssueToken(user);
-            var refreshToken = generator.IssueRefreshToken(user.Email, timestamp);
+            textLogging.PushLog($"Tokens: user {email} logins successfully via {method}");
 
-            logger.LogDebug($"issue token for user {email}");
-            model.AppendLog($"issue token for user {email}");
+            var saltLength = Convert.ToInt16(configuration["Token_salt_length"] ?? "8");
+            var date = DateTime.UtcNow;
+            var timestamp = date.ToString("yyyyMMddHHmmss");
+
+            var accessSaltExpiredDate = date.AddMinutes(Convert.ToInt16(configuration["Token_expiration_minute"] ?? "10"));
+            var accessSalt = new TokenSalt() { Value = CodeGenerator.GenerateCode(saltLength), Expiration = accessSaltExpiredDate.ToString("yyyyMMddHHmmss") };
+
+            var refreshSaltExpiredDate = date.AddMinutes(Convert.ToInt16(configuration["Token_expiration_day"] ?? "3"));
+            var refreshSalt = new TokenSalt() { Value = CodeGenerator.GenerateCode(saltLength), Expiration = refreshSaltExpiredDate.ToString("yyyyMMddHHmmss") };
+
+            var token = generator.IssueToken(user, accessSalt.Value, date, accessSaltExpiredDate);
+            var refreshToken = generator.IssueRefreshToken(user.Email, refreshSalt.Value, date, refreshSaltExpiredDate);
+
+            textLogging.PushLog($"Tokens: issue access token and refresh token for user {email}");
+
+            var loginMethod = string.IsNullOrEmpty(password) ? LoginMethod.RefreshToken : LoginMethod.Password;
+            userData.SaveAccessTokenHistory(timestamp, accessSalt);
+            userData.SaveRefreshTokenHistory(timestamp, loginMethod, refreshSalt, previousSalt);
+
+            textLogging.PushLog($"Tokens: save access token salt and refresh token salt for user {email}");
 
             return Ok(new UserToken()
             {
@@ -97,8 +160,60 @@ namespace UserService.Controllers
                 Value = token,
                 RefreshToken = refreshToken,
                 IssueAt = timestamp,
-                ExpireInHours = generator.ExpirationInHour
+                ExpireInHours = 0
             });
+        }
+
+        [HttpGet]
+        [Route("validation")]
+        public IActionResult ValidateToken()
+        {
+            string? authHeader = Request.Headers["Authorization"].FirstOrDefault();
+            if (authHeader is null || !authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+            {
+                return BadRequest(new TokenNotProvided());
+            }
+
+            string token = authHeader.Substring("Bearer ".Length).Trim();
+
+            var validationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = configuration["Issuer"],
+                ValidAudience = configuration["Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["SecurityKey"] ?? ""))
+            };
+
+            var handler = new JwtSecurityTokenHandler();
+
+            try
+            {
+                ClaimsPrincipal principal = handler.ValidateToken(token, validationParameters, out SecurityToken validatedToken);
+                // exception throws for invalid token
+
+                // Check expiration explicitly (optional, as ValidateToken does this by default)
+                if (validatedToken is JwtSecurityToken jwtToken
+                  && jwtToken.ValidTo < DateTime.UtcNow)
+                {
+                    // expired token
+                }
+
+                return Ok(new TokenIsValid(((JwtSecurityToken)validatedToken).ValidTo));
+            }
+            catch (Exception ex)
+            {
+                logger.LogInformation(ex.Message);
+                if (ex is SecurityTokenExpiredException)
+                {
+                    textLogging.PushLog(ex.Message);
+                    return BadRequest(new TokenExpired());
+                }
+
+                return BadRequest(new NotJWTToken());
+            }
         }
 
         [HttpPost]
@@ -113,37 +228,39 @@ namespace UserService.Controllers
             var user = users.GetUser(email);
             if (user == null)
             {
-                logger.LogDebug($"cannot find user entity for user {email}");
-                model.AppendLog($"cannot find user entity for user {email}");
+                textLogging.PushLog($"Tokens: user entity not found for email '{email}'", true);
                 return BadRequest(new UserNotExisting(email));
             }
 
-            var usage = "reset-password";
+            // get all events for email token and reset password
+            // get payloads
+            // check is payload is created in minutes
+
+            var logs = events.GetEventLogs(email, "Password-Token");
+            logs = logs.Where(l => l.Name == "Password-Token");
+
             var date = DateTime.UtcNow;
-            string token = CodeGenerator.HashString(email.ToLower() + date.Millisecond.ToString() + CodeGenerator.GenerateDigitalCode(6));
+            string token = CodeGenerator.GenerateVerificationCode(email, date);
             var payload = new TokenPayload()
             {
-                Usage = usage,
                 Token = token,
-                Exp = date.AddHours(1)
+                Expiration = date.AddHours(1)
             };
 
-            events.AppendEventLog(new EventEntity()
+            var token_id = events.AppendEventLog(new EventEntity()
             {
-                Name = "Issue-Email-Token",
+                Name = "Password-Token",
                 UserEmail = email,
                 Email = email,
                 Payload = JsonConvert.SerializeObject(payload),
                 Date = date,
             });
 
-            logger.LogDebug($"issue password reset token for user {email}");
-            model.AppendLog($"issue password reset token for user {email}");
+            var urlPath = $"reset-password?email={user.Email}&token={token}&id={token_id}";
+            var link = $"{ssoURL}/{urlPath}";
 
-            // {sso_url}/reset-password?email=xxx&token=xxx
-            var link = $"{ssoURL}/reset-password?email={user.Email}&token={token}";
-            logger.LogDebug($"the password reset link is {link}");
-            model.AppendLog($"the password reset link is {link}");
+            logger.LogDebug($"the path to reset password is ‘{urlPath}‘");
+            textLogging.PushLog($"Tokens: password reset link for user {email} is {link}");
 
             SendUserLink(userLinkQueue, new UserLink() { Email = email, Link = link, Name = "", Usage = "password" });
             return Ok(new OneTimeTokenCreated(email, "Password Reset"));
@@ -165,7 +282,7 @@ namespace UserService.Controllers
 
         public void Dispose()
         {
-            model.Commit();
+            textLogging.Commit();
         }
     }
 }

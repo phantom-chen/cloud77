@@ -1,0 +1,44 @@
+version: '3.6'
+
+services:
+
+    # proxy_app
+    proxy_app:
+        image: nginx:alpine
+        volumes:
+            - ./nginx.proxy.conf:/etc/nginx/nginx.conf
+        expose:
+            - 80
+        networks:
+            - my_dev_apps
+
+    # landing_web_app
+    # 7700
+    landing_web_app:
+        image: nginx:alpine
+        volumes:
+            - ./bin/landing:/usr/share/nginx/apps
+            - ./nginx.conf:/etc/nginx/nginx.conf
+            - ./bin/resources:/usr/share/nginx/apps/resources
+        ports:
+            - "7700:80"
+        depends_on:
+            - proxy_app
+        networks:
+            - my_dev_apps
+
+    # account_web_app
+    # 7703
+    account_web_app:
+        image: nginx:alpine
+        volumes:
+            - ./bin/account:/usr/share/nginx/apps
+            - ./nginx.account.conf:/etc/nginx/nginx.conf
+        ports:
+            - "7703:80"
+        networks:
+            - my_dev_apps
+
+networks:
+    my_dev_apps:
+        external: true

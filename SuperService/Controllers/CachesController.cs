@@ -6,7 +6,7 @@ using SuperService.Collections;
 
 namespace SuperService.Controllers
 {
-  [Route("api/[controller]")]
+  [Route("super/[controller]")]
   [ApiController]
   public class CachesController : ControllerBase
   {

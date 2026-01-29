@@ -2,8 +2,9 @@
 
 This document describes how to deploy the application.
 
-+ test for local deployment
-+ test for production deployment
++ Local (development, localhost)
++ Windows IIS (development, example.dev)
++ Docker (development, example.dev)
 
 {app}/data
 
@@ -52,6 +53,34 @@ Execution
 ```shell
 dotnet run --launch-profile "http"
 ```
+
+## Development Windows IIS
+
+example.dev (pfx)
+
+https
+
++ 7700 landing
++ 7701 super
++ 7702 sample
++ 7703 account
++ 7705 canteen
++ 7706 factory
++ 7708 dashboard
+
+http
+
++ 7710 gateway
++ 7711 super
++ 7712 sample
++ 7713 user
++ 7715 canteen
+
+## Staging Docker Desktop
+
+example.dev (pem/key)
+
+## Staging Linux
 
 ## Server
 

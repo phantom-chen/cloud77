@@ -1,0 +1,100 @@
+services:
+
+      sample_service:
+        image: "dev-sample-service"
+        volumes:
+            - ./bin/data:/app/data
+            - ./appsettings.Sample.json:/app/appsettings.Development.json
+        environment:
+            - "ASPNETCORE_ENVIRONMENT=Development"
+            - "DB_CONNECTION=mongodb://root:123456@dev_db_host2:27017"
+            - "REDIS_HOST=dev_cache_host"
+            - "REDIS_PASSWORD=123456"
+            - "MQ_HOST=dev_message_host"
+            - "MQ_USERNAME=admin"
+            - "MQ_PASSWORD=123456"
+            - "CUSTOM_LOGGING=txt"
+        expose:
+            - "8080"
+        networks:
+            - my_dev_apps
+
+      user_service:
+        image: "dev-user-service"
+        volumes:
+            - ./bin/data:/app/data
+            - ./appsettings.User.json:/app/appsettings.Development.json
+        environment:
+            - "ASPNETCORE_ENVIRONMENT=Development"
+            - "DB_CONNECTION=mongodb://root:123456@dev_db_host2:27017"
+            - "REDIS_HOST=dev_cache_host"
+            - "REDIS_PASSWORD=123456"
+            - "MQ_HOST=dev_message_host"
+            - "MQ_USERNAME=admin"
+            - "MQ_PASSWORD=123456"
+            - "CUSTOM_LOGGING=txt"
+        expose:
+            - "8080"
+        networks:
+            - my_dev_apps
+
+      super_service:
+        image: "dev-super-service"
+        volumes:
+            - ./bin/data:/app/data
+            - ./appsettings.Super.json:/app/appsettings.Development.json
+            - ./example.pem:/app/example.pem:ro
+            - ./example.key:/app/example.key:ro
+        environment:
+            - ASPNETCORE_URLS=https://+:443;http://+:8080
+            - "ASPNETCORE_ENVIRONMENT=Development"
+            - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/example.pem
+            - ASPNETCORE_Kestrel__Certificates__Default__KeyPath=/app/example.key
+            - "DB_CONNECTION=mongodb://root:123456@dev_db_host2:27017"
+            - "REDIS_HOST=dev_cache_host"
+            - "REDIS_PASSWORD=123456"
+            - "MQ_HOST=dev_message_host"
+            - "MQ_USERNAME=admin"
+            - "MQ_PASSWORD=123456"
+            - "CUSTOM_LOGGING=txt"
+        expose:
+            - "8080"
+        ports:
+            - "7701:443"
+        networks:
+            - my_dev_apps
+
+      canteen_service:
+        image: "dev-canteen-service"
+        volumes:
+            - ./bin/data:/app/data
+        environment:
+            - "CANTEEN_SERVICE_PORT=80"
+            - "CANTEEN_SERVICE_SOCKET_PATH=/canteen-ws"
+            - "CUSTOM_LOGGING=txt"
+        networks:
+            - my_dev_apps
+        expose:
+            - "80"
+
+      gateway_service:
+        image: "dev-gateway-service"
+        volumes:
+            - ./bin/data:/app/data
+            - ./ocelot.json:/app/ocelot.json
+            - ./appsettings.Gateway.json:/app/appsettings.Development.json
+        environment:
+            - "ASPNETCORE_ENVIRONMENT=Development"
+            - "CUSTOM_LOGGING=txt"
+        ports:
+            - "7710:8080"
+        networks:
+            - my_dev_apps
+        depends_on:
+            - sample_service
+            - user_service
+            - super_service
+            - canteen_service
+networks:
+    my_dev_apps:
+        external: true

@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, writeFileSync } from "fs";
+import { appendFileSync, existsSync, readFileSync, writeFileSync } from "fs";
 import { join } from "path";
 import { localData } from "./local-data";
 
@@ -73,26 +73,28 @@ function roomFile(): string {
     return join(localData(), 'rooms.json');
 }
 
-export function createEmptyRooms(): void {
-    if (!existsSync(roomFile())) {
-        writeFileSync(roomFile(), JSON.stringify([]));
-    }
+function connectionFile(): string {
+    return join(localData(), 'connections.txt');
+}
+
+if (!existsSync(roomFile())) {
+    writeFileSync(roomFile(), JSON.stringify([]));
+}
+if (!existsSync(connectionFile())) {
+    writeFileSync(connectionFile(), '');
 }
 
 function saveRooms(rooms: IChatRoom[]): void {
-    createEmptyRooms();
     const content = JSON.stringify(rooms, undefined, 2);
     writeFileSync(roomFile(), content);
 }
 
 export function getRooms(): IChatRoom[] {
-    createEmptyRooms();
     const content = readFileSync(roomFile()).toString();
     return JSON.parse(content) as IChatRoom[];
 }
 
 export function addRoom(room: IChatRoom): boolean {
-    createEmptyRooms();
     const source = getRooms();
     if (source.includes(room)) {
         return false;
@@ -103,15 +105,78 @@ export function addRoom(room: IChatRoom): boolean {
     }
 }
 
-export function removeRoom(room: IChatRoom): boolean {
-    createEmptyRooms();
+export function updateRoom(room: IChatRoom): boolean {
     const source = getRooms();
-    if (source.includes(room)) {
-        const index = source.indexOf(room);
+    const index = source.findIndex(r => r.id === room.id);
+    if (index >= 0 && index < source.length) {
+        const rooms = [...source.slice(0, index), room, ...source.slice(index + 1)];
+        saveRooms(rooms);
+        return true;
+    }
+    console.log(`Room with id ${room.id} not found for update.`);
+    return false;
+}
+
+export function deleteRoom(id: string): boolean {
+    const source = getRooms();
+    const index = source.findIndex(r => r.id === id);
+    if (index >= 0 && index < source.length) {
         const rooms = [...source.slice(0, index), ...source.slice(index + 1)];
         saveRooms(rooms);
         return true;
-    } else {
-        return false;
     }
+
+    console.log(`Room with id ${id} not found for deletion.`);
+    return false;
+}
+
+export function getRoom(id: string): IChatRoom | null {
+    const source = getRooms();
+    const room = source.find(r => r.id === id);
+    if (!room) {
+        console.log(`Room with id ${id} not found.`);
+    }
+    return room || null;
+}
+
+export function joinRoom(userId: string, roomId: string): void {
+    const line = `${userId} ${roomId}\n`;
+    appendFileSync(connectionFile(), line);
+}
+
+export function leaveRoom(userId: string, roomId: string): void {
+    const lineToRemove = `${userId} ${roomId}`;
+    const filePath = connectionFile();
+    const data = readFileSync(filePath, "utf8");
+    const lines = data.split("\n");
+    const filteredLines = lines.filter(line => line.trim() !== lineToRemove || line === '');
+    writeFileSync(filePath, filteredLines.join("\n"));
+}
+
+export function getUsersInRoom(roomId: string): string[] {
+    const filePath = connectionFile();
+    const data = readFileSync(filePath, "utf8");
+    const lines = data.split("\n");
+    const users: string[] = [];
+    for (const line of lines) {
+        const [userId, rId] = line.split(" ");
+        if (rId === roomId) {
+            users.push(userId);
+        }
+    }
+    return users;
+}
+
+export function getRoomsForUser(userId: string): string[] {
+    const filePath = connectionFile();
+    const data = readFileSync(filePath, "utf8");
+    const lines = data.split("\n");
+    const rooms: string[] = [];
+    for (const line of lines) {
+        const [uId, roomId] = line.split(" ");
+        if (uId === userId) {
+            rooms.push(roomId);
+        }
+    }
+    return rooms;
 }

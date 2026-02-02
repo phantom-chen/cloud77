@@ -1,0 +1,19 @@
+version: '3.6'
+
+services:
+
+  express_app:
+    #   build: .
+      image: consul-apps/express-app:dev
+      volumes:
+          - ./settings.json:/app/settings.json
+      environment:
+          - "PORT=80"
+          - "CONSUL_HOST=consulhost"
+      expose:
+          - "80"
+
+networks:
+  default:
+      external:
+          name: cloud77_dev

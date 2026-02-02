@@ -1,0 +1,8 @@
+{
+    "Rabbitmq": {
+        "HostName": "todo_rabbitmq",
+        "UserName": "admin",
+        "Password": "123456"
+    },
+    "Mongodb": "mongodb://todo_mongodb:27017"
+}

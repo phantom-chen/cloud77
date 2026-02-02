@@ -1,0 +1,7 @@
+{
+    "port": "7716",
+    "service": "factory_service",
+    "database": "dev_db",
+    "secret": "abcdefghijklmnopqrstuvwzxy",
+    "expiresInHour": 24
+}

@@ -112,28 +112,3 @@ export const CompanyData = {
         }
     ]
 };
-
-export const PVData = [
-    { pv: 2400 },
-    { pv: 1398 },
-    { pv: 9800 },
-    { pv: 3908 },
-    { pv: 4800 },
-    { pv: 3490 },
-    { pv: 4300 }
-];
-
-export const UVData = [
-    { name: "Jan", uv: 3700 },
-    { name: "Feb", uv: 3000 },
-    { name: "Mar", uv: 2000 },
-    { name: "Apr", uv: 2780 },
-    { name: "May", uv: 2000 },
-    { name: "Jun", uv: 1800 },
-    { name: "Jul", uv: 2600 },
-    { name: "Aug", uv: 2900 },
-    { name: "Sep", uv: 3500 },
-    { name: "Oct", uv: 3000 },
-    { name: "Nov", uv: 2400 },
-    { name: "Dec", uv: 2780 }
-];

@@ -4,35 +4,14 @@ module.exports = function(app) {
   app.use(
     '/resources',
     createProxyMiddleware({
-      target: 'https://www.cloud77.top',
+      target: 'http://localhost:5096',
       changeOrigin: true,
     })
   );
-  // app.use(
-  //   '/api',
-  //   createProxyMiddleware({
-  //     target: 'http://localhost:5648',
-  //     changeOrigin: true,
-  //   })
-  // );
   app.use(
     '/api',
     createProxyMiddleware({
-      target: 'https://www.cloud77.top',
-      changeOrigin: true,
-    })
-  );
-  app.use(
-    '/user-app',
-    createProxyMiddleware({
-      target: 'https://www.cloud77.top',
-      changeOrigin: true,
-    })
-  );
-  app.use(
-    '/canteen-app',
-    createProxyMiddleware({
-      target: 'https://www.cloud77.top',
+      target: 'http://localhost:7710',
       changeOrigin: true,
     })
   );
@@ -49,7 +28,7 @@ module.exports = function(app) {
   app.use(
     '/canteen-ws',
     createProxyMiddleware({
-      target: 'http://localhost:5648',
+      target: 'http://localhost:7715',
       changeOrigin: true
     })
   );

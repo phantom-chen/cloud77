@@ -1,8 +1,10 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 const Message: React.FC = () => {
     const [searchParams] = useSearchParams();
+    const [messages, setMessages] = useState<string[]>([]);
+    const [isLogin, setIsLogin] = useState(true);
     const accessTokenValue = searchParams.get('access_token');
     const refreshTokenValue = searchParams.get('refresh_token');
 
@@ -16,32 +18,52 @@ const Message: React.FC = () => {
                 console.log(ev.data);
                 if (ev.data.request === 'login') {
                     message = 'receive tokens successfully';
-                    sessionStorage.setItem('user-access-token', ev.data.accessToken);
-                    sessionStorage.setItem('user-refresh-token', ev.data.refreshToken);
+                    sessionStorage.setItem('user_access_token', ev.data.accessToken);
+                    sessionStorage.setItem('user_refresh_token', ev.data.refreshToken);
                 }
                 else if (ev.data.request === 'logout') {
                     message = 'delete tokens successfully';
-                    sessionStorage.removeItem('user-access-token');
-                    sessionStorage.removeItem('user-refresh-token');
+                    sessionStorage.removeItem('user_access_token');
+                    sessionStorage.removeItem('user_refresh_token');
                 }
                 else if (ev.data.request === 'clear-localstorage') {
                     message = 'clear localstorage successfully';
                     localStorage.clear();
                 }
+                else {
+                    window.parent.postMessage({
+                        request: 'invalid-request',
+                        message: 'the request is invalid'
+                    }, '*');
+                }
                 if (message !== '') {
                     console.log(message);
+                    setMessages(v => [...v, ...[message]]);
                 }
             }
         }
     }, [])
 
     useEffect(() => {
-        sessionStorage.setItem('cloud77_user_access_token', accessTokenValue ?? '');
+        window.addEventListener('message', handleMessage);
+        return () => {
+            window.removeEventListener('message', handleMessage);
+        }
+    });
+
+    useEffect(() => {
+        sessionStorage.setItem('user_access_token', accessTokenValue ?? '');
     }, [accessTokenValue])
 
     useEffect(() => {
-        sessionStorage.setItem('cloud77_user_refresh_token', refreshTokenValue ?? '');
+        sessionStorage.setItem('user_refresh_token', refreshTokenValue ?? '');
     }, [refreshTokenValue])
+
+    useEffect(() => {
+        if (accessTokenValue && refreshTokenValue) {
+            setIsLogin(true);
+        }
+    }, [accessTokenValue, refreshTokenValue])
 
     useEffect(() => {
         if (accessTokenValue && refreshTokenValue && window.parent) {
@@ -59,7 +81,7 @@ const Message: React.FC = () => {
             <h1>Message Page</h1>
             <p>This is the message page.</p>
             {
-                accessTokenValue && refreshTokenValue ?
+                isLogin ?
                     <div className="text-green-500">
                         You login at session
                     </div>
@@ -67,6 +89,11 @@ const Message: React.FC = () => {
                     <div className="text-green-500">
                         You do not login at session
                     </div>
+            }
+            {
+                messages.map((v, i) => {
+                    return <div key={i}>{v}</div>
+                })
             }
         </div>
     );

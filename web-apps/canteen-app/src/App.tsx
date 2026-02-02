@@ -4,18 +4,25 @@ import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import './App.css';
 
 import React, { Suspense, useEffect, useState } from "react";
+import { Footer } from "./components/Footer";
+import { Header } from "./components/Header";
 
-import HomePage from './pages/Home';
-import DashboardPage from './pages/Dashboard';
-import GraphPage from './pages/Graph';
-import CompanyPage from './pages/Company';
-import MapPage from './pages/Map';
-import MessagePage from './pages/Message';
-import LiveDataPage from './pages/LiveData';
-import SamplePage from './pages/Sample';
+const HomePage = React.lazy(() => import('./pages/Home'));
+const LoginPage = React.lazy(() => import('./pages/Login'));
+const DashboardPage = React.lazy(() => import('./pages/Dashboard'));
+const GraphPage = React.lazy(() => import('./pages/Graph'));
+const CompanyPage = React.lazy(() => import('./pages/Company'));
+const MapPage = React.lazy(() => import('./pages/Map'));
+const MessagePage = React.lazy(() => import('./pages/Message'));
+const LiveDataPage = React.lazy(() => import('./pages/LiveData'));
+const SamplePage = React.lazy(() => import('./pages/Sample'));
+const DiagramPage = React.lazy(() => import('./pages/Diagram'));
+const LayoutPage = React.lazy(() => import('./pages/Layout'));
+const FilesPage = React.lazy(() => import('./pages/Files'));
+const NotFoundPage = React.lazy(() => import('./pages/NotFound'));
 
-process.env.DEMO_USER = "hello";
-console.log(process.env);
+// process.env.DEMO_USER = "hello";
+// console.log(process.env);
 
 function App() {
 
@@ -23,7 +30,7 @@ function App() {
     const location = useLocation();
     const [navVisible, setNavVisible] = useState<boolean>(true);
 
-    const hanleLogout = () => {
+    const handleLogout = () => {
         sessionStorage.clear();
         navigate('');
     }
@@ -31,6 +38,7 @@ function App() {
     useEffect(() => {
         console.log(location.pathname);
         if (location.pathname.startsWith('/dashboard')
+            || location.pathname.startsWith('/layout')
             || location.pathname.startsWith('/message')) {
             setNavVisible(false);
         }
@@ -42,78 +50,29 @@ function App() {
     return (
         <>
             {
-                navVisible
-                    ? <nav>
-                        <ul style={{ display: 'flex', listStyleType: 'none', padding: 0 }}>
-                            <li>
-                                <a href="/">Home</a>
-                            </li>
-                            <li>
-                                <a href="/graph">Graph</a>
-                            </li>
-                            <li>
-                                <a href="/map">Map</a>
-                            </li>
-                            <li>
-                                <a href="/company">Company</a>
-                            </li>
-                            <li>
-                                <a href="/dashboard">Dashboard</a>
-                            </li>
-                            <li>
-                                <a href="/message">Message</a>
-                            </li>
-                            <li>
-                                <a href="/live-data">Live Data</a>
-                            </li>
-                            <li>
-                                <a href="/sample">Sample</a>
-                            </li>
-                        </ul>
-                    </nav>
-                    : undefined
+                navVisible ? <Header /> : undefined
             }
             {
-                navVisible
-                    ? <div className="UnderConstruction-social-networks">
-                        <a className="UnderConstruction-social-networks-link">
-                            <img
-                                className="UnderConstruction-social-networks-image"
-                                alt="hello"
-                                src="assets/facebook_16x16.png"></img>
-                        </a>
-                        <a className="UnderConstruction-social-networks-link">
-                            <img
-                                className="UnderConstruction-social-networks-image"
-                                alt="hello"
-                                src="assets/twitter_16x16.png"></img>
-                        </a>
-                        <a className="UnderConstruction-social-networks-link">
-                            <img
-                                className="UnderConstruction-social-networks-image"
-                                alt="hello"
-                                src="assets/linkedin_16x16.png"></img>
-                        </a>
-                        <a className="UnderConstruction-social-networks-link">
-                            <img
-                                className="UnderConstruction-social-networks-image"
-                                alt="hello"
-                                src="assets/emailto_16x16.png"></img>
-                        </a>
-                    </div>
-                    : undefined
+                navVisible ? <Footer /> : undefined
             }
             <ErrorBoundary fallback={<div>Something went wrong</div>}>
-                <Routes>
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/dashboard/*" element={<DashboardPage />} />
-                    <Route path="/company" element={<CompanyPage />} />
-                    <Route path="/map" element={<MapPage />} />
-                    <Route path="/graph" element={<GraphPage />} />
-                    <Route path="/message" element={<MessagePage />} />
-                    <Route path="/live-data" element={<LiveDataPage />} />
-                    <Route path="/sample" element={<SamplePage />} />
-                </Routes>
+                <Suspense>
+                    <Routes>
+                        <Route path="/" element={<HomePage />} />
+                        <Route path="/login" element={<LoginPage />} />
+                        <Route path="/dashboard/*" element={<DashboardPage />} />
+                        <Route path="/company" element={<CompanyPage />} />
+                        <Route path="/map" element={<MapPage />} />
+                        <Route path="/graph" element={<GraphPage />} />
+                        <Route path="/message" element={<MessagePage />} />
+                        <Route path="/live-data" element={<LiveDataPage />} />
+                        <Route path="/sample" element={<SamplePage />} />
+                        <Route path="/layout" element={<LayoutPage />} />
+                        <Route path="/diagram" element={<DiagramPage />} />
+                        <Route path="/files" element={<FilesPage />} />
+                        <Route path="*" Component={NotFoundPage} />
+                    </Routes>
+                </Suspense>
             </ErrorBoundary>
         </>
     );

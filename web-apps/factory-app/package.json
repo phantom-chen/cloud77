@@ -1,6 +1,8 @@
 {
   "name": "@cloud77/factory",
   "version": "0.1.0",
+  "homepage": "http://myapps",
+  "type": "module",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.4",
@@ -35,8 +37,9 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-app-rewired start",
-    "build": "react-app-rewired build",
+    "start": "vite",
+    "build": "vite build",
+    "build-href": "vite build --base=/factory",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject"
   },
@@ -60,8 +63,11 @@
   },
   "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610",
   "devDependencies": {
+    "@vitejs/plugin-react": "^4.7.0",
     "copy-webpack-plugin": "^12.0.2",
     "customize-cra": "^1.0.0",
-    "react-app-rewired": "^2.2.1"
+    "react-app-rewired": "^2.2.1",
+    "vite": "^6.3.6",
+    "vite-plugin-checker": "^0.11.0"
   }
 }

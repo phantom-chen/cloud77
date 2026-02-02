@@ -1,0 +1,26 @@
+C:\intepub\html\00-landing  7700
+C:\intepub\html\02-sample   7702
+C:\intepub\html\03-account  7703
+C:\intepub\html\05-canteen  7705
+C:\intepub\html\06-factory  7706
+C:\intepub\html\08-dashboard    7708
+
+C:\intepub\html
+C:\intepub\apps
+
+web ports (exposed)
+- 7700 landing
+- 7702 sample (/hubs and /canteen-ws)
+- 7703 account
+- 7705 canteen
+- 7706 factory
+- 7708 dashboard
+
+service ports
+- 7710 http gateway
+- 7701 https super (exposed)
+- 7711 http super
+- 7712 http sample
+- 7713 http user
+- 7715 http canteen
+- 7716 http factory

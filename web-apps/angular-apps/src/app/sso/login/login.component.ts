@@ -48,8 +48,8 @@ export class LoginComponent implements OnInit {
   constructor(
     @Inject("GatewayService") private gateway: GatewayService,
     @Inject("UserService") private service: UserService,
-    private san: DomSanitizer
-  ) { }
+    private san: DomSanitizer,
+  ) {}
 
   ngOnInit(): void {
     this.debugMode = localStorage.getItem("debug") ? true : false;
@@ -67,7 +67,11 @@ export class LoginComponent implements OnInit {
     if (this.account.length === 0) {
       this.account = localStorage.getItem("user_email") ?? "";
     }
-
+    this.enableRefreshToken =
+      localStorage.getItem("user_email") &&
+      localStorage.getItem("user_refresh_token")
+        ? true
+        : false;
     this.channel.onmessage = (event) => {
       console.log("Received message:", event.data);
       // Handle the received message here
@@ -76,7 +80,7 @@ export class LoginComponent implements OnInit {
     this.gateway.get().subscribe((data: any) => {
       console.log(data);
     });
-
+    this.gateway.getRole();
     this.hadToken =
       (localStorage.getItem("user_access_token") ?? "").length > 0;
     if (this.hadToken) {
@@ -85,8 +89,8 @@ export class LoginComponent implements OnInit {
 
     this.frameResourceUrl = this.san.bypassSecurityTrustResourceUrl(
       sessionStorage.getItem("user_app_message") ??
-      localStorage.getItem("user_app_message") ??
-      ""
+        localStorage.getItem("user_app_message") ??
+        "",
     );
     window.addEventListener("message", function (ev) {
       if (ev.data) {
@@ -121,9 +125,9 @@ export class LoginComponent implements OnInit {
       console.log("Storage event:");
     });
 
-    this.gateway.isHealth().subscribe(res => {
+    this.gateway.isHealth().subscribe((res) => {
       this.serviceAvailable = res ? true : false;
-    })
+    });
   }
 
   remember = true;
@@ -168,6 +172,26 @@ export class LoginComponent implements OnInit {
 
       this.validateToken();
     });
+  }
+
+  enableRefreshToken = false;
+  onRefreshToken() {
+    this.service
+      .refreshToken(
+        localStorage.getItem("user_email") ?? "",
+        localStorage.getItem("user_refresh_token") ?? "",
+      )
+      .subscribe({
+        next: (res) => {
+          console.log(res);
+          localStorage.setItem("user_access_token", res.value);
+          localStorage.setItem("user_refresh_token", res.refreshToken);
+          this.validateToken();
+        },
+        error: (err) => {
+          console.log(err);
+        },
+      });
   }
 
   openingMessage = "...";
@@ -217,7 +241,7 @@ export class LoginComponent implements OnInit {
               accessToken: tokens.access,
               refreshToken: tokens.refresh,
             },
-            "*"
+            "*",
           );
         }, 2000);
       }
@@ -233,7 +257,7 @@ export class LoginComponent implements OnInit {
       navigator.clipboard
         .writeText(`${access},${refresh}`)
         .then(() => {
-          alert('Tokens copied to clipboard!');
+          alert("Tokens copied to clipboard!");
         })
         .catch((err) => {
           console.error("Failed to copy tokens: ", err);

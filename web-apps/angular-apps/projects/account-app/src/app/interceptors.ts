@@ -18,11 +18,11 @@ export const TokenInterceptor: HttpInterceptorFn = (req, next) => {
         });
     }
 
-    if (tokens.refresh) {
-        newReq = newReq.clone({
-            headers: newReq.headers.set('x-refresh-token', tokens.refresh)
-        });
-    }
+    // if (tokens.refresh) {
+    //     newReq = newReq.clone({
+    //         headers: newReq.headers.set('x-refresh-token', tokens.refresh)
+    //     });
+    // }
 
     return next(newReq);
 };

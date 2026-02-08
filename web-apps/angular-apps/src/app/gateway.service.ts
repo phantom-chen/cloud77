@@ -54,4 +54,16 @@ export class GatewayService {
                 } as TokenValidationResult;
             }))
     }
+
+    getRole(): void {
+        this.http.get('/api/sso/tokens/validation')
+        .subscribe(res => {
+            console.log('Token validation response:', res);
+            // id, message, code
+
+            // bad request
+            // incorrect
+            // expired
+        })
+    }
 }

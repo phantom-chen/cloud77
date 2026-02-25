@@ -22,7 +22,7 @@ export class GatewayService {
                 catchError(err => {
                     console.error('Caught error:', err);
                     console.error('Error fetching gateway data:', err);
-                    return of({ key: '' }); // Provide a fallback value
+                    return of({ key: '' });
                 }),
                 map((data: any) => {
                     localStorage.setItem('sso_url', data.sso);
@@ -43,10 +43,6 @@ export class GatewayService {
     validateToken(): Observable<TokenValidationResult> {
         return this.http.get<UserRole>(`/api/user/accounts/role`, { observe: 'response' })
             .pipe(map(res => {
-                // console.log('Token validation response:', res);
-                // console.log(res.body);
-                // console.log(res.body?.role);
-                // res.body
                 console.log('Token expiration header:', res.headers.get('x-token-expiration'));
                 return {
                     ...res.body,
@@ -60,7 +56,6 @@ export class GatewayService {
         .subscribe(res => {
             console.log('Token validation response:', res);
             // id, message, code
-
             // bad request
             // incorrect
             // expired

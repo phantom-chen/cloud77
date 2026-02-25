@@ -99,6 +99,12 @@ switch ($action) {
             <# $service is the current item #>
             Write-Host $service
             switch ($service) {
+                'resource' {
+                    dotnet build ResourceService\ResourceService.csproj -c Debug
+                    Start-Process -FilePath "ResourceService\bin\Debug\net8.0\ResourceService.exe" -WorkingDirectory "ResourceService\bin\Debug\net8.0" -ArgumentList "--urls=http://*:5096/"
+                    Start-Sleep -Seconds 1
+                    break;
+                }
                 'gateway' {
                     dotnet build GatewayService\GatewayService.csproj -c Debug
                     Invoke-Script -shell cmd -command "cd $pwd\GatewayService`ndotnet run -lp=http"
@@ -139,11 +145,12 @@ switch ($action) {
         break;
     }
     'stop-services' {
+        Stop-Service -port 5096
+        Stop-Service -port 7710
         Stop-Service -port 7711
         Stop-Service -port 7712
         Stop-Service -port 7713
         Stop-Service -port 7715
-        Stop-Service -port 7710
         break;
     }
     'start-sso' {
@@ -166,6 +173,7 @@ switch ($action) {
         break;
     }
     'info' {
+        Get-ServiceInfo -port 5096
         Get-ServiceInfo -port 7710
         Get-ServiceInfo -port 7711
         Get-ServiceInfo -port 7712
@@ -175,10 +183,10 @@ switch ($action) {
     }
     '' {
         Write-Host "Supported commands" -ForegroundColor Green
-        Write-Host "  start-services -services gateway,sample,user,super,canteen" -ForegroundColor Green
-        Write-Host "  stop-services" -ForegroundColor Green
-        Write-Host "  start-sso" -ForegroundColor Green
-        Write-Host "  info" -ForegroundColor Green
+        Write-Host "-action start-services -services 'resource,gateway,sample,user,super,canteen'" -ForegroundColor Green
+        Write-Host "-action stop-services" -ForegroundColor Green
+        Write-Host "-action start-sso" -ForegroundColor Green
+        Write-Host "-action info" -ForegroundColor Green
         break;
     }
     Default {

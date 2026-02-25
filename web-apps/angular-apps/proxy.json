@@ -1,9 +1,4 @@
 {
-  "/version": {
-    "target": "http://localhost:7710",
-    "secure": true,
-    "changeOrigin": true
-  },
   "/resources": {
     "target": "http://localhost:5096",
     "secure": true,
@@ -15,7 +10,7 @@
     "changeOrigin": true
   },
   "/hubs": {
-    "target": "http://localhost:7710",
+    "target": "http://localhost:7713",
     "ws": true,
     "secure": false
   },

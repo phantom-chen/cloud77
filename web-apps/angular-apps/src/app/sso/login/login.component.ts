@@ -19,6 +19,8 @@ import { getRemainingTime, getTokens, removeTokens, timestampToDate } from "@sha
 import { GatewayService } from "../../gateway.service";
 import { SharedModule } from "@shared/shared.module";
 import { RouterModule } from "@angular/router";
+import { TokensComponent } from "../tokens/tokens.component";
+import { SignInComponent } from "../sign-in/sign-in.component";
 
 @Component({
   selector: "app-login",
@@ -34,6 +36,8 @@ import { RouterModule } from "@angular/router";
     MatCheckboxModule,
     MatIconModule,
     SharedModule,
+    TokensComponent,
+    SignInComponent
   ],
   templateUrl: "./login.component.html",
   styleUrl: "./login.component.css",
@@ -49,7 +53,7 @@ export class LoginComponent implements OnInit {
     @Inject("GatewayService") private gateway: GatewayService,
     @Inject("UserService") private service: UserService,
     private san: DomSanitizer,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.debugMode = localStorage.getItem("debug") ? true : false;
@@ -59,38 +63,32 @@ export class LoginComponent implements OnInit {
       this.logs += "Production Mode\n";
     }
 
-    this.remember =
-      (localStorage.getItem("remember_me") ?? "")?.length > 0 ? true : false;
+    this.remember = (localStorage.getItem("remember_me") ?? "")?.length > 0 ? true : false;
     if (this.remember) {
       this.account = localStorage.getItem("remember_me") ?? "";
     }
     if (this.account.length === 0) {
       this.account = localStorage.getItem("user_email") ?? "";
     }
-    this.enableRefreshToken =
-      localStorage.getItem("user_email") &&
-      localStorage.getItem("user_refresh_token")
-        ? true
-        : false;
+
     this.channel.onmessage = (event) => {
       console.log("Received message:", event.data);
-      // Handle the received message here
     };
 
     this.gateway.get().subscribe((data: any) => {
-      console.log(data);
+      this.gateway.isHealth().subscribe((res) => {
+        this.serviceAvailable = res ? true : false;
+      });
+      this.hadToken = (localStorage.getItem("user_access_token") ?? "").length > 0;
+      if (this.hadToken) {
+        this.validateToken();
+      }
     });
-    this.gateway.getRole();
-    this.hadToken =
-      (localStorage.getItem("user_access_token") ?? "").length > 0;
-    if (this.hadToken) {
-      this.validateToken();
-    }
 
     this.frameResourceUrl = this.san.bypassSecurityTrustResourceUrl(
       sessionStorage.getItem("user_app_message") ??
-        localStorage.getItem("user_app_message") ??
-        "",
+      localStorage.getItem("user_app_message") ??
+      "",
     );
     window.addEventListener("message", function (ev) {
       if (ev.data) {
@@ -124,15 +122,10 @@ export class LoginComponent implements OnInit {
     window.addEventListener("storage", () => {
       console.log("Storage event:");
     });
-
-    this.gateway.isHealth().subscribe((res) => {
-      this.serviceAvailable = res ? true : false;
-    });
   }
 
   remember = true;
   account: string = "";
-  password = "";
 
   message = "";
   channel: BroadcastChannel = new BroadcastChannel("testing");
@@ -145,27 +138,19 @@ export class LoginComponent implements OnInit {
   @ViewChild("messageContainer")
   messageContainer!: ElementRef<HTMLIFrameElement>;
 
-  onAccountChange() {
-    this.service.getUser(this.account, "").subscribe((res) => {
+  onAccountChange(event: string) {
+    this.service.getUser(event, "").subscribe((res) => {
       this.accountExisting = res.existing;
     });
   }
 
-  onKeyUp(event: KeyboardEvent): void {
-    // Check if the pressed key is Enter
-    if (event.key === "Enter") {
-      this.onLoginClick();
-    }
-  }
-
-  onLoginClick() {
-    if (this.remember) {
+  onLogin(event: { account: string, password: string, remember: boolean }): void {
+    this.remember = event.remember;
+    this.account = event.account;
+    if (event.remember) {
       localStorage.setItem("remember_me", this.account);
     }
-
-    this.service.getToken(this.account, this.password).subscribe((res) => {
-      console.log(res);
-
+    this.service.getToken(event.account, event.password).subscribe((res) => {
       localStorage.setItem("user_email", res.email);
       localStorage.setItem("user_access_token", res.value);
       localStorage.setItem("user_refresh_token", res.refreshToken);
@@ -174,7 +159,6 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  enableRefreshToken = false;
   onRefreshToken() {
     this.service
       .refreshToken(
@@ -183,7 +167,6 @@ export class LoginComponent implements OnInit {
       )
       .subscribe({
         next: (res) => {
-          console.log(res);
           localStorage.setItem("user_access_token", res.value);
           localStorage.setItem("user_refresh_token", res.refreshToken);
           this.validateToken();
@@ -197,12 +180,10 @@ export class LoginComponent implements OnInit {
   openingMessage = "...";
 
   validateToken() {
-    this.hadToken =
-      (localStorage.getItem("user_access_token") ?? "").length > 0;
+    this.hadToken = (localStorage.getItem("user_access_token") ?? "").length > 0;
     if (!this.hadToken) return;
 
     this.gateway.validateToken().subscribe((res) => {
-      console.log(res);
       if (res.role) {
         this.hadValidToken = true;
 
@@ -218,7 +199,6 @@ export class LoginComponent implements OnInit {
           "";
         this.frameResourceUrl =
           this.san.bypassSecurityTrustResourceUrl(messageUrl);
-        console.log("find the message url" + messageUrl);
 
         // navigate to the application
         let sixDotx = "......";
@@ -234,7 +214,6 @@ export class LoginComponent implements OnInit {
 
         setTimeout(() => {
           this.openingMessage = "Your app is ready!";
-          console.log("sync tokens to" + messageUrl);
           this.messageContainer.nativeElement.contentWindow?.postMessage(
             {
               name: "sync-tokens",
@@ -248,14 +227,10 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  copyTokens(): void {
-    const tokens = getTokens(false);
-    const access = tokens.access;
-    const refresh = tokens.refresh;
-
-    if (tokens && tokens.access && tokens.refresh) {
+  onCopyTokens(event: string): void {
+    if (event) {
       navigator.clipboard
-        .writeText(`${access},${refresh}`)
+        .writeText(event)
         .then(() => {
           alert("Tokens copied to clipboard!");
         })
@@ -268,11 +243,14 @@ export class LoginComponent implements OnInit {
   }
 
   onLogout(): void {
+    removeTokens('local');
+    window.location.reload();
+  }
+
+  broadcastMessage(): void {
     if (this.message) {
       console.log("Sending message:", this.message);
       this.channel.postMessage(this.message);
     }
-    removeTokens();
-    window.location.reload();
   }
 }

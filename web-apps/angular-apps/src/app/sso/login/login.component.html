@@ -3,80 +3,38 @@
     <div class="content">
 
         <p *ngIf="!serviceAvailable" class="text-danger text-center">Service is unavailable, please try again later.</p>
-        <div *ngIf="serviceAvailable" class="text-success text-center"><mat-icon>signal_cellular_alt</mat-icon>
-            <p>Service is available.</p>
+        <div *ngIf="serviceAvailable" class="text-success text-center">
+            <mat-icon>signal_cellular_alt</mat-icon>
+            <p>Service is available</p>
         </div>
 
-        <div *ngIf="!hadToken || !hadValidToken" style="margin: auto;box-shadow: 3px;" class="col-lg-6">
+        <div *ngIf="!hadToken" style="margin: auto;box-shadow: 3px;" class="col-lg-6">
             <form novalidate>
                 <div class="container content">
-                    <ng-container>
-                        <div class="row">
-                            <mat-form-field>
-                                <mat-label>Email / Username</mat-label>
-                                <input matInput placeholder="Email / Username" autocomplete="off" [(ngModel)]="account"
-                                    name="user-account" (change)="onAccountChange()">
-                            </mat-form-field>
-                        </div>
-
-                        <p *ngIf="account && !accountExisting" class="text-warning">your account is not existing.</p>
-                        <p *ngIf="account && accountExisting" class="text-success">your account is registered</p>
-
-                        <div class="row">
-                            <mat-form-field>
-                                <mat-label>Password</mat-label>
-                                <input matInput type="password" placeholder="Password" autocomplete="off"
-                                    [(ngModel)]="password" name="user-password" (keypress)="onKeyUp($event)">
-                            </mat-form-field>
-                        </div>
-
-                        <div class="row">
-
-                            <mat-checkbox color="primary" [(ngModel)]="remember" name="remembercheckbox">Remember
-                                Me</mat-checkbox>
-
-                        </div>
-
-                        <div class="row">
-                            <div style="display: flex;">
-                                <button type="submit" mat-raised-button color="primary"
-                                    (click)="onLoginClick();">Login</button>
-
-                                <button type="button" mat-outlined-button color="primary">
-                                    <a #signup target="_blank" [routerLink]="['/sign-up']" [relativeTo]=""
-                                        routerLinkActive="active">Sign
-                                        Up</a>
-                                </button>
-
-                                <button mat-button>Forget password</button>
-                            </div>
-                        </div>
-
-                        <div *ngIf="enableRefreshToken" class="row">
-                            <p>refresh token</p>
-                            <button type="submit" mat-raised-button color="primary"
-                                (click)="onRefreshToken();">Refresh Token</button>
-                        </div>
-
-                    </ng-container>
+                    <app-sign-in
+                        [remember]="remember"
+                        [account]="account"
+                        [accountExisting]="accountExisting"
+                        (accountChange)="onAccountChange($event)" (login)="onLogin($event)"/>
+                    <div class="row">
+                        <button type="button" mat-outlined-button color="primary">
+                            <a #signup target="_blank" [routerLink]="['/sign-up']" [relativeTo]="" routerLinkActive="active">Sign Up</a>
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
 
-        <div *ngIf="hadValidToken" style="margin: auto;">
+        <div *ngIf="hadToken" style="margin: auto;">
+            <app-tokens style="text-align: center;"
+                [account]="account"
+                [tokenValidity]="tokenValidity"
+                [openingMessage]="openingMessage"
+                (logout)="onLogout()"
+                (refresh)="onRefreshToken()"
+                (copy)="onCopyTokens($event)"/>
             <div style="text-align: center;">
-                <p class="text-info-emphasis">login as: {{ account | uppercase }}</p>
-                <div>
-                    <p class="text-warning">Token is valid for {{ tokenValidity }}</p>
-                    <button mat-button (click)="copyTokens()"><mat-icon>file_copy</mat-icon>Copy Tokens</button>
-                </div>
-                <p class="text-info">{{openingMessage}}</p>
-            </div>
-            <div style="text-align: center;">
-                <input type="text" placeholder="The App want to exit" [(ngModel)]="message">
-                <button *ngIf="hadToken" mat-button (click)="onLogout()">
-                    <mat-icon>logout</mat-icon>Logout
-                </button>
+                <input type="text" placeholder="Broadcast the message" [(ngModel)]="message">
             </div>
         </div>
 

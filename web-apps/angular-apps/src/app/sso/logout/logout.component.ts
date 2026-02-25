@@ -17,7 +17,7 @@ export class LogoutComponent implements OnInit, AfterViewInit {
       // Handle the received message here
     };
     console.log("logout");
-    removeTokens();
+    removeTokens('session');
     console.log("go to login page");
     console.log("read related sites from storage");
     console.log("verify logout code / token");

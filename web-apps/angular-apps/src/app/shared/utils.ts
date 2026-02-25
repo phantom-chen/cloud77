@@ -46,14 +46,16 @@ export function updateUserEmail(session: boolean = true, email: string): void {
     localStorage.setItem('user_email', email);
 }
 
-export function removeTokens(session: boolean = true): void {
-    if (session) {
+export function removeTokens(storage: 'local' | 'session'): void {
+    if (storage === 'session') {
         sessionStorage.removeItem(`user_access_token`);
         sessionStorage.removeItem(`user_refresh_token`);
-        return;
+        sessionStorage.removeItem(`user_email`);
+    } else {
+        localStorage.removeItem(`user_access_token`);
+        localStorage.removeItem(`user_refresh_token`);
+        localStorage.removeItem(`user_email`);
     }
-    localStorage.removeItem(`user_access_token`);
-    localStorage.removeItem(`user_refresh_token`);
 }
 
 export function removeUserEmail(session: boolean = true): void {

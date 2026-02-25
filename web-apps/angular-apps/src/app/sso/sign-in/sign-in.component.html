@@ -1,0 +1,20 @@
+<div class="row">
+    <mat-form-field>
+        <mat-label>Email / Username</mat-label>
+        <input matInput placeholder="Email / Username" autocomplete="off" [(ngModel)]="account" name="user-account" (change)="onAccountChange()">
+    </mat-form-field>
+</div>
+<p *ngIf="account && !accountExisting" class="text-warning">your account is not existing.</p>
+<p *ngIf="account && accountExisting" class="text-success">your account is registered</p>
+<div class="row">
+    <mat-form-field>
+        <mat-label>Password</mat-label>
+        <input matInput type="password" placeholder="Password" autocomplete="off" [(ngModel)]="password" name="user-password" (keypress)="onKeyUp($event)">
+    </mat-form-field>
+</div>
+<div class="row">
+    <mat-checkbox color="primary" [(ngModel)]="remember" name="remembercheckbox">Remember Me</mat-checkbox>
+</div>
+<div class="row">
+    <button type="submit" mat-raised-button color="primary" (click)="onLoginClick();">Login</button>
+</div>

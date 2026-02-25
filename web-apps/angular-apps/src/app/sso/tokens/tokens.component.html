@@ -1,0 +1,14 @@
+<p class="text-info-emphasis">login as: {{ account | uppercase }}</p>
+<div>
+    <p class="text-warning">Token is valid for {{ tokenValidity }}</p>
+    <button mat-button (click)="copyTokens()"><mat-icon>file_copy</mat-icon>Copy Tokens</button>
+</div>
+<div>
+    <button type="submit" mat-raised-button (click)="onRefreshToken();"><mat-icon>refresh</mat-icon>Refresh Token</button>
+</div>
+<div>
+    <button mat-button (click)="onLogout()">
+        <mat-icon>logout</mat-icon>Logout
+    </button>
+</div>
+<p class="text-info">{{openingMessage}}</p>

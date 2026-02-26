@@ -15,12 +15,13 @@ import { MatInputModule } from "@angular/material/input";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
-import { getRemainingTime, getTokens, removeTokens, timestampToDate } from "@shared/utils";
+import { getRemainingTime, timestampToDate } from "@shared/utils";
 import { GatewayService } from "../../gateway.service";
 import { SharedModule } from "@shared/shared.module";
 import { RouterModule } from "@angular/router";
 import { TokensComponent } from "../tokens/tokens.component";
 import { SignInComponent } from "../sign-in/sign-in.component";
+import { appMessageLoaded, appMessageUrl, debugMode, rememberMe, userEmail, getTokens, removeTokens, saveTokens, appUrl } from "@shared/storages";
 
 @Component({
   selector: "app-login",
@@ -56,19 +57,19 @@ export class LoginComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.debugMode = localStorage.getItem("debug") ? true : false;
+    this.debugMode = debugMode();
     if (this.debugMode) {
       this.logs += "Debug Mode\n";
     } else {
       this.logs += "Production Mode\n";
     }
 
-    this.remember = (localStorage.getItem("remember_me") ?? "")?.length > 0 ? true : false;
+    this.remember = rememberMe()?.length > 0 ? true : false;
     if (this.remember) {
-      this.account = localStorage.getItem("remember_me") ?? "";
+      this.account = rememberMe();
     }
     if (this.account.length === 0) {
-      this.account = localStorage.getItem("user_email") ?? "";
+      this.account = userEmail('local');
     }
 
     this.channel.onmessage = (event) => {
@@ -79,42 +80,30 @@ export class LoginComponent implements OnInit {
       this.gateway.isHealth().subscribe((res) => {
         this.serviceAvailable = res ? true : false;
       });
-      this.hadToken = (localStorage.getItem("user_access_token") ?? "").length > 0;
+
+      this.hadToken = getTokens('local').access.length > 0;
       if (this.hadToken) {
-        this.validateToken();
+        this.gateway.validateToken().subscribe((res) => {
+          if (res.role) {
+            this.syncTokensToApp(res.expiration);
+          }
+        });
       }
     });
 
-    this.frameResourceUrl = this.san.bypassSecurityTrustResourceUrl(
-      sessionStorage.getItem("user_app_message") ??
-      localStorage.getItem("user_app_message") ??
-      "",
-    );
     window.addEventListener("message", function (ev) {
       if (ev.data) {
-        console.log(ev.data);
+
         if (ev.data.name === "tokens_saved") {
-          console.log("tokens saved");
-          const appUrl =
-            sessionStorage.getItem("user_app_url") ??
-            localStorage.getItem("user_app_message") ??
-            "";
+          const url = appUrl();
+          sessionStorage.removeItem("user_app_message");
+          sessionStorage.removeItem("user_app_url");
+          sessionStorage.removeItem("app_message_loaded");
+          window.location.href = url;
+        }
 
-          if (!localStorage.getItem("debug")) {
-            sessionStorage.removeItem("user_app_message");
-            sessionStorage.removeItem("user_app_url");
-            sessionStorage.removeItem("user_app_host");
-
-            localStorage.removeItem("user_app_message");
-            localStorage.removeItem("user_app_url");
-            localStorage.removeItem("user_app_host");
-          }
-
-          sessionStorage.setItem("user_app_ready", "true");
-
-          if (!localStorage.getItem("debug")) {
-            window.location.href = appUrl;
-          }
+        if (ev.data.name === "app_message_loaded") {
+          sessionStorage.setItem('app_message_loaded', 'true')
         }
       }
     });
@@ -151,25 +140,36 @@ export class LoginComponent implements OnInit {
       localStorage.setItem("remember_me", this.account);
     }
     this.service.getToken(event.account, event.password).subscribe((res) => {
-      localStorage.setItem("user_email", res.email);
-      localStorage.setItem("user_access_token", res.value);
-      localStorage.setItem("user_refresh_token", res.refreshToken);
-
-      this.validateToken();
+      saveTokens('local', res.value, res.refreshToken);
+      this.hadToken = getTokens('local').access.length > 0;
+      if (this.hadToken) {
+        this.gateway.validateToken().subscribe((res) => {
+          if (res.role) {
+            localStorage.setItem("user_email", res.email);
+            this.syncTokensToApp(res.expiration);
+          }
+        });
+      }
     });
   }
 
   onRefreshToken() {
     this.service
       .refreshToken(
-        localStorage.getItem("user_email") ?? "",
-        localStorage.getItem("user_refresh_token") ?? "",
+        userEmail('local'),
+        getTokens('local').refresh,
       )
       .subscribe({
         next: (res) => {
-          localStorage.setItem("user_access_token", res.value);
-          localStorage.setItem("user_refresh_token", res.refreshToken);
-          this.validateToken();
+          saveTokens('local', res.value, res.refreshToken);
+          this.hadToken = getTokens('local').access.length > 0;
+          if (this.hadToken) {
+            this.gateway.validateToken().subscribe((res) => {
+              if (res.role) {
+                this.syncTokensToApp(res.expiration);
+              }
+            });
+          }
         },
         error: (err) => {
           console.log(err);
@@ -179,52 +179,41 @@ export class LoginComponent implements OnInit {
 
   openingMessage = "...";
 
-  validateToken() {
-    this.hadToken = (localStorage.getItem("user_access_token") ?? "").length > 0;
-    if (!this.hadToken) return;
+  syncTokensToApp(expiration: string): void {
+    this.hadValidToken = true;
+    // check token expiration
+    const exp: Date = timestampToDate(expiration);
+    const current: Date = new Date();
+    const diff = getRemainingTime(current, exp);
+    this.tokenValidity = `Remaining: ${diff.day} days / ${diff.hour} hours / ${diff.minute} minute`;
 
-    this.gateway.validateToken().subscribe((res) => {
-      if (res.role) {
-        this.hadValidToken = true;
+    this.frameResourceUrl = this.san.bypassSecurityTrustResourceUrl(appMessageUrl());
 
-        // check token expiration
-        const exp: Date = timestampToDate(res.expiration);
-        const current: Date = new Date();
-        const diff = getRemainingTime(current, exp);
-        this.tokenValidity = `Remaining: ${diff.day} days / ${diff.hour} hours / ${diff.minute} minute`;
-
-        const messageUrl =
-          sessionStorage.getItem("user_app_message") ??
-          localStorage.getItem("user_app_message") ??
-          "";
-        this.frameResourceUrl =
-          this.san.bypassSecurityTrustResourceUrl(messageUrl);
-
-        // navigate to the application
-        let sixDotx = "......";
-        const tokens = getTokens(false);
-        this.tokenString = `${tokens.access},${tokens.refresh}`;
+    // navigate to the application
+    let sixDotx = "......";
+    const tokens = getTokens('local');
+    this.tokenString = `${tokens.access},${tokens.refresh}`;
+    this.openingMessage = "Opening your app" + sixDotx;
+    setInterval(() => {
+      if (sixDotx.length > 1) {
+        sixDotx = sixDotx.slice(1);
         this.openingMessage = "Opening your app" + sixDotx;
-        setInterval(() => {
-          if (sixDotx.length > 1) {
-            sixDotx = sixDotx.slice(1);
-            this.openingMessage = "Opening your app" + sixDotx;
-          }
-        }, 300);
-
-        setTimeout(() => {
-          this.openingMessage = "Your app is ready!";
-          this.messageContainer.nativeElement.contentWindow?.postMessage(
-            {
-              name: "sync-tokens",
-              accessToken: tokens.access,
-              refreshToken: tokens.refresh,
-            },
-            "*",
-          );
-        }, 2000);
       }
-    });
+
+      if (appMessageUrl() && appMessageLoaded()) {
+        this.openingMessage = "Your app is ready!";
+        this.messageContainer.nativeElement.contentWindow?.postMessage(
+          {
+            name: "sync-tokens",
+            accessToken: tokens.access,
+            refreshToken: tokens.refresh,
+          },
+          "*",
+        );
+
+        sessionStorage.removeItem('app_message_loaded');
+      }
+    }, 300);
   }
 
   onCopyTokens(event: string): void {

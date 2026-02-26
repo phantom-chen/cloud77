@@ -10,7 +10,8 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { UnAuthorizedComponent } from '../un-authorized/un-authorized.component';
 import { AccountService } from '../account.service';
 import { SharedModule } from '@shared/shared.module';
-import { getUserEmail, SNACKBAR_DURATION } from '@shared/utils';
+import { getTokens, userEmail } from '@shared/storages';
+import { SNACKBAR_DURATION } from '@shared/constants';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -77,19 +78,13 @@ export class AccountComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.gateway.ping().then((data: string) => {
-    //   console.log('Gateway ping response:', data);
-    // }).catch((error: any) => {
-    //   this.snackbar.open('Error', 'Fail to connect to service', { duration: SNACKBAR_DURATION });
-    // });
     this.service.gateway.loginSession$.subscribe({
       next: res => {
         // the token is valid, user name is saved in session storage
         this.loading = false;
 
         if (res.expiration) {
-          console.warn('No email found in session storage');
-          this.email = getUserEmail();
+          this.email = userEmail('session');
           this.isLogin = true;
           this.service.getAccountInfo().subscribe({
             next: data => {
@@ -105,17 +100,24 @@ export class AccountComponent implements OnInit {
       }
     });
 
-    this.service.gateway.validateToken().subscribe(
-      next => {
-        console.log('Validate token response:', next);
+    this.service.gateway.get().subscribe({
+      next: () => {
+        this.service.gateway.validateToken(getTokens('session')).subscribe({
+          error: err => {
+            console.log(err);
+            if (err instanceof HttpErrorResponse) {
+              this.handleHttpError(err);
+            }
+          }
+        });
       },
-      error => {
-        console.log('Validate token error:', error);
-        if (error instanceof HttpErrorResponse) {
-          this.handleHttpError(error);
+      error: err => {
+        console.log(err);
+        if (err instanceof HttpErrorResponse) {
+          this.handleHttpError(err);
         }
       }
-    );
+    })
   }
 
   onSSO(): void {

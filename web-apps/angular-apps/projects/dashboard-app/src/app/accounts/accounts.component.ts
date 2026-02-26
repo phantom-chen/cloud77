@@ -10,6 +10,7 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { Router } from "@angular/router";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
+import { getTokens } from "@shared/storages";
 
 @Component({
   selector: "app-accounts",
@@ -45,7 +46,7 @@ export class AccountsComponent implements OnInit {
     private http: HttpClient,
     @Inject("DashboardService") private service: DashboardService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.service.gateway.loginSession$.subscribe((res) => {
@@ -58,7 +59,19 @@ export class AccountsComponent implements OnInit {
         });
       }
     });
-    this.service.gateway.validateToken();
+
+    this.service.gateway.get().subscribe({
+      next: () => {
+        this.service.gateway.validateToken(getTokens('session')).subscribe({
+          error: err => {
+            console.log(err);
+          }
+        });
+      },
+      error: err => {
+        console.log(err);
+      }
+    })
     console.log(this.router.routerState.snapshot.url);
   }
 

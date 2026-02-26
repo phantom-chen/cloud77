@@ -6,6 +6,7 @@ import { UnAuthorizedComponent } from '../un-authorized/un-authorized.component'
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AccountService } from '../account.service';
+import { getTokens } from '@shared/storages';
 
 @Component({
   selector: 'app-history',
@@ -47,7 +48,19 @@ export class HistoryComponent implements OnInit {
         }
       }
     });
-    this.service.gateway.validateToken();
+
+    this.service.gateway.get().subscribe({
+      next: () => {
+        this.service.gateway.validateToken(getTokens('session')).subscribe({
+          error: err => {
+            console.log(err);
+          }
+        });
+      },
+      error: err => {
+        console.log(err);
+      }
+    })
   }
 
   onSSO(): void {

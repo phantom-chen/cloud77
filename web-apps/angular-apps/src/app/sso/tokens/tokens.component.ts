@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, output, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { getTokens } from '@shared/utils';
+import { getTokens } from '@shared/storages';
 
 @Component({
   selector: 'app-tokens',
@@ -35,7 +35,7 @@ export class TokensComponent {
   logout: EventEmitter<void> = new EventEmitter();
 
   copyTokens(): void {
-    const tokens = getTokens(false);
+    const tokens = getTokens('local');
     const access = tokens.access;
     const refresh = tokens.refresh;
     if (tokens && tokens.access && tokens.refresh) {

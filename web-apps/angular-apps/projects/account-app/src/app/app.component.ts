@@ -1,5 +1,4 @@
 import {
-  AfterViewInit,
   Component,
   ElementRef,
   Inject,
@@ -15,11 +14,11 @@ import {
 } from "@angular/router";
 import { ToolbarComponent } from "./toolbar/toolbar.component";
 import { CommonModule } from "@angular/common";
-import { HttpClient } from "@angular/common/http";
-import { loadLoginSession, saveLoginSession } from "@shared/utils";
+import { loadLoginSession, saveLoginSession } from "@shared/services";
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 import { Subject } from "rxjs";
 import { AccountService } from "./account.service";
+import { getTokens, ssoMessageLoaded, ssoMessageUrl, ssoUrl } from "@shared/storages";
 
 @Component({
   selector: "app-root",
@@ -60,14 +59,11 @@ export class AppComponent implements OnInit, OnDestroy {
       this.headers = res;
     });
     this.service.gateway.ssoSignIn$.subscribe(() => {
-      const ssoUrl = localStorage.getItem("sso_url") || "";
-      if (ssoUrl) {
-        this.frameResourceUrl = this.san.bypassSecurityTrustResourceUrl(
-          `${ssoUrl}/message`
-        );
+      if (ssoUrl()) {
+        this.frameResourceUrl = this.san.bypassSecurityTrustResourceUrl(ssoMessageUrl());
 
         this.timer = setInterval(() => {
-          if (sessionStorage.getItem("sso_message_loaded")) {
+          if (ssoMessageLoaded()) {
             this.messageContainer.nativeElement.contentWindow?.postMessage(
               {
                 name: "request_login",
@@ -85,12 +81,9 @@ export class AppComponent implements OnInit, OnDestroy {
     });
     this.service.gateway.loginSession$.subscribe((res) => {
       if (res.expiration) {
-        console.log("user is logged in");
-        console.log(res);
         this.isLogin = true;
         this.service.gateway.getSite().then((res: string) => {
           const obj = JSON.parse(res);
-          console.log(obj.apps);
           const apps = obj.apps.map((app: any) => {
             return { label: app.label, path: app.path };
           });
@@ -109,10 +102,8 @@ export class AppComponent implements OnInit, OnDestroy {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         // Handle the navigation end event here
-        // console.log('Navigation ended:', event);
       } else if (event instanceof NavigationStart) {
         // Handle the navigation start event here
-        // console.log('Navigation started:', event);
         if (event.url.startsWith("/message")) {
           this.noHeader = true;
         } else {
@@ -133,16 +124,18 @@ export class AppComponent implements OnInit, OnDestroy {
 
     window.addEventListener("message", function (ev) {
       if (ev.data) {
-        if (ev.data.name === "login_ready" && localStorage.getItem("sso_url")) {
-          window.location.href = localStorage.getItem("sso_url") || "";
+        // app host, app url, app message url saved in session storage, go to SSO url
+        if (ev.data.name === "login_ready" && ssoUrl()) {
+          window.location.href = ssoUrl();
         }
+
+        // sso message page is loaded
         if (ev.data.name === "sso_message_loaded") {
           sessionStorage.setItem("sso_message_loaded", "true");
         }
       }
     });
     window.addEventListener("storage", (event: StorageEvent) => {
-      console.log("Storage event:", event);
       if (event.key) {
         if (event.key === "user_access_token" && !event.newValue) {
           // delete token
@@ -152,14 +145,6 @@ export class AppComponent implements OnInit, OnDestroy {
         // clear storage
         window.location.reload();
       }
-    });
-
-    this.service.gateway.get().subscribe((res) => {
-      // console.log(res);
-    });
-
-    this.service.gateway.validateToken().subscribe((res) => {
-      console.log("Token validation result:", res);
     });
   }
 }

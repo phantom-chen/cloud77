@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
 import { NgxChartsModule } from "@swimlane/ngx-charts";
 import { DashboardService } from '../dashboard.service';
+import { getTokens } from '@shared/storages';
 
 @Component({
   selector: 'app-statistics',
@@ -26,7 +27,19 @@ export class StatisticsComponent implements OnInit, AfterViewInit {
         this.isLogin = true;
       }
     });
-    this.service.gateway.validateToken();
+
+    this.service.gateway.get().subscribe({
+      next: () => {
+        this.service.gateway.validateToken(getTokens('session')).subscribe({
+          error: err => {
+            console.log(err);
+          }
+        });
+      },
+      error: err => {
+        console.log(err);
+      }
+    })
   }
 
   ngAfterViewInit(): void {

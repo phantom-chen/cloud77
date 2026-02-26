@@ -1,9 +1,8 @@
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { DefaultResponse, UserEmail, UserRole, UserToken } from "@phantom-chen/cloud77";
+import { HTTP_TIMEOUT_SECOND } from "@shared/constants";
 import { Observable, timeout } from "rxjs";
-
-const timeoutSeconds = 3;
 
 export interface TokenValidationResult extends UserRole {
     expiration: string;
@@ -23,7 +22,7 @@ export class UserService {
     }
     return this.http
       .get<UserEmail>("/api/sso/users", { params })
-      .pipe(timeout(timeoutSeconds * 1000));
+      .pipe(timeout(HTTP_TIMEOUT_SECOND * 1000));
   }
 
   createUser(
@@ -37,13 +36,13 @@ export class UserService {
         name: name,
         password: password,
       })
-      .pipe(timeout(timeoutSeconds * 1000));
+      .pipe(timeout(HTTP_TIMEOUT_SECOND * 1000));
   }
 
   getToken(email: string, password: string): Observable<UserToken> {
     return this.http
       .post<UserToken>(`/api/sso/tokens`, { email, password, name: "" })
-      .pipe(timeout(timeoutSeconds * 1000));
+      .pipe(timeout(HTTP_TIMEOUT_SECOND * 1000));
   }
 
   refreshToken(email: string, refreshToken: string): Observable<UserToken> {
@@ -57,6 +56,6 @@ export class UserService {
           },
         },
       )
-      .pipe(timeout(timeoutSeconds * 1000));
+      .pipe(timeout(HTTP_TIMEOUT_SECOND * 1000));
   }
 }

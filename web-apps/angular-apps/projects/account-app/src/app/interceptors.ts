@@ -1,17 +1,17 @@
 import { HttpInterceptorFn } from '@angular/common/http';
-import { getTokens } from '@shared/utils';
+import { apiKey, getTokens } from '@shared/storages';
 
 export const TokenInterceptor: HttpInterceptorFn = (req, next) => {
     let newReq = req.clone();
     newReq = newReq.clone({
-        headers: newReq.headers.set('X-API-Key', localStorage.getItem('api_key') || ''),
+        headers: newReq.headers.set('X-API-Key', apiKey()),
     });
 
     newReq = newReq.clone({
         headers: newReq.headers.set('X-API-Version', 'v1'),
     });
     
-    const tokens = getTokens();
+    const tokens = getTokens('session');
     if (tokens.access) {
         newReq = newReq.clone({
             headers: newReq.headers.set('Authorization', `Bearer ${tokens.access}`),

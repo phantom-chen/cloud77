@@ -1,12 +1,12 @@
-import { Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NavigationEnd, NavigationStart, Router, RouterOutlet } from '@angular/router';
 import { ToolbarComponent } from "./toolbar/toolbar.component";
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { DashboardService } from './dashboard.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
-import { loadLoginSession, saveLoginSession } from '@shared/utils';
+import { loadLoginSession, saveLoginSession } from '@shared/services';
+import { ssoMessageLoaded, ssoMessageUrl, ssoUrl } from '@shared/storages';
 
 @Component({
   selector: 'app-root',
@@ -19,7 +19,7 @@ import { loadLoginSession, saveLoginSession } from '@shared/utils';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild("messageContainer")
   messageContainer!: ElementRef<HTMLIFrameElement>;
@@ -30,6 +30,22 @@ export class AppComponent implements OnInit, OnDestroy {
     private router: Router,
     @Inject('DashboardService') private service: DashboardService,
     private san: DomSanitizer) { }
+
+  ngAfterViewInit(): void {
+    this.service.gateway.loginSession$.subscribe(res => {
+      if (res.expiration) {
+        setTimeout(() => {
+          this.headers$.next([
+            { label: 'Home', path: '/' },
+            { label: 'Statistics', path: '/statistics' },
+            { label: 'Accounts', path: '/accounts' },
+            { label: 'History', path: '/history' },
+            { label: 'System', path: './system' }
+          ])
+        }, 0);
+      }
+    })
+  }
 
   noHeader: boolean = false;
 
@@ -50,12 +66,12 @@ export class AppComponent implements OnInit, OnDestroy {
       this.headers = res;
     })
     this.service.gateway.ssoSignIn$.subscribe(() => {
-      const ssoUrl = localStorage.getItem('sso_url') || '';
-      if (ssoUrl) {
-        this.frameResourceUrl = this.san.bypassSecurityTrustResourceUrl(`${ssoUrl}/message`);
+
+      if (ssoUrl()) {
+        this.frameResourceUrl = this.san.bypassSecurityTrustResourceUrl(ssoMessageUrl());
 
         this.timer = setInterval(() => {
-          if (sessionStorage.getItem('sso_message_loaded')) {
+          if (ssoMessageLoaded()) {
             this.messageContainer.nativeElement.contentWindow?.postMessage({
               name: "request_login",
               host: window.location.host,
@@ -71,26 +87,14 @@ export class AppComponent implements OnInit, OnDestroy {
     });
     window.addEventListener('message', function (ev) {
       if (ev.data) {
-        if (ev.data.name === 'login_ready' && localStorage.getItem('sso_url')) {
-          window.location.href = localStorage.getItem('sso_url') || '';
+        if (ev.data.name === 'login_ready' && ssoUrl()) {
+          window.location.href = ssoUrl();
         }
         if (ev.data.name === 'sso_message_loaded') {
           sessionStorage.setItem('sso_message_loaded', 'true');
         }
       }
     });
-
-    this.service.gateway.loginSession$.subscribe(res => {
-      if (res.expiration) {
-        this.headers$.next([
-          { label: 'Home', path: '/' },
-          { label: 'Statistics', path: '/statistics' },
-          { label: 'Accounts', path: '/accounts' },
-          { label: 'History', path: '/history' },
-          { label: 'System', path: './system' }
-        ])
-      }
-    })
 
     window.addEventListener('load', function () {
       // Call your method here
@@ -105,25 +109,14 @@ export class AppComponent implements OnInit, OnDestroy {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         // Handle the navigation end event here
-        console.log('Navigation ended:', event);
       } else if (event instanceof NavigationStart) {
         // Handle the navigation start event here
-        console.log('Navigation started:', event);
         if (event.url.startsWith('/message')) {
           this.noHeader = true;
         } else {
           this.noHeader = false;
         }
       }
-    });
-
-    this.service.gateway.get()
-      .subscribe(res => {
-        // console.log(res);
-      });
-
-    this.service.gateway.validateToken().subscribe(res => {
-      console.log('Token validation result:', res);
     });
   }
 }

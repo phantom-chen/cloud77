@@ -6,6 +6,7 @@ import { MatCommonModule } from '@angular/material/core';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatButtonModule } from '@angular/material/button';
 import { UnAuthorizedComponent } from '../un-authorized/un-authorized.component';
+import { getTokens } from '@shared/storages';
 
 @Component({
   selector: 'app-post',
@@ -38,7 +39,19 @@ export class PostComponent implements OnInit {
         }
       }
     });
-    this.service.gateway.validateToken();
+
+    this.service.gateway.get().subscribe({
+      next: () => {
+        this.service.gateway.validateToken(getTokens('session')).subscribe({
+          error: err => {
+            console.log(err);
+          }
+        });
+      },
+      error: err => {
+        console.log(err);
+      }
+    })
   }
 
   loading: boolean = true;

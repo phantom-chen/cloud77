@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject } from '@angular/core';
+import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
 import { DashboardService } from '../dashboard.service';
-import { exitLoginSession, getTokens, saveTokens } from '@shared/utils';
+import { exitLoginSession } from '@shared/services';
 import { FormsModule } from '@angular/forms';
+import { debugMode, getTokens, saveTokens } from '@shared/storages';
 
 @Component({
   selector: 'app-home',
@@ -14,18 +15,37 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
-export class HomeComponent {
+export class HomeComponent implements AfterViewInit {
   title = 'Dashboard Portal';
   tokenString: string = '';
   debugMode: boolean = false;
+
   constructor(
     @Inject('DashboardService') private service: DashboardService,
   ) {
-    const tokens = getTokens(true);
+    const tokens = getTokens('session');
     if (tokens.access && tokens.refresh) {
       this.tokenString = `${tokens.access},${tokens.refresh}`;
     }
-    this.debugMode = localStorage.getItem('debug') ? true : false;
+    this.debugMode = debugMode();
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.service.gateway.get().subscribe({
+        next: () => {
+          this.service.gateway.validateToken(getTokens('session')).subscribe({
+            error: err => {
+              console.log(err);
+            }
+          });
+        },
+        error: err => {
+          console.log(err);
+        }
+      })
+    }, 1000);
+
   }
 
   onSSO(): void {
@@ -40,7 +60,7 @@ export class HomeComponent {
   onChange(event: Event): void {
     const tokens = this.tokenString.split(',');
     if (tokens.length === 2) {
-      saveTokens(true, tokens[0].trim(), tokens[1].trim());
+      saveTokens('session', tokens[0].trim(), tokens[1].trim());
     }
   }
 }

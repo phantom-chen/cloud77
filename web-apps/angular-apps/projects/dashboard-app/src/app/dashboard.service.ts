@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AccountQueryResult, EventQueryResult } from '@phantom-chen/cloud77';
-import { GatewayService } from '@shared/utils';
+import { GatewayService } from '@shared/services';
 import { lastValueFrom, Observable } from 'rxjs';
 
 export interface BaseQuery {

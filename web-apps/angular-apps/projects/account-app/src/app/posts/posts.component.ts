@@ -14,6 +14,7 @@ import { UnAuthorizedComponent } from '../un-authorized/un-authorized.component'
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { NuMonacoEditorComponent, NuMonacoEditorModel, NuMonacoEditorModule } from '@ng-util/monaco-editor';
+import { getTokens } from '@shared/storages';
 
 @Component({
   selector: 'app-posts',
@@ -71,7 +72,20 @@ export class PostsComponent implements OnInit {
         }
       }
     });
-    this.service.gateway.validateToken();
+
+    this.service.gateway.get().subscribe({
+      next: () => {
+        this.service.gateway.validateToken(getTokens('session')).subscribe({
+          error: err => {
+            console.log(err);
+          }
+        });
+      },
+      error: err => {
+        console.log(err);
+      }
+    })
+
     this.editor.autoFormat = true;
   }
 

@@ -9,9 +9,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { SNACKBAR_DURATION } from '@shared/utils';
+import { SNACKBAR_DURATION } from '@shared/constants';
 import { UnAuthorizedComponent } from '../un-authorized/un-authorized.component';
 import { AccountService } from '../account.service';
+import { getTokens } from '@shared/storages';
 
 @Component({
   selector: 'app-setting',
@@ -47,7 +48,19 @@ export class SettingComponent implements OnInit {
         }
       }
     });
-    this.service.gateway.validateToken();
+
+    this.service.gateway.get().subscribe({
+      next: () => {
+        this.service.gateway.validateToken(getTokens('session')).subscribe({
+          error: err => {
+            console.log(err);
+          }
+        });
+      },
+      error: err => {
+        console.log(err);
+      }
+    })
   }
 
   onSSO(): void {

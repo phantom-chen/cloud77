@@ -14,6 +14,7 @@ import { UserTask } from '@phantom-chen/cloud77';
 import { TaskDialogComponent } from '../task-dialog/task-dialog.component';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatButtonModule } from '@angular/material/button';
+import { getTokens } from '@shared/storages';
 
 @Component({
   selector: 'app-tasks',
@@ -71,7 +72,19 @@ export class TasksComponent implements OnInit {
         }
       }
     });
-    this.service.gateway.validateToken();
+
+    this.service.gateway.get().subscribe({
+      next: () => {
+        this.service.gateway.validateToken(getTokens('session')).subscribe({
+          error: err => {
+            console.log(err);
+          }
+        });
+      },
+      error: err => {
+        console.log(err);
+      }
+    })
   }
 
   onSSO(): void {

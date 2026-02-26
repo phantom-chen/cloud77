@@ -8,6 +8,7 @@ import { MatSelectModule } from "@angular/material/select";
 import { MatListModule, MatSelectionListChange } from '@angular/material/list';
 import { HttpErrorResponse, HttpProgressEvent } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
+import { getTokens } from '@shared/storages';
 
 @Component({
   selector: 'app-files',
@@ -55,7 +56,19 @@ export class FilesComponent implements OnInit {
         }
       }
     });
-    this.service.gateway.validateToken();
+
+    this.service.gateway.get().subscribe({
+      next: () => {
+        this.service.gateway.validateToken(getTokens('session')).subscribe({
+          error: err => {
+            console.log(err);
+          }
+        });
+      },
+      error: err => {
+        console.log(err);
+      }
+    })
   }
 
   onSSO(): void {

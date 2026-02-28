@@ -66,7 +66,7 @@ Remove-Item "$root\CanteenService" -Recurse -ErrorAction Ignore
 Invoke-Script -shell ps -command "cd $pwd\canteen-service`nyarn build"
 Copy-Item -Path "$PWD\canteen-service\dist" -Destination "$root\CanteenService" -Recurse
 Copy-Item -Path "$PWD\canteen-service\package.json" -Destination "$root\CanteenService\package.json"
-
+Copy-Item -Path "$PWD\canteen-service\canteen.json" -Destination "$root\CanteenService\canteen.json"
 Copy-Item -Path "$PWD\Documentation\Windows\certificate.ps1" -Destination "$root\certificate.ps1" -Force
 Copy-Item -Path "$PWD\Documentation\Windows\variables.ps1" -Destination "$root\variables.ps1" -Force
 Copy-Item -Path "$PWD\Documentation\Windows\services.ps1" -Destination "$root\services.ps1" -Force

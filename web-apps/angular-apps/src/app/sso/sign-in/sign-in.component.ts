@@ -36,24 +36,26 @@ export class SignInComponent {
   accountExisting: boolean = false;
 
   @Output()
+  login: EventEmitter<void> = new EventEmitter();
+
+  @Output()
   accountChange: EventEmitter<string> = new EventEmitter();
 
   @Output()
-  login: EventEmitter<{ account: string, password: string, remember: boolean }> = new EventEmitter<{ account: string, password: string, remember: boolean }>();
-
-  @Output() ssoSignIn: EventEmitter<void> = new EventEmitter<void>();
+  signInChange: EventEmitter<{ account: string, password: string, remember: boolean }> = new EventEmitter<{ account: string, password: string, remember: boolean }>();
 
   onAccountChange(): void {
     this.accountChange.emit(this.account);
+    this.onSignInChange();
+  }
+
+  onSignInChange(): void {
+    this.signInChange.emit({ account: this.account, password: this.password, remember: this.remember });
   }
 
   onKeyUp(event: KeyboardEvent): void {
     if (event.key === "Enter") {
-      this.login.emit({ account: this.account, password: this.password, remember: this.remember });
+        this.login.next();
     }
-  }
-
-  onLoginClick(): void {
-    this.login.emit({ account: this.account, password: this.password, remember: this.remember });
   }
 }

@@ -29,5 +29,7 @@
 
   <ItemGroup>
     <Folder Include="Features\" />
+    <Folder Include="LocalTests\" />
+    <Folder Include="WindowsTests\" />
   </ItemGroup>
 </Project>

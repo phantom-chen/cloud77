@@ -3,6 +3,7 @@ import {
   Component,
   ElementRef,
   Inject,
+  OnDestroy,
   OnInit,
   ViewChild,
 } from "@angular/core";
@@ -43,7 +44,7 @@ import { appMessageLoaded, appMessageUrl, debugMode, rememberMe, userEmail, getT
   templateUrl: "./login.component.html",
   styleUrl: "./login.component.css",
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
   logs: string = "";
   serviceAvailable: boolean = false;
   debugMode: boolean = false;
@@ -55,6 +56,12 @@ export class LoginComponent implements OnInit {
     @Inject("UserService") private service: UserService,
     private san: DomSanitizer,
   ) { }
+
+  ngOnDestroy(): void {
+    if (this.timmer) {
+      clearInterval(this.timmer);
+    }
+  }
 
   ngOnInit(): void {
     this.debugMode = debugMode();
@@ -111,8 +118,20 @@ export class LoginComponent implements OnInit {
     window.addEventListener("storage", () => {
       console.log("Storage event:");
     });
+
+    this.timmer = setInterval(() => {
+      this.counter++;
+      const tokens = getTokens('local');
+      // every 20 minute
+      if (tokens.access && this.counter > 20 * 20) {
+        console.log('get access token with refresh token')
+        this.onRefreshToken();
+        this.counter = 0;
+      }
+    }, 3000);
   }
 
+  counter = 0;
   remember = true;
   account: string = "";
 
@@ -123,7 +142,7 @@ export class LoginComponent implements OnInit {
   hadValidToken = false;
   frameResourceUrl?: SafeResourceUrl;
   tokenString: string = "";
-
+  timmer: any;
   @ViewChild("messageContainer")
   messageContainer!: ElementRef<HTMLIFrameElement>;
 
@@ -133,13 +152,19 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  onLogin(event: { account: string, password: string, remember: boolean }): void {
+  password: string = '';
+
+  onSignInChange(event: { account: string, password: string, remember: boolean }) {
     this.remember = event.remember;
     this.account = event.account;
-    if (event.remember) {
+    this.password = event.password;
+  }
+
+  onLogin(): void {
+    if (this.remember) {
       localStorage.setItem("remember_me", this.account);
     }
-    this.service.getToken(event.account, event.password).subscribe((res) => {
+    this.service.getToken(this.account, this.password).subscribe((res) => {
       saveTokens('local', res.value, res.refreshToken);
       this.hadToken = getTokens('local').access.length > 0;
       if (this.hadToken) {

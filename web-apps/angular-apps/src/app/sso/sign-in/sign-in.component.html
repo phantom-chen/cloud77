@@ -9,12 +9,9 @@
 <div class="row">
     <mat-form-field>
         <mat-label>Password</mat-label>
-        <input matInput type="password" placeholder="Password" autocomplete="off" [(ngModel)]="password" name="user-password" (keypress)="onKeyUp($event)">
+        <input matInput type="password" placeholder="Password" autocomplete="off" [(ngModel)]="password" name="user-password" (change)="onSignInChange()" (keypress)="onKeyUp($event)">
     </mat-form-field>
 </div>
 <div class="row">
-    <mat-checkbox color="primary" [(ngModel)]="remember" name="remembercheckbox">Remember Me</mat-checkbox>
-</div>
-<div class="row">
-    <button type="submit" mat-raised-button color="primary" (click)="onLoginClick();">Login</button>
+    <mat-checkbox color="primary" [(ngModel)]="remember" name="remembercheckbox" (change)="onSignInChange()">Remember Me</mat-checkbox>
 </div>

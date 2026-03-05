@@ -15,8 +15,10 @@
                         [remember]="remember"
                         [account]="account"
                         [accountExisting]="accountExisting"
-                        (accountChange)="onAccountChange($event)" (login)="onLogin($event)"/>
-                    <div class="row">
+                        (accountChange)="onAccountChange($event)"
+                        (signInChange)="onSignInChange($event)"/>
+                    <div class="row col-lg-12">
+                        <button type="submit" mat-raised-button color="primary" (click)="onLogin();">Login</button>
                         <button type="button" mat-outlined-button color="primary">
                             <a #signup target="_blank" [routerLink]="['/sign-up']" [relativeTo]="" routerLinkActive="active">Sign Up</a>
                         </button>

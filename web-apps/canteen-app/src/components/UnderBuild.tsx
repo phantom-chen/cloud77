@@ -154,7 +154,7 @@ export function UnderBuild(props: UnderBuildProps) {
 export default function UnderConstruction() {
     return <UnderBuild
         background={{
-            image: 'https://static.pexels.com/photos/259698/pexels-photo-259698.jpeg',
+            image: './assets/pexels-jplenio-4371631.jpg',
             textColor: '#fff',
             overlay: {
                 color: '#000',
@@ -162,7 +162,7 @@ export default function UnderConstruction() {
             }
         }}
         logo={{
-            src: 'https://image.ibb.co/b7guP5/Rubbby_without_text.png',
+            src: './assets/brilliant-red-ruby-gemstone.jpg',
             alt: 'alt text'
         }}
         title={{
@@ -184,19 +184,19 @@ export default function UnderConstruction() {
         links={[
             {
                 url: 'https://www.facebook.com/',
-                image: 'https://cdn-icons-png.flaticon.com/128/5968/5968764.png',
+                image: './assets/facebook_16x16.png',
             },
             {
                 url: 'https://www.twitter.com/',
-                image: 'https://image.flaticon.com/icons/svg/145/145812.svg',
+                image: './assets/twitter_16x16.png',
             },
             {
                 url: 'https://www.linkedin.com/',
-                image: 'https://image.flaticon.com/icons/svg/145/145807.svg',
+                image: './assets/linkedin_16x16.png',
             },
             {
                 url: 'mailto:someone@example.com',
-                image: 'https://image.flaticon.com/icons/svg/321/321817.svg',
+                image: './assets/emailto_16x16.png',
             },
         ]}
     />

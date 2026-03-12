@@ -33,6 +33,7 @@ html {
     margin-top: -50px;
     width: 100%;
     max-width: 800px;
+    min-height: 800px;
     position: relative;
 }
 

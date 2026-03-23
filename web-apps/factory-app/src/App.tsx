@@ -18,7 +18,8 @@ function App() {
 
     const navigate = useNavigate();
     const location = useLocation();
-
+    const [user, setUser] = useState(sessionStorage.getItem('user') || '');
+    const [page, setPage] = useState('');
     const hanleLogout = () => {
         sessionStorage.clear();
         navigate('');
@@ -26,6 +27,8 @@ function App() {
 
     useEffect(() => {
         console.log(location);
+        console.log(location.pathname)
+        setPage(location.pathname)
     }, [location]);
 
     return (
@@ -33,7 +36,11 @@ function App() {
             <nav>
                 <ul style={{ display: 'flex', listStyle: 'none', padding: 0, margin: 0, backgroundColor: '#333' }}>
                     <li style={{ margin: '0 10px' }}>
-                        <a href="/" style={{ color: location.pathname === '/login' ? 'yellow' : 'white', textDecoration: 'none', padding: '10px 20px', display: 'block' }} onMouseEnter={(e) => e.currentTarget.style.color = 'yellow'} onMouseLeave={(e) => e.currentTarget.style.color = location.pathname === '/login' ? 'yellow' : 'white'}>Home</a>
+                        <a href="/" style={{ color: location.pathname === '/login' ? 'yellow' : 'white', textDecoration: 'none', padding: '10px 20px', display: 'block' }}
+                            onMouseEnter={(e) => e.currentTarget.style.color = 'yellow'}
+                            onMouseLeave={(e) => e.currentTarget.style.color = location.pathname === '/login' ? 'yellow' : 'white'}>
+                            Home
+                        </a>
                     </li>
                     <li style={{ margin: '0 10px' }}>
                         <a href="/login" style={{ color: location.pathname === '/login' ? 'yellow' : 'white', textDecoration: 'none', padding: '10px 20px', display: 'block' }} onMouseEnter={(e) => e.currentTarget.style.color = 'yellow'} onMouseLeave={(e) => e.currentTarget.style.color = location.pathname === '/login' ? 'yellow' : 'white'}>SSO & Login</a>
@@ -45,7 +52,7 @@ function App() {
                         <a href="/accounts" style={{ color: 'white', textDecoration: 'none', padding: '10px 20px', display: 'block' }}>Accounts</a>
                     </li>
                     <li style={{ margin: '0 10px' }}>
-                        <a href="/diagram" style={{ color: 'white', textDecoration: 'none', padding: '10px 20px', display: 'block' }}>Diagram</a>
+                        <a href="/diagram" style={{ color: '#00ff00', textDecoration: 'none', padding: '10px 20px', display: 'block' }}>Diagram</a>
                     </li>
                     <li style={{ margin: '0 10px' }}>
                         <a href="/chat" style={{ color: 'white', textDecoration: 'none', padding: '10px 20px', display: 'block' }}>Chat</a>

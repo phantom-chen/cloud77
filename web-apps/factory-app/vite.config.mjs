@@ -15,11 +15,11 @@ export default defineConfig({
         port: 7706,
         proxy: {
             '/api': {
-                target: 'http://localhost:7710',
+                target: 'https://www.cloud77.top',
                 changeOrigin: true,
             },
             '/canteen-ws': {
-                target: 'ws://localhost:7715',
+                target: 'wss://www.cloud77.top',
                 changeOrigin: true,
                 ws: true,
             },

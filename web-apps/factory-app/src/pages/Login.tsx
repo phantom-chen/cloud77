@@ -18,7 +18,7 @@ const Login: React.FC = () => {
     const [password, setPassword] = useState('');
     const [token, setToken] = useState('');
     const [key, setKey] = useState('');
-    const ssoRef: RefObject<HTMLIFrameElement> = React.createRef();
+    const ssoRef: RefObject<HTMLIFrameElement | null> = React.createRef();
 
     const handleLogin = () => {
         // Handle login logic here

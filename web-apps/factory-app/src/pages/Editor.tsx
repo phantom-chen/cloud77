@@ -1,8 +1,10 @@
 import { editor } from 'monaco-editor';
 import Editor, { loader, OnChange } from '@monaco-editor/react';
 import { AgGridReact } from 'ag-grid-react';
-import 'monaco-editor/min/vs/editor/editor.main.css';
+import { themeBalham } from 'ag-grid-community';
+// import 'monaco-editor/min/vs/editor/editor.main.css';
 loader.config({ paths: { vs: "monaco/vs" } });
+const myTheme = themeBalham.withParams({ accentColor: 'red' });
 
 export function CodeEditor(props: {
     code: string
@@ -40,13 +42,13 @@ export function GridEditor() {
     ];
 
     return (
-        <div className="ag-theme-alpine"
+        <div
             style={{
                 height: '350px',
                 width: '100%'
             }}>
 
-            <AgGridReact columnDefs={[
+            <AgGridReact theme={myTheme} columnDefs={[
                 { headerName: "Make", field: "make" },
                 { headerName: "Model", field: "model" },
                 { headerName: "Price", field: "price" }

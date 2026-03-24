@@ -1,5 +1,6 @@
 "use client";
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
 import './App.css';
 
 import React, { Suspense, useEffect, useState } from "react";
@@ -13,6 +14,8 @@ import AccountsPage from './pages/Accounts'
 
 // process.env.DEMO_USER = "hello";
 // console.log(process.env);
+
+ModuleRegistry.registerModules([AllCommunityModule]);
 
 function App() {
 

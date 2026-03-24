@@ -37,8 +37,8 @@ const Diagram: React.FC = () => {
                 value === 1 ?  <p>signals</p> : undefined
             }
             <div style={{width:'100%'}}>
-                {/* <GridEditor /> */}
-                <div>grid editor placeholder</div>
+                <GridEditor />
+                {/* <div>grid editor placeholder</div> */}
             </div>
             <div style={{ display: 'flex', width: '100%' }}>
                 <div style={{ flex: 1 }}>

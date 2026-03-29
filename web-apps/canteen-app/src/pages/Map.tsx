@@ -23,8 +23,8 @@ const MapPage: React.FC = () => {
     };
 
     useEffect(() => {
-        if (localStorage.getItem('cloud77_amap_value')) {
-            setKey(localStorage.getItem('cloud77_amap_value') || '');
+        if (localStorage.getItem('amap_key')) {
+            setKey(localStorage.getItem('amap_key') || '');
         }
     }, [])
 

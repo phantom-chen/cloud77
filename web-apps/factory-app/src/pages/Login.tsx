@@ -77,25 +77,6 @@ const Login: React.FC = () => {
         });
     }, [])
 
-    // useEffect(() => {
-    //     axios.get('api/gateway', {
-    //         headers: {
-    //             'x-api-version': 'v1'
-    //         }
-    //     })
-    //         .then(response => {
-    //             console.log(response.data);
-    //             const data = response.data;
-    //             console.log(data)
-    //             localStorage.setItem('sso_url', data.sso);
-    //             localStorage.setItem('home_url', data.home);
-    //             localStorage.setItem('api_key', data.key);
-    //         })
-    //         .catch(error => {
-    //             console.error(error);
-    //         });
-    // }, []);
-
     return (
         <Container maxWidth="sm">
             <Typography variant="h4" component="h1" gutterBottom>

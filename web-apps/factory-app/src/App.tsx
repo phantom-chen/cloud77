@@ -11,6 +11,8 @@ import AccountPage from './pages/Account';
 import ChatPage from './pages/Chat';
 import MessagePage from './pages/Message';
 import AccountsPage from './pages/Accounts'
+import NotFound from './pages/NotFound';
+import AccountSettings from './pages/AccountSettings';
 
 // process.env.DEMO_USER = "hello";
 // console.log(process.env);
@@ -60,17 +62,44 @@ function App() {
                     <li style={{ margin: '0 10px' }}>
                         <a href="/chat" style={{ color: 'white', textDecoration: 'none', padding: '10px 20px', display: 'block' }}>Chat</a>
                     </li>
+                    <li style={{ margin: '0 10px' }}>
+                        <a href="/chat" style={{ color: 'white', textDecoration: 'none', padding: '10px 20px', display: 'block' }}>Settings</a>
+                    </li>
+                    <li style={{ margin: '0 10px' }}>
+                        <a href="/chat" style={{ color: 'white', textDecoration: 'none', padding: '10px 20px', display: 'block' }}>Posts</a>
+                    </li>
+                    <li style={{ margin: '0 10px' }}>
+                        <a href="/chat" style={{ color: 'white', textDecoration: 'none', padding: '10px 20px', display: 'block' }}>Tasks</a>
+                    </li>
+                    <li style={{ margin: '0 10px' }}>
+                        <a href="/chat" style={{ color: 'white', textDecoration: 'none', padding: '10px 20px', display: 'block' }}>Files</a>
+                    </li>
+                    <li style={{ margin: '0 10px' }}>
+                        <a href="/chat" style={{ color: 'white', textDecoration: 'none', padding: '10px 20px', display: 'block' }}>History</a>
+                    </li>
                 </ul>
             </nav>
             <Routes>
                 <Route path="" element={<HomePage />} />
                 <Route path="/login" element={<LoginPage />} />
+                <Route path="/message" element={<MessagePage />} />
+
                 <Route path="/account" element={<AccountPage />} />
-                <Route path="/accounts/:email" element={<AccountPage />} />
-                <Route path="/accounts" element={<AccountsPage />} />
+                <Route path="/account/settings" element={<AccountSettings />} />
+                {/* setting page */}
                 <Route path="/diagram" element={<DiagramPage />} />
                 <Route path="/chat" element={<ChatPage />} />
-                <Route path="/message" element={<MessagePage />} />
+                {/* history page */}
+                {/* posts page */}
+                {/* tasks page */}
+                {/* files page */}
+
+                {/* dashboard page */}
+                <Route path="/accounts/:email" element={<AccountPage />} />
+                <Route path="/accounts" element={<AccountsPage />} />
+
+                {/* not found page */}
+                <Route path="*" element={<NotFound />} />
             </Routes>
         </>
     );

@@ -4,7 +4,7 @@ import { Profile, UserAccount } from "@phantom-chen/cloud77";
 import { AccountQueryResult } from "@phantom-chen/cloud77";
 
 export const TesterProfile: Profile = {
-  city: 'a', company: 'a', companyType: 'a', contact: 'a', fax: 'a', phone: 'a', post: 'a', givenName: 'a', surname: 'a', supplier: 'a', title: 'a'
+  city: 'a', company: 'a', companyType: 'a', contact: 'a', fax: 'a', phone: 'a', post: 'a', givenName: 'a', surname: 'a', supplier: 'a', title: 'a', "address": 'a'
 }
 
 export const TesterAccount: UserAccount = {
@@ -13,10 +13,7 @@ export const TesterAccount: UserAccount = {
 
 export function getGateway(): Promise<string> {
   return axios.get("api/gateway").then((response) => {
-    console.log(response.data);
     const data = response.data;
-    console.log(data);
-
     updateSSOUrl(data.sso);
     localStorage.setItem("home_url", data.home);
     updateKey(data.key);

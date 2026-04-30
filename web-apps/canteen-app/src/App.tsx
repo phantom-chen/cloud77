@@ -5,7 +5,7 @@ import './App.css';
 
 import React, { Suspense, useEffect, useState } from "react";
 import { Footer } from "./components/Footer";
-import { Header } from "./components/Header";
+import { AppBar } from "./components/AppBar";
 
 const HomePage = React.lazy(() => import('./pages/Home'));
 const LoginPage = React.lazy(() => import('./pages/Login'));
@@ -19,6 +19,7 @@ const SamplePage = React.lazy(() => import('./pages/Sample'));
 const DiagramPage = React.lazy(() => import('./pages/Diagram'));
 const LayoutPage = React.lazy(() => import('./pages/Layout'));
 const FilesPage = React.lazy(() => import('./pages/Files'));
+const ProjectPage = React.lazy(() => import('./pages/Project'));
 const NotFoundPage = React.lazy(() => import('./pages/NotFound'));
 
 // process.env.DEMO_USER = "hello";
@@ -50,7 +51,7 @@ function App() {
     return (
         <>
             {
-                navVisible ? <Header /> : undefined
+                navVisible ? <AppBar /> : undefined
             }
             {
                 navVisible ? <Footer /> : undefined
@@ -70,6 +71,7 @@ function App() {
                         <Route path="/layout" element={<LayoutPage />} />
                         <Route path="/diagram" element={<DiagramPage />} />
                         <Route path="/files" element={<FilesPage />} />
+                        <Route path="/project" element={<ProjectPage />} />
                         <Route path="*" Component={NotFoundPage} />
                     </Routes>
                 </Suspense>

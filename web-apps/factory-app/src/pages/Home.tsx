@@ -38,20 +38,30 @@ const Home: React.FC = () => {
                 </div>
             </div>
 
-            <input
-                type="text"
-                placeholder="Tokens"
+            <textarea
+                placeholder="Tokens (access,refresh)"
                 value={tokens}
                 onChange={(e) => {
                     setTokens(e.target.value);
                     console.log(e.target.value);
-                    const tokens = e.target.value.split(',');
-                    if (tokens.length > 0) {
-                        sessionStorage.setItem('user_access_token', tokens[0]);
+                    const parts = e.target.value.split(',');
+                    if (parts.length > 0) {
+                        sessionStorage.setItem('user_access_token', parts[0]);
                     }
-                    if (tokens.length > 1) {
-                        sessionStorage.setItem('user_refresh_token', tokens[1])
+                    if (parts.length > 1) {
+                        sessionStorage.setItem('user_refresh_token', parts[1]);
                     }
+                }}
+                style={{
+                    width: '80%',
+                    minWidth: '480px',
+                    maxWidth: '95%',
+                    height: '80px',
+                    resize: 'vertical',
+                    padding: '8px',
+                    fontFamily: 'inherit',
+                    fontSize: '14px',
+                    boxSizing: 'border-box',
                 }}
             />
 

@@ -3,8 +3,12 @@ import { getAuthorization, getKey, updateKey, updateSSOUrl } from "./storage";
 import { Profile, UserAccount } from "@phantom-chen/cloud77";
 import { AccountQueryResult } from "@phantom-chen/cloud77";
 
-export const TesterProfile: Profile = {
-  city: 'a', company: 'a', companyType: 'a', contact: 'a', fax: 'a', phone: 'a', post: 'a', givenName: 'a', surname: 'a', supplier: 'a', title: 'a', "address": 'a'
+export interface Profile2 extends Profile {
+    address: string
+}
+
+export const TesterProfile: Profile2 = {
+  city: 'a', company: 'a', companyType: 'a', contact: 'a', fax: 'a', phone: 'a', post: 'a', givenName: 'a', surname: 'a', supplier: 'a', title: 'a', address: 'a'
 }
 
 export const TesterAccount: UserAccount = {

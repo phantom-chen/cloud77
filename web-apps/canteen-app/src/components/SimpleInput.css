@@ -1,0 +1,20 @@
+.simple-input-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.simple-input-label {
+  font-weight: 600;
+}
+
+.simple-input {
+  width: 360px;
+  min-height: 36px;
+  padding: 6px 10px;
+  font-size: 14px;
+  border: 1px solid #bdbdbd;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+}

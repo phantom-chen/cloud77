@@ -129,7 +129,7 @@ namespace SuperService.Controllers
             return Ok(new GreetingSent(sender));
         }
 
-        private void Send(string queue, string message)
+        private async Task Send(string queue, string message)
         {
             if (string.IsNullOrEmpty(queue) || string.IsNullOrEmpty(message))
             {
@@ -138,15 +138,15 @@ namespace SuperService.Controllers
 
             textLogging.PushLog($"send message '{message}' to the queue '{queue}'");
 
-            using (var connection = factory.CreateConnection())
+            using (var connection = await factory.CreateConnectionAsync())
             {
-                using (var channel = connection.CreateModel())
+                using (var channel = await connection.CreateChannelAsync())
                 {
-                    var properties = channel.CreateBasicProperties();
+                    var properties = new BasicProperties();
                     properties.Persistent = true;
-                    channel.QueueDeclare(queue: queue, durable: true, exclusive: false, autoDelete: false, arguments: null);
+                    await channel.QueueDeclareAsync(queue: queue, durable: true, exclusive: false, autoDelete: false, arguments: null);
                     var body = Encoding.UTF8.GetBytes(message);
-                    channel.BasicPublish(exchange: "", routingKey: queue, basicProperties: properties, body: body);
+                    await channel.BasicPublishAsync(exchange: "", routingKey: queue, mandatory: false, basicProperties: properties, body: body);
                 }
             }
         }

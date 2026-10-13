@@ -52,10 +52,10 @@ namespace SuperService.Backgrounds
             {
                 try
                 {
-                    using (var connection = factory.CreateConnection())
-                    using (var channel = connection.CreateModel())
+                    using (var connection = await factory.CreateConnectionAsync())
+                    using (var channel = await connection.CreateChannelAsync())
                     {
-                        channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
+                        await channel.BasicQosAsync(prefetchSize: 0, prefetchCount: 1, global: false);
 
                         HandleDefaultMessage(channel);
                         HandleUserLinkMessage(channel);
@@ -82,12 +82,12 @@ namespace SuperService.Backgrounds
             return message;
         }
 
-        private void HandleDefaultMessage(IModel channel)
+        private async Task HandleDefaultMessage(IChannel channel)
         {
             var queue = defaultMessageQueue;
-            channel.QueueDeclare(queue, durable: true, exclusive: false, autoDelete: false, arguments: null);
-            var consumer = new EventingBasicConsumer(channel);
-            consumer.Received += (model, ea) =>
+            await channel.QueueDeclareAsync(queue, durable: true, exclusive: false, autoDelete: false, arguments: null);
+            var consumer = new AsyncEventingBasicConsumer(channel);
+            consumer.ReceivedAsync += async (model, ea) =>
             {
                 var message = Message2String(ea);
                 logger.LogInformation($"receive message: {message}");
@@ -97,18 +97,18 @@ namespace SuperService.Backgrounds
                   ServiceDataModel.GetVariable("REDIS_PASSWORD"));
 
                 client.Set(defaultMessageQueue, message, TimeSpan.FromMinutes(5));
-                channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
+                await channel.BasicAckAsync(deliveryTag: ea.DeliveryTag, multiple: false);
                 logger.LogInformation($"message is processed, save in Redis, key is {defaultMessageQueue}");
             };
-            channel.BasicConsume(queue, autoAck: false, consumer: consumer);
+            await channel.BasicConsumeAsync(queue, autoAck: false, consumer: consumer);
         }
 
-        private void HandleUserLinkMessage(IModel channel)
+        private async Task HandleUserLinkMessage(IChannel channel)
         {
             var queue = userLinkMessageQueue;
-            channel.QueueDeclare(queue, durable: true, exclusive: false, autoDelete: false, arguments: null);
-            var consumer = new EventingBasicConsumer(channel);
-            consumer.Received += (model, ea) =>
+            await channel.QueueDeclareAsync(queue, durable: true, exclusive: false, autoDelete: false, arguments: null);
+            var consumer = new AsyncEventingBasicConsumer(channel);
+            consumer.ReceivedAsync += async (model, ea) =>
             {
                 var message = Message2String(ea);
                 logger.LogInformation(message);
@@ -116,7 +116,7 @@ namespace SuperService.Backgrounds
                 var userLink = JsonConvert.DeserializeObject<UserLink>(message);
                 if (userLink == null)
                 {
-                    channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
+                    await channel.BasicAckAsync(deliveryTag: ea.DeliveryTag, multiple: false);
                     return;
                 }
                 var content = new EmailEntity()
@@ -140,17 +140,17 @@ namespace SuperService.Backgrounds
                 {
                     SendMail(content);
                 }
-                channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
+                await channel.BasicAckAsync(deliveryTag: ea.DeliveryTag, multiple: false);
             };
-            channel.BasicConsume(queue, autoAck: false, consumer: consumer);
+            await channel.BasicConsumeAsync(queue, autoAck: false, consumer: consumer);
         }
 
-        private void HandleMailMessage(IModel channel)
+        private async Task HandleMailMessage(IChannel channel)
         {
             var queue = mailMessageQueue;
-            channel.QueueDeclare(queue, durable: true, exclusive: false, autoDelete: false, arguments: null);
-            var consumer = new EventingBasicConsumer(channel);
-            consumer.Received += (model, ea) =>
+            await channel.QueueDeclareAsync(queue, durable: true, exclusive: false, autoDelete: false, arguments: null);
+            var consumer = new AsyncEventingBasicConsumer(channel);
+            consumer.ReceivedAsync += async (model, ea) =>
             {
                 var message = Message2String(ea) ?? "";
                 if (!string.IsNullOrEmpty(message))
@@ -162,9 +162,9 @@ namespace SuperService.Backgrounds
                         SendMail(content);
                 }
 
-                channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
+                await channel.BasicAckAsync(deliveryTag: ea.DeliveryTag, multiple: false);
             };
-            channel.BasicConsume(queue, autoAck: false, consumer: consumer);
+            await channel.BasicConsumeAsync(queue, autoAck: false, consumer: consumer);
         }
 
         private void SendMail(EmailEntity content)

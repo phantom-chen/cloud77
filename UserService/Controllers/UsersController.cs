@@ -91,7 +91,7 @@ namespace UserService.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult Post(UserPassword user)
+        public async Task<IActionResult> Post(UserPassword user)
         {
             user.Email = user.Email.ToLower().Trim();
             user.Name = user.Name.ToLower().Trim();
@@ -189,7 +189,7 @@ namespace UserService.Controllers
             logger.LogDebug($"the path to confirm email is '{urlPath}'");
             textLogging.PushLog($"Users: email verification link for user {user.Email} is {link}");
 
-            SendUserLink(userLinkQueue, new UserLink() { Email = user.Email, Link = link, Name = user.Name, Usage = "email" });
+            await SendUserLink(userLinkQueue, new UserLink() { Email = user.Email, Link = link, Name = user.Name, Usage = "email" });
 
             return Created("", new UserCreated(id, user.Email));
         }
@@ -364,17 +364,17 @@ namespace UserService.Controllers
             return Ok(new UserConfirmed(email));
         }
 
-        private void SendUserLink(string queue, UserLink link)
+        private async Task SendUserLink(string queue, UserLink link)
         {
             var message = JsonConvert.SerializeObject(link);
-            using (var connection = factory.CreateConnection())
-            using (var channel = connection.CreateModel())
+            using (var connection = await factory.CreateConnectionAsync())
+            using (var channel = await connection.CreateChannelAsync())
             {
-                var properties = channel.CreateBasicProperties();
+                var properties = new BasicProperties();
                 properties.Persistent = true;
-                channel.QueueDeclare(queue: queue, durable: true, exclusive: false, autoDelete: false, arguments: null);
+                await channel.QueueDeclareAsync(queue: queue, durable: true, exclusive: false, autoDelete: false, arguments: null);
                 var body = Encoding.UTF8.GetBytes(message);
-                channel.BasicPublish(exchange: "", routingKey: queue, basicProperties: properties, body: body);
+                await channel.BasicPublishAsync(exchange: "", routingKey: queue, mandatory: false, basicProperties: properties, body: body);
             }
         }
 

@@ -49,10 +49,10 @@ namespace UserService.Backgrounds
             {
                 try
                 {
-                    using (var connection = factory.CreateConnection())
-                    using (var channel = connection.CreateModel())
+                    using (var connection = await factory.CreateConnectionAsync())
+                    using (var channel = await connection.CreateChannelAsync())
                     {
-                        channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
+                        await channel.BasicQosAsync(prefetchSize: 0, prefetchCount: 1, global: false);
 
                         HandleUserResourceMessage(channel);
 
@@ -77,12 +77,12 @@ namespace UserService.Backgrounds
             return message;
         }
 
-        private void HandleUserResourceMessage(IModel channel)
+        private async Task HandleUserResourceMessage(IChannel channel)
         {
             var queue = userResourceServer;
-            channel.QueueDeclare(queue, durable: true, exclusive: false, autoDelete: false, arguments: null);
-            var consumer = new EventingBasicConsumer(channel);
-            consumer.Received += (model, ea) =>
+            await channel.QueueDeclareAsync(queue, durable: true, exclusive: false, autoDelete: false, arguments: null);
+            var consumer = new AsyncEventingBasicConsumer(channel);
+            consumer.ReceivedAsync += async (model, ea) =>
             {
                 var message = Message2String(ea);
                 logger.LogInformation(message);
@@ -100,9 +100,9 @@ namespace UserService.Backgrounds
                     File.AppendAllLines(Path.Combine(ServiceDataModel.Root, "users", user.Email, "user_resource_deleted.txt"), new string[] { value });
                 }
                 
-                channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
+                await channel.BasicAckAsync(deliveryTag: ea.DeliveryTag, multiple: false);
             };
-            channel.BasicConsume(queue, autoAck: false, consumer: consumer);
+            await channel.BasicConsumeAsync(queue, autoAck: false, consumer: consumer);
         }
     }
 }

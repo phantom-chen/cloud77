@@ -14,26 +14,26 @@ namespace SuperService.Services
             this.factory = factory;
         }
 
-        public override Task<ServiceReply> SendSimpleMessage(SimpleQueueMessage request, ServerCallContext context)
+        public override async Task<ServiceReply> SendSimpleMessage(SimpleQueueMessage request, ServerCallContext context)
         {
-            using (var connection = factory.CreateConnection())
+            using (var connection = await factory.CreateConnectionAsync())
             {
-                using (var channel = connection.CreateModel())
+                using (var channel = await connection.CreateChannelAsync())
                 {
-                    var properties = channel.CreateBasicProperties();
+                    var properties = new BasicProperties();
                     properties.Persistent = true;
-                    channel.QueueDeclare(queue: request.Queue, durable: true, exclusive: false, autoDelete: false, arguments: null);
+                    await channel.QueueDeclareAsync(queue: request.Queue, durable: true, exclusive: false, autoDelete: false, arguments: null);
                     var body = Encoding.UTF8.GetBytes(request.Message);
-                    channel.BasicPublish(exchange: "", routingKey: request.Queue, basicProperties: properties, body: body);
+                    await channel.BasicPublishAsync(exchange: "", routingKey: request.Queue, mandatory: false, basicProperties: properties, body: body);
                 }
             }
 
-            return Task.FromResult(new ServiceReply()
+            return new ServiceReply()
             {
                 Code = "a",
                 Message = "b",
                 Id = "c"
-            });
+            };
         }
     }
 }

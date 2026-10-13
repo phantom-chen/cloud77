@@ -194,7 +194,7 @@ namespace UserService.Controllers
 
         [HttpPost]
         [Route("{email}/verification")]
-        public IActionResult IssueVerificationToken(string email)
+        public async Task<IActionResult> IssueVerificationToken(string email)
         {
             if (string.IsNullOrEmpty(email))
             {
@@ -233,7 +233,7 @@ namespace UserService.Controllers
             logger.LogDebug($"the email confirm link is {link}");
             model.AppendLog($"the email confirm link is {link}");
 
-            SendUserLink(configuration["User_link_queue"] ?? "", new UserLink() { Email = user.Email, Link = link, Name = user.Name, Usage = "email" });
+            await SendUserLink(configuration["User_link_queue"] ?? "", new UserLink() { Email = user.Email, Link = link, Name = user.Name, Usage = "email" });
 
             // send the link to user mail box
             return Ok(new OneTimeTokenCreated(email, "Email Verification"));
@@ -288,7 +288,7 @@ namespace UserService.Controllers
 
         [HttpDelete]
         [Route("{email}")]
-        public IActionResult Delete(string email)
+        public async Task<IActionResult> Delete(string email)
         {
             // need confirmed token ??
             // get token from headers or query string
@@ -358,17 +358,17 @@ namespace UserService.Controllers
                 var body = Encoding.UTF8.GetBytes(message);
 
                 var lines = new List<string>();
-                using (var connection = factory.CreateConnection())
+                using (var connection = await factory.CreateConnectionAsync())
                 {
-                    using (var channel = connection.CreateModel())
+                    using (var channel = await connection.CreateChannelAsync())
                     {
-                        var properties = channel.CreateBasicProperties();
+                        var properties = new BasicProperties();
                         properties.Persistent = true;
 
                         foreach (var resourceServer in resourceServers)
                         {
-                            channel.QueueDeclare(queue: resourceServer, durable: true, exclusive: false, autoDelete: false, arguments: null);
-                            channel.BasicPublish(exchange: "", routingKey: resourceServer, basicProperties: properties, body: body);
+                            await channel.QueueDeclareAsync(queue: resourceServer, durable: true, exclusive: false, autoDelete: false, arguments: null);
+                            await channel.BasicPublishAsync(exchange: "", routingKey: resourceServer, mandatory: false, basicProperties: properties, body: body);
                             lines.Add($"{email}_resource_deleting_{resourceServer}");
                         }
                     }
@@ -381,17 +381,17 @@ namespace UserService.Controllers
             }
         }
 
-        private void SendUserLink(string queue, UserLink link)
+        private async Task SendUserLink(string queue, UserLink link)
         {
             var message = JsonConvert.SerializeObject(link);
-            using (var connection = factory.CreateConnection())
-            using (var channel = connection.CreateModel())
+            using (var connection = await factory.CreateConnectionAsync())
+            using (var channel = await connection.CreateChannelAsync())
             {
-                var properties = channel.CreateBasicProperties();
+                var properties = new BasicProperties();
                 properties.Persistent = true;
-                channel.QueueDeclare(queue: queue, durable: true, exclusive: false, autoDelete: false, arguments: null);
+                await channel.QueueDeclareAsync(queue: queue, durable: true, exclusive: false, autoDelete: false, arguments: null);
                 var body = Encoding.UTF8.GetBytes(message);
-                channel.BasicPublish(exchange: "", routingKey: queue, basicProperties: properties, body: body);
+                await channel.BasicPublishAsync(exchange: "", routingKey: queue, mandatory: false, basicProperties: properties, body: body);
             }
         }
 

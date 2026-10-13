@@ -218,7 +218,7 @@ namespace UserService.Controllers
 
         [HttpPost]
         [Route("password")]
-        public IActionResult IssuePasswordToken([FromQuery] string email)
+        public async Task<IActionResult> IssuePasswordToken([FromQuery] string email)
         {
             if (string.IsNullOrEmpty(email))
             {
@@ -262,21 +262,21 @@ namespace UserService.Controllers
             logger.LogDebug($"the path to reset password is ‘{urlPath}‘");
             textLogging.PushLog($"Tokens: password reset link for user {email} is {link}");
 
-            SendUserLink(userLinkQueue, new UserLink() { Email = email, Link = link, Name = "", Usage = "password" });
+            await SendUserLink(userLinkQueue, new UserLink() { Email = email, Link = link, Name = "", Usage = "password" });
             return Ok(new OneTimeTokenCreated(email, "Password Reset"));
         }
 
-        private void SendUserLink(string queue, UserLink link)
+        private async Task SendUserLink(string queue, UserLink link)
         {
             var message = JsonConvert.SerializeObject(link);
-            using (var connection = factory.CreateConnection())
-            using (var channel = connection.CreateModel())
+            using (var connection = await factory.CreateConnectionAsync())
+            using (var channel = await connection.CreateChannelAsync())
             {
-                var properties = channel.CreateBasicProperties();
+                var properties = new BasicProperties();
                 properties.Persistent = true;
-                channel.QueueDeclare(queue: queue, durable: true, exclusive: false, autoDelete: false, arguments: null);
+                await channel.QueueDeclareAsync(queue: queue, durable: true, exclusive: false, autoDelete: false, arguments: null);
                 var body = Encoding.UTF8.GetBytes(message);
-                channel.BasicPublish(exchange: "", routingKey: queue, basicProperties: properties, body: body);
+                await channel.BasicPublishAsync(exchange: "", routingKey: queue, mandatory: false, basicProperties: properties, body: body);
             }
         }
 

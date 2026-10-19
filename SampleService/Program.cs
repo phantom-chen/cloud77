@@ -61,8 +61,8 @@ namespace SampleService
 
             if (isWindows)
             {
-                string programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-                ServiceDataModel.Root = Path.Combine(programDataPath, "MyServices");
+                string programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                ServiceDataModel.Root = Path.Combine(programDataPath, "MyServer", "MyServices");
             }
             else
             {

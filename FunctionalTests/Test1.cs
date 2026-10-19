@@ -11,9 +11,9 @@ namespace FunctionalTests
         [TestMethod()]
         public void FindUsers()
         {
-            Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-            string programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-            var root = Path.Combine(programDataPath, "MyServices");
+            Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            string programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            var root = Path.Combine(programDataPath, "MyServer", "MyServices");
             var path = Path.Combine(root, "users", "index", "users.json");
             Assert.IsTrue(File.Exists(path));
 

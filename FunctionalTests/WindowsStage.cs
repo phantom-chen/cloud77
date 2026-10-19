@@ -17,8 +17,8 @@ namespace FunctionalTests
     {
         public WindowsStage()
         {
-            string programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-            var root = Path.Combine(programDataPath, "MyServices");
+            string programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            var root = Path.Combine(programDataPath, "MyServer", "MyServices");
 
             var data = new ServiceDataModel();
             ServiceDataModel.ServiceName = "User";

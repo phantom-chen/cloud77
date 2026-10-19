@@ -15,8 +15,8 @@ namespace GatewayService.Models
         var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
         if (isWindows)
         {
-          string programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-          Root = Path.Combine(programDataPath, "MyServices");
+          string programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+          Root = Path.Combine(programDataPath, "MyServer", "MyServices");
         }
         else
         {

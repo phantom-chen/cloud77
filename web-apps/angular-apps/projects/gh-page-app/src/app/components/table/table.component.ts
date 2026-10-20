@@ -1,6 +1,6 @@
 import { CdkTableModule } from '@angular/cdk/table';
 
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 
@@ -19,6 +19,7 @@ export interface PeriodicElement {
     CdkTableModule
 ],
     templateUrl: './table.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './table.component.css'
 })
 export class TableComponent {

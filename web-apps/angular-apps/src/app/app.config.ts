@@ -2,7 +2,7 @@ import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withInterceptors, withXhr } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { TokenInterceptor } from './interceptors';
 import { GatewayService } from './gateway.service';
@@ -13,7 +13,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideAnimationsAsync(),
     { provide: 'GatewayService', useClass: GatewayService },
-    provideHttpClient(withInterceptors([TokenInterceptor]))
+    provideHttpClient(withXhr(), withInterceptors([TokenInterceptor]))
   ],
 };
 

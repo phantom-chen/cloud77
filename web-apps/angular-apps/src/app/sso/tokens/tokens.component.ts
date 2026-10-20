@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, output, Output } from '@angular/core';
+import { Component, EventEmitter, Input, output, Output, ChangeDetectionStrategy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { getTokens } from '@shared/storages';
@@ -12,6 +12,7 @@ import { getTokens } from '@shared/storages';
         MatIconModule
     ],
     templateUrl: './tokens.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './tokens.component.css'
 })
 export class TokensComponent {

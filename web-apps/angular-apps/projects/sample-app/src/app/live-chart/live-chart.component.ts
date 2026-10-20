@@ -1,6 +1,6 @@
 
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ChartConfiguration, ChartType } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartData, HubService } from './hub-service';
@@ -18,6 +18,7 @@ import { FormsModule } from '@angular/forms';
     BaseChartDirective
 ],
     templateUrl: './live-chart.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './live-chart.component.css'
 })
 export class LiveChartComponent {

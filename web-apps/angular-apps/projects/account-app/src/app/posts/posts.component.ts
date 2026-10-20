@@ -1,5 +1,5 @@
 
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatCommonModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -31,6 +31,7 @@ import { getTokens } from '@shared/storages';
     UnAuthorizedComponent
 ],
     templateUrl: './posts.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './posts.component.css'
 })
 export class PostsComponent implements OnInit {

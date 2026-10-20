@@ -1,5 +1,5 @@
 
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AccountService } from '../account.service';
 import { MatCommonModule } from '@angular/material/core';
@@ -18,6 +18,7 @@ import { getTokens } from '@shared/storages';
     UnAuthorizedComponent
 ],
     templateUrl: './post.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './post.component.css'
 })
 export class PostComponent implements OnInit {

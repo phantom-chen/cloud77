@@ -1,5 +1,5 @@
 
-import { Component, Injectable, OnDestroy, OnInit } from '@angular/core';
+import { Component, Injectable, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { Subscription } from 'rxjs';
 import { ChatSocket } from '../socket';
@@ -11,6 +11,7 @@ import { ChatSocket } from '../socket';
         ChatSocket
     ],
     templateUrl: './live-chat.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './live-chat.component.css'
 })
 export class LiveChatComponent implements OnInit, OnDestroy {

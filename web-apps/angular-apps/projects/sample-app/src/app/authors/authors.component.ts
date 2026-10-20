@@ -1,6 +1,6 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -27,6 +27,7 @@ const duration: number = 2000;
         DatePipe
     ],
     templateUrl: './authors.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './authors.component.css'
 })
 export class AuthorsComponent implements AfterViewInit {

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatCommonModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -30,6 +30,7 @@ import { MatIconModule } from '@angular/material/icon';
         SharedModule
     ],
     templateUrl: './account.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './account.component.css'
 })
 export class AccountComponent implements OnInit {

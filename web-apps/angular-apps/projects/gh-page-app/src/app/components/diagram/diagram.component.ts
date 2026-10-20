@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import html2canvas from 'html2canvas';
@@ -32,6 +32,7 @@ const RawHTML = `
     MatButtonModule
 ],
     templateUrl: './diagram.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './diagram.component.css'
 })
 export class DiagramComponent {

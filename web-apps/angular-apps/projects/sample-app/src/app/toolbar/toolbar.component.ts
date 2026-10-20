@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
     selector: 'app-toolbar',
     imports: [],
     templateUrl: './toolbar.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './toolbar.component.css'
 })
 export class ToolbarComponent {

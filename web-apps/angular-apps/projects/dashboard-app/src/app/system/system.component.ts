@@ -1,5 +1,5 @@
 
-import { AfterViewInit, Component, Inject, OnInit } from "@angular/core";
+import { AfterViewInit, Component, Inject, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatSelectModule } from "@angular/material/select";
@@ -30,6 +30,7 @@ import { getTokens } from "@shared/storages";
     MatSlideToggleModule
 ],
     templateUrl: "./system.component.html",
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: "./system.component.css"
 })
 export class SystemComponent implements OnInit, AfterViewInit {

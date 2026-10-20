@@ -1,6 +1,6 @@
 
 import { HttpClient } from "@angular/common/http";
-import { AfterViewInit, Component, Inject, OnInit } from "@angular/core";
+import { AfterViewInit, Component, Inject, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { MatPaginatorModule, PageEvent } from "@angular/material/paginator";
 import { AccountQueryResult, UserAccount } from "@phantom-chen/cloud77";
 import { DashboardService } from "../dashboard.service";
@@ -23,6 +23,7 @@ import { getTokens } from "@shared/storages";
     MatAutocompleteModule
 ],
     templateUrl: "./accounts.component.html",
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: "./accounts.component.css"
 })
 export class AccountsComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { EventEntity } from '@phantom-chen/cloud77';
 import { CommonModule, DatePipe } from '@angular/common';
 import { MatListModule } from '@angular/material/list';
@@ -19,6 +19,7 @@ import { getTokens } from '@shared/storages';
         DatePipe
     ],
     templateUrl: './history.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './history.component.css'
 })
 export class HistoryComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { AppSetting } from '../dashboard.service';
 
@@ -17,6 +17,7 @@ import { MatInputModule } from '@angular/material/input';
     MatFormFieldModule
 ],
     templateUrl: './setting-dialog.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './setting-dialog.component.css'
 })
 export class SettingDialogComponent {

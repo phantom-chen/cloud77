@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { BannerComponent } from "../banner/banner.component";
 import { CardComponent, CardTitleComponent, SmallCardComponent, SocialComponent } from '../card/card';
 
@@ -13,6 +13,7 @@ import { CardComponent, CardTitleComponent, SmallCardComponent, SocialComponent 
     SocialComponent
 ],
     templateUrl: './tutorial.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './tutorial.component.css'
 })
 export class TutorialComponent {

@@ -1,5 +1,5 @@
 
-import { Component, ComponentFactoryResolver, Input, OnDestroy, OnInit, Type, ViewChild } from '@angular/core';
+import { Component, ComponentFactoryResolver, Input, OnDestroy, OnInit, Type, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AngularUIModule, BoardContainerDirective } from 'my-angular-ui';
 
@@ -26,6 +26,7 @@ export interface JobAd {
       <strong>Hire this hero today!</strong>
     </div>
   `,
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class HeroProfileComponent implements BoardItemComponent {
@@ -39,6 +40,7 @@ export class HeroProfileComponent implements BoardItemComponent {
     {{ data.body }}
   </div>
   `,
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class JobAdComponent implements BoardItemComponent {
@@ -56,6 +58,7 @@ export class BoardItem {
     AngularUIModule
 ],
     templateUrl: './board.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './board.component.css'
 })
 export class BoardComponent implements OnInit, OnDestroy {

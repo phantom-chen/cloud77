@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { reverseString } from './reverse-string';
 import { convertFromBase64, convertToBase64, hashString } from '@shared/utils';
 
@@ -22,6 +22,7 @@ export function generateUniqueId(length: number): string {
     FormsModule
 ],
     templateUrl: './toolbox.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './toolbox.component.css'
 })
 export class ToolboxComponent {

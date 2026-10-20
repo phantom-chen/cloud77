@@ -5,6 +5,7 @@ import {
   OnDestroy,
   OnInit,
   ViewChild,
+  ChangeDetectionStrategy
 } from "@angular/core";
 import {
   NavigationEnd,
@@ -24,6 +25,7 @@ import { getTokens, ssoMessageLoaded, ssoMessageUrl, ssoUrl } from "@shared/stor
     selector: "app-root",
     imports: [RouterOutlet, ToolbarComponent],
     templateUrl: "./app.component.html",
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: "./app.component.css"
 })
 export class AppComponent implements OnInit, OnDestroy {

@@ -1,10 +1,11 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { saveTokens } from '@shared/storages';
 
 @Component({
     selector: 'app-message',
     imports: [],
     templateUrl: './message.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './message.component.css'
 })
 export class MessageComponent implements AfterViewInit {

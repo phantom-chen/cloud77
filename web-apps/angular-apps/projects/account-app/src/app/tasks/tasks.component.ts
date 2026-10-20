@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 
 import { DragDropModule } from '@angular/cdk/drag-drop';
@@ -28,6 +28,7 @@ import { getTokens } from '@shared/storages';
     MatPaginatorModule
 ],
     templateUrl: './tasks.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './tasks.component.css'
 })
 export class TasksComponent implements OnInit {

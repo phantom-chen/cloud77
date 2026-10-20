@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import clone from "clone";
 
 function deepClone<T>(value: T): T {
@@ -9,6 +9,7 @@ function deepClone<T>(value: T): T {
     selector: "app-clone",
     imports: [],
     templateUrl: "./clone.component.html",
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: "./clone.component.css"
 })
 export class CloneComponent implements OnInit {

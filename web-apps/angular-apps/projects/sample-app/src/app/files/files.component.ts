@@ -1,11 +1,12 @@
 
 import { HttpClient, HttpProgressEvent } from '@angular/common/http';
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
     selector: 'app-files',
     imports: [],
     templateUrl: './files.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './files.component.css'
 })
 export class FilesComponent implements AfterViewInit {

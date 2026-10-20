@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import {
   catchError,
   delay,
@@ -24,6 +24,7 @@ import { FormsModule } from "@angular/forms";
     selector: "app-observer",
     imports: [FormsModule],
     templateUrl: "./observer.component.html",
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: "./observer.component.css"
 })
 export class ObserverComponent implements OnInit {

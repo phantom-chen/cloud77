@@ -1,5 +1,5 @@
 
-import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Inject, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { UnAuthorizedComponent } from '../un-authorized/un-authorized.component';
 import { AccountService } from '../account.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -21,6 +21,7 @@ import { getTokens } from '@shared/storages';
     MatButtonModule
 ],
     templateUrl: './files.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './files.component.css'
 })
 export class FilesComponent implements OnInit {

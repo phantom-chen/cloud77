@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
@@ -11,6 +11,7 @@ import { MarkdownModule } from 'ngx-markdown';
     MarkdownModule
 ],
     templateUrl: './posts.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './posts.component.css'
 })
 export class PostsComponent implements AfterViewInit {

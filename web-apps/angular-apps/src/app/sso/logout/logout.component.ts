@@ -1,5 +1,5 @@
 
-import { AfterViewInit, Component, OnInit } from "@angular/core";
+import { AfterViewInit, Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { removeTokens } from "@shared/storages";
 
@@ -7,6 +7,7 @@ import { removeTokens } from "@shared/storages";
     selector: "app-logout",
     imports: [],
     templateUrl: "./logout.component.html",
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: "./logout.component.css"
 })
 export class LogoutComponent implements OnInit, AfterViewInit {

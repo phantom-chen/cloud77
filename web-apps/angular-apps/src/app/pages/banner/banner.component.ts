@@ -1,5 +1,5 @@
 
-import { Component, HostListener, OnInit, Inject, DOCUMENT } from '@angular/core';
+import { Component, HostListener, OnInit, Inject, DOCUMENT, ChangeDetectionStrategy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCommonModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
@@ -13,6 +13,7 @@ import { BehaviorSubject, tap } from 'rxjs';
     MatIconModule
 ],
     templateUrl: './banner.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './banner.component.css'
 })
 export class BannerComponent implements OnInit {

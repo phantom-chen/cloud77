@@ -1,5 +1,5 @@
 
-import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { DashboardService } from '../dashboard.service';
 import { exitLoginSession } from '@shared/services';
 import { FormsModule } from '@angular/forms';
@@ -11,6 +11,7 @@ import { debugMode, getTokens, saveTokens } from '@shared/storages';
     FormsModule
 ],
     templateUrl: './home.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './home.component.css'
 })
 export class HomeComponent implements AfterViewInit {

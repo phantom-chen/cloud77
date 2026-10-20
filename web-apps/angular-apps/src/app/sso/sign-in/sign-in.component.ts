@@ -1,5 +1,5 @@
 
-import { Component, EventEmitter, input, Input, Output } from '@angular/core';
+import { Component, EventEmitter, input, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -18,6 +18,7 @@ import { MatInputModule } from '@angular/material/input';
     MatCheckboxModule
 ],
     templateUrl: './sign-in.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './sign-in.component.css'
 })
 export class SignInComponent {

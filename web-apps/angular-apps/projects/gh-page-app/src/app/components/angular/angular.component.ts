@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ContentChildren, contentChildren, Input, NgZone, QueryList, SimpleChanges, Version, ViewChildren } from '@angular/core';
+import { Component, ContentChildren, contentChildren, Input, NgZone, QueryList, SimpleChanges, Version, ViewChildren, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Person, PERSONS } from './person';
 import { Observable, of } from 'rxjs';
@@ -9,6 +9,7 @@ import { BoardComponent } from '../board/board.component';
 @Component({
     selector: "app-my-button",
     imports: [CommonModule],
+    changeDetection: ChangeDetectionStrategy.Eager,
     template: `<button [ngStyle]="{'background-color':color}">{{content}}</button>`
 })
 export class MyButtonComponent {
@@ -22,6 +23,7 @@ export class MyButtonComponent {
 @Component({
     selector: "app-my-buttons",
     imports: [CommonModule],
+    changeDetection: ChangeDetectionStrategy.Eager,
     template: ` <div class="container">
     <p [ngStyle]="{'background-color':color}">{{content}}</p>
     <ng-content></ng-content>
@@ -49,6 +51,7 @@ export class MyButtonsComponent {
         MyButtonComponent
     ],
     templateUrl: './angular.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './angular.component.css'
 })
 export class AngularComponent {

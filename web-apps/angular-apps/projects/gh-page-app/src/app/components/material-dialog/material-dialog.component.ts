@@ -1,5 +1,5 @@
 
-import { AfterViewInit, Component, ElementRef, Inject, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Inject, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
@@ -8,6 +8,7 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/materia
     MatDialogModule
 ],
     templateUrl: './material-dialog.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './material-dialog.component.css'
 })
 export class MaterialDialogComponent implements AfterViewInit {

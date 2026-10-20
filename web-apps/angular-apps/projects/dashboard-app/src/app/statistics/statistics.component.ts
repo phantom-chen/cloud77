@@ -1,5 +1,5 @@
 
-import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { NgxChartsModule } from "@swimlane/ngx-charts";
 import { DashboardService } from '../dashboard.service';
 import { getTokens } from '@shared/storages';
@@ -10,6 +10,7 @@ import { getTokens } from '@shared/storages';
     NgxChartsModule
 ],
     templateUrl: './statistics.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './statistics.component.css'
 })
 export class StatisticsComponent implements OnInit, AfterViewInit {

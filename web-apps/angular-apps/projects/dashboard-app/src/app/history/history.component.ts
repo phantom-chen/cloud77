@@ -1,6 +1,6 @@
 
 import { HttpClient } from "@angular/common/http";
-import { Component, Inject, OnInit } from "@angular/core";
+import { Component, Inject, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { MatCommonModule } from "@angular/material/core";
 import { MatFormFieldModule } from "@angular/material/form-field";
@@ -24,6 +24,7 @@ import { getTokens } from "@shared/storages";
     MatRadioModule
 ],
     templateUrl: "./history.component.html",
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: "./history.component.css"
 })
 export class HistoryComponent implements OnInit {

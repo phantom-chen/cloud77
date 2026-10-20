@@ -6,6 +6,7 @@ import {
   OnDestroy,
   OnInit,
   ViewChild,
+  ChangeDetectionStrategy
 } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { UserService } from "../sso.service";
@@ -40,6 +41,7 @@ import { appMessageLoaded, appMessageUrl, debugMode, rememberMe, userEmail, getT
     SignInComponent
 ],
     templateUrl: "./login.component.html",
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: "./login.component.css"
 })
 export class LoginComponent implements OnInit, OnDestroy {

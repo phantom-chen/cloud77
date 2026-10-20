@@ -1,5 +1,5 @@
 
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatCommonModule } from '@angular/material/core';
 import { MatCardModule } from "@angular/material/card";
@@ -28,6 +28,7 @@ import { getTokens } from '@shared/storages';
     UnAuthorizedComponent
 ],
     templateUrl: './setting.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './setting.component.css'
 })
 export class SettingComponent implements OnInit {

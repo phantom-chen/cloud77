@@ -1,5 +1,5 @@
 
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 // import { AngularUiComponent } from 'my-angular-ui';
 import { AngularUiComponent } from '../../../angular-ui/src/public-api';
@@ -35,6 +35,7 @@ import { CloneComponent } from './components/clone/clone.component';
     CloneComponent
 ],
     templateUrl: './app.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './app.component.css'
 })
 export class AppComponent {

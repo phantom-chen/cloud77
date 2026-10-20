@@ -1,5 +1,5 @@
 
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCommonModule } from '@angular/material/core';
@@ -21,6 +21,7 @@ import { UserTask } from '@phantom-chen/cloud77';
     MatSelectModule
 ],
     templateUrl: './task-dialog.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './task-dialog.component.css'
 })
 export class TaskDialogComponent {

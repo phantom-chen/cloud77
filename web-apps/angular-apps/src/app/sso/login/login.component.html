@@ -1,60 +1,72 @@
 <div class="container col-lg-12">
 
-    <div class="content">
+  <div class="content">
 
-        <p *ngIf="!serviceAvailable" class="text-danger text-center">Service is unavailable, please try again later.</p>
-        <div *ngIf="serviceAvailable" class="text-success text-center">
-            <mat-icon>signal_cellular_alt</mat-icon>
-            <p>Service is available</p>
-        </div>
+    @if (!serviceAvailable) {
+      <p class="text-danger text-center">Service is unavailable, please try again later.</p>
+    }
+    @if (serviceAvailable) {
+      <div class="text-success text-center">
+        <mat-icon>signal_cellular_alt</mat-icon>
+        <p>Service is available</p>
+      </div>
+    }
 
-        <div *ngIf="!hadToken" style="margin: auto;box-shadow: 3px;" class="col-lg-6">
-            <form novalidate>
-                <div class="container content">
-                    <app-sign-in
-                        [remember]="remember"
-                        [account]="account"
-                        [accountExisting]="accountExisting"
-                        (accountChange)="onAccountChange($event)"
-                        (signInChange)="onSignInChange($event)"/>
-                    <div class="row col-lg-12">
-                        <button type="submit" mat-raised-button color="primary" (click)="onLogin();">Login</button>
-                        <button type="button" mat-outlined-button color="primary">
-                            <a #signup target="_blank" [routerLink]="['/sign-up']" [relativeTo]="" routerLinkActive="active">Sign Up</a>
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-
-        <div *ngIf="hadToken" style="margin: auto;">
-            <app-tokens style="text-align: center;"
-                [account]="account"
-                [tokenValidity]="tokenValidity"
-                [openingMessage]="openingMessage"
-                (logout)="onLogout()"
-                (refresh)="onRefreshToken()"
-                (copy)="onCopyTokens($event)"/>
-            <div style="text-align: center;">
-                <input type="text" placeholder="Broadcast the message" [(ngModel)]="message">
+    @if (!hadToken) {
+      <div style="margin: auto;box-shadow: 3px;" class="col-lg-6">
+        <form novalidate>
+          <div class="container content">
+            <app-sign-in
+              [remember]="remember"
+              [account]="account"
+              [accountExisting]="accountExisting"
+              (accountChange)="onAccountChange($event)"
+              (signInChange)="onSignInChange($event)"/>
+              <div class="row col-lg-12">
+                <button type="submit" mat-raised-button color="primary" (click)="onLogin();">Login</button>
+                <button type="button" mat-outlined-button color="primary">
+                  <a #signup target="_blank" [routerLink]="['/sign-up']" [relativeTo]="" routerLinkActive="active">Sign Up</a>
+                </button>
+              </div>
             </div>
+          </form>
         </div>
+      }
+
+      @if (hadToken) {
+        <div style="margin: auto;">
+          <app-tokens style="text-align: center;"
+            [account]="account"
+            [tokenValidity]="tokenValidity"
+            [openingMessage]="openingMessage"
+            (logout)="onLogout()"
+            (refresh)="onRefreshToken()"
+            (copy)="onCopyTokens($event)"/>
+            <div style="text-align: center;">
+              <input type="text" placeholder="Broadcast the message" [(ngModel)]="message">
+            </div>
+          </div>
+        }
 
         <hr />
 
         <div style="display: flex;">
-            <div style="width: 50%;">
-                <div *ngIf="frameResourceUrl">
-                    <iframe #messageContainer [src]="frameResourceUrl"></iframe>
-                </div>
-            </div>
+          <div style="width: 50%;">
+            @if (frameResourceUrl) {
+              <div>
+                <iframe #messageContainer [src]="frameResourceUrl"></iframe>
+              </div>
+            }
+          </div>
 
-            <div style="width: 50%;">
-                <div *ngIf="debugMode">
-                    <app-preview [content]="logs"></app-preview>
-                </div>
-            </div>
+          <div style="width: 50%;">
+            @if (debugMode) {
+              <div>
+                <app-preview [content]="logs"></app-preview>
+              </div>
+            }
+          </div>
         </div>
 
+      </div>
     </div>
-</div>

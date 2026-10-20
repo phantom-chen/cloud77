@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,14 +11,13 @@ import { UserPost } from '@phantom-chen/cloud77';
 @Component({
     selector: 'app-post-dialog',
     imports: [
-        CommonModule,
-        FormsModule,
-        MatDialogModule,
-        MatCommonModule,
-        MatInputModule,
-        MatButtonModule,
-        MatFormFieldModule
-    ],
+    FormsModule,
+    MatDialogModule,
+    MatCommonModule,
+    MatInputModule,
+    MatButtonModule,
+    MatFormFieldModule
+],
     templateUrl: './post-dialog.component.html',
     styleUrl: './post-dialog.component.css'
 })

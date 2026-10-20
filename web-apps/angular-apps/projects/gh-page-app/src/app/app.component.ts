@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 // import { AngularUiComponent } from 'my-angular-ui';
@@ -19,22 +19,21 @@ import { CloneComponent } from './components/clone/clone.component';
 @Component({
     selector: 'app-root',
     imports: [
-        RouterOutlet,
-        CommonModule,
-        AngularUiComponent,
-        MatCommonModule,
-        MatTabsModule,
-        SharedModule,
-        HomeComponent,
-        DiagramComponent,
-        MaterialComponent,
-        AngularComponent,
-        ToolboxComponent,
-        DragDropComponent,
-        TableComponent,
-        ObserverComponent,
-        CloneComponent
-    ],
+    RouterOutlet,
+    AngularUiComponent,
+    MatCommonModule,
+    MatTabsModule,
+    SharedModule,
+    HomeComponent,
+    DiagramComponent,
+    MaterialComponent,
+    AngularComponent,
+    ToolboxComponent,
+    DragDropComponent,
+    TableComponent,
+    ObserverComponent,
+    CloneComponent
+],
     templateUrl: './app.component.html',
     styleUrl: './app.component.css'
 })

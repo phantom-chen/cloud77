@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+
 import { HttpClient } from "@angular/common/http";
 import { AfterViewInit, Component, Inject, OnInit } from "@angular/core";
 import { MatPaginatorModule, PageEvent } from "@angular/material/paginator";
@@ -15,14 +15,13 @@ import { getTokens } from "@shared/storages";
 @Component({
     selector: "app-accounts",
     imports: [
-        CommonModule,
-        FormsModule,
-        MatPaginatorModule,
-        MatButtonToggleModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatAutocompleteModule,
-    ],
+    FormsModule,
+    MatPaginatorModule,
+    MatButtonToggleModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatAutocompleteModule
+],
     templateUrl: "./accounts.component.html",
     styleUrl: "./accounts.component.css"
 })

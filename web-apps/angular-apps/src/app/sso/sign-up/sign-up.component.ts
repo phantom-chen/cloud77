@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,15 +14,14 @@ import { Router } from '@angular/router';
 @Component({
     selector: "app-sign-up",
     imports: [
-        CommonModule,
-        FormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatButtonModule,
-        MatCheckboxModule,
-        MatIconModule,
-        PasswordStrengthMeterComponent,
-    ],
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatCheckboxModule,
+    MatIconModule,
+    PasswordStrengthMeterComponent
+],
     templateUrl: "./sign-up.component.html",
     styleUrl: "./sign-up.component.css"
 })

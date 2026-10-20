@@ -1,11 +1,11 @@
-import { CommonModule } from "@angular/common";
+
 import { AfterViewInit, Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { removeTokens } from "@shared/storages";
 
 @Component({
     selector: "app-logout",
-    imports: [CommonModule],
+    imports: [],
     templateUrl: "./logout.component.html",
     styleUrl: "./logout.component.css"
 })

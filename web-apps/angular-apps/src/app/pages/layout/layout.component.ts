@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatCommonModule } from '@angular/material/core';
@@ -19,17 +19,16 @@ export interface AppItem {
 @Component({
     selector: 'app-layout',
     imports: [
-        CommonModule,
-        RouterModule,
-        FormsModule,
-        MatCommonModule,
-        MatSidenavModule,
-        MatListModule,
-        MatIconModule,
-        MatToolbarModule,
-        MatButtonModule,
-        MatMenuModule
-    ],
+    RouterModule,
+    FormsModule,
+    MatCommonModule,
+    MatSidenavModule,
+    MatListModule,
+    MatIconModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatMenuModule
+],
     templateUrl: './layout.component.html',
     styleUrl: './layout.component.css'
 })

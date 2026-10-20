@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatCommonModule } from '@angular/material/core';
@@ -17,17 +17,16 @@ import { getTokens } from '@shared/storages';
 @Component({
     selector: 'app-setting',
     imports: [
-        CommonModule,
-        FormsModule,
-        MatCommonModule,
-        MatCheckboxModule,
-        MatCardModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatButtonModule,
-        MatSnackBarModule,
-        UnAuthorizedComponent
-    ],
+    FormsModule,
+    MatCommonModule,
+    MatCheckboxModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatSnackBarModule,
+    UnAuthorizedComponent
+],
     templateUrl: './setting.component.html',
     styleUrl: './setting.component.css'
 })

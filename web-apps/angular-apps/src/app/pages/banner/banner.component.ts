@@ -1,5 +1,5 @@
-import { CommonModule, DOCUMENT } from '@angular/common';
-import { Component, HostListener, OnInit, Inject } from '@angular/core';
+
+import { Component, HostListener, OnInit, Inject, DOCUMENT } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCommonModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,11 +8,10 @@ import { BehaviorSubject, tap } from 'rxjs';
 @Component({
     selector: 'app-banner',
     imports: [
-        CommonModule,
-        MatCommonModule,
-        MatButtonModule,
-        MatIconModule
-    ],
+    MatCommonModule,
+    MatButtonModule,
+    MatIconModule
+],
     templateUrl: './banner.component.html',
     styleUrl: './banner.component.css'
 })

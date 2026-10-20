@@ -1,16 +1,15 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { CommonModule } from '@angular/common';
+
 import { MarkdownModule } from 'ngx-markdown';
 
 @Component({
     selector: 'app-posts',
     imports: [
-        CommonModule,
-        FormsModule,
-        MarkdownModule
-    ],
+    FormsModule,
+    MarkdownModule
+],
     templateUrl: './posts.component.html',
     styleUrl: './posts.component.css'
 })

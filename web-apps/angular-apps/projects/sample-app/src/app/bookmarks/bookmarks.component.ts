@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -9,11 +9,10 @@ import { BookmarkEntity, BookmarkResult } from '@phantom-chen/cloud77';
 @Component({
     selector: 'app-bookmarks',
     imports: [
-        CommonModule,
-        FormsModule,
-        MatCommonModule,
-        MatPaginatorModule
-    ],
+    FormsModule,
+    MatCommonModule,
+    MatPaginatorModule
+],
     templateUrl: './bookmarks.component.html',
     styleUrl: './bookmarks.component.css'
 })

@@ -1,13 +1,12 @@
-import { CommonModule } from '@angular/common';
+
 import { AfterViewInit, Component, ElementRef, Inject, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
     selector: 'app-material-dialog',
     imports: [
-        CommonModule,
-        MatDialogModule
-    ],
+    MatDialogModule
+],
     templateUrl: './material-dialog.component.html',
     styleUrl: './material-dialog.component.css'
 })

@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+
 import { HttpClient } from "@angular/common/http";
 import { Component, Inject, OnInit } from "@angular/core";
 import { FormsModule } from "@angular/forms";
@@ -15,15 +15,14 @@ import { getTokens } from "@shared/storages";
 @Component({
     selector: "app-history",
     imports: [
-        CommonModule,
-        FormsModule,
-        MatCommonModule,
-        MatInputModule,
-        MatSelectModule,
-        MatFormFieldModule,
-        MatButtonModule,
-        MatRadioModule,
-    ],
+    FormsModule,
+    MatCommonModule,
+    MatInputModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    MatButtonModule,
+    MatRadioModule
+],
     templateUrl: "./history.component.html",
     styleUrl: "./history.component.css"
 })

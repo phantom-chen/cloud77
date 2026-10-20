@@ -13,7 +13,7 @@ import {
   RouterOutlet,
 } from "@angular/router";
 import { ToolbarComponent } from "./toolbar/toolbar.component";
-import { CommonModule } from "@angular/common";
+
 import { loadLoginSession, saveLoginSession } from "@shared/services";
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 import { Subject } from "rxjs";
@@ -22,7 +22,7 @@ import { getTokens, ssoMessageLoaded, ssoMessageUrl, ssoUrl } from "@shared/stor
 
 @Component({
     selector: "app-root",
-    imports: [CommonModule, RouterOutlet, ToolbarComponent],
+    imports: [RouterOutlet, ToolbarComponent],
     templateUrl: "./app.component.html",
     styleUrl: "./app.component.css"
 })

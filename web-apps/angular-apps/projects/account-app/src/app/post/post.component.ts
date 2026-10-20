@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AccountService } from '../account.service';
@@ -11,13 +11,12 @@ import { getTokens } from '@shared/storages';
 @Component({
     selector: 'app-post',
     imports: [
-        CommonModule,
-        FormsModule,
-        MatCommonModule,
-        MatChipsModule,
-        MatButtonModule,
-        UnAuthorizedComponent
-    ],
+    FormsModule,
+    MatCommonModule,
+    MatChipsModule,
+    MatButtonModule,
+    UnAuthorizedComponent
+],
     templateUrl: './post.component.html',
     styleUrl: './post.component.css'
 })

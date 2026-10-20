@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, Injectable, OnDestroy, OnInit } from '@angular/core';
 
 import { Subscription } from 'rxjs';
@@ -6,9 +6,7 @@ import { ChatSocket } from '../socket';
 
 @Component({
     selector: 'app-live-chat',
-    imports: [
-        CommonModule,
-    ],
+    imports: [],
     providers: [
         ChatSocket
     ],

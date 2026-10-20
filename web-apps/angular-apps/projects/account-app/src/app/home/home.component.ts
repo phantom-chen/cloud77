@@ -1,16 +1,15 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { exitLoginSession } from '@shared/services';
 import { AccountService } from '../account.service';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { debugMode, getTokens, saveTokens } from '@shared/storages';
 
 @Component({
     selector: 'app-home',
     imports: [
-        CommonModule,
-        FormsModule
-    ],
+    FormsModule
+],
     templateUrl: './home.component.html',
     styleUrl: './home.component.css'
 })

@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { CommonModule } from '@angular/common';
+
 import { DragDropModule } from '@angular/cdk/drag-drop';
 
 import { AccountService } from '../account.service';
@@ -19,15 +19,14 @@ import { getTokens } from '@shared/storages';
 @Component({
     selector: 'app-tasks',
     imports: [
-        CommonModule,
-        UnAuthorizedComponent,
-        MatButtonModule,
-        MatSnackBarModule,
-        MatDialogModule,
-        DragDropModule,
-        MatProgressSpinnerModule,
-        MatPaginatorModule
-    ],
+    UnAuthorizedComponent,
+    MatButtonModule,
+    MatSnackBarModule,
+    MatDialogModule,
+    DragDropModule,
+    MatProgressSpinnerModule,
+    MatPaginatorModule
+],
     templateUrl: './tasks.component.html',
     styleUrl: './tasks.component.css'
 })

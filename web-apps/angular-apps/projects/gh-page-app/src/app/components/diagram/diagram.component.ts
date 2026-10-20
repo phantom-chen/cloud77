@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import html2canvas from 'html2canvas';
 import { MaterialDialogComponent } from '../material-dialog/material-dialog.component';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { MatCommonModule } from '@angular/material/core';
 import { MatCardModule } from '@angular/material/card';
@@ -26,12 +26,11 @@ const RawHTML = `
 @Component({
     selector: 'app-diagram',
     imports: [
-        CommonModule,
-        FormsModule,
-        MatCommonModule,
-        MatCardModule,
-        MatButtonModule
-    ],
+    FormsModule,
+    MatCommonModule,
+    MatCardModule,
+    MatButtonModule
+],
     templateUrl: './diagram.component.html',
     styleUrl: './diagram.component.css'
 })

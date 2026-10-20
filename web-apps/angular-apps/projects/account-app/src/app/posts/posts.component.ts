@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatCommonModule } from '@angular/material/core';
@@ -19,18 +19,17 @@ import { getTokens } from '@shared/storages';
 @Component({
     selector: 'app-posts',
     imports: [
-        CommonModule,
-        FormsModule,
-        RouterModule,
-        MatCommonModule,
-        MatFormFieldModule,
-        MatSelectModule,
-        MatButtonModule,
-        MatListModule,
-        MatIconModule,
-        NuMonacoEditorModule,
-        UnAuthorizedComponent
-    ],
+    FormsModule,
+    RouterModule,
+    MatCommonModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatListModule,
+    MatIconModule,
+    NuMonacoEditorModule,
+    UnAuthorizedComponent
+],
     templateUrl: './posts.component.html',
     styleUrl: './posts.component.css'
 })

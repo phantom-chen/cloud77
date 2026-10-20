@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
 import { DashboardService } from '../dashboard.service';
 import { exitLoginSession } from '@shared/services';
@@ -8,9 +8,8 @@ import { debugMode, getTokens, saveTokens } from '@shared/storages';
 @Component({
     selector: 'app-home',
     imports: [
-        CommonModule,
-        FormsModule
-    ],
+    FormsModule
+],
     templateUrl: './home.component.html',
     styleUrl: './home.component.css'
 })

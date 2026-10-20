@@ -1,5 +1,5 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { CommonModule } from '@angular/common';
+
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
@@ -14,11 +14,10 @@ export interface PeriodicElement {
 @Component({
     selector: 'app-table',
     imports: [
-        CommonModule,
-        FormsModule,
-        MatTableModule,
-        CdkTableModule
-    ],
+    FormsModule,
+    MatTableModule,
+    CdkTableModule
+],
     templateUrl: './table.component.html',
     styleUrl: './table.component.css'
 })

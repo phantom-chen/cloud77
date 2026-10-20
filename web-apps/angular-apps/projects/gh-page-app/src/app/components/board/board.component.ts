@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, ComponentFactoryResolver, Input, OnDestroy, OnInit, Type, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AngularUIModule, BoardContainerDirective } from 'my-angular-ui';
@@ -52,10 +52,9 @@ export class BoardItem {
 @Component({
     selector: 'app-board',
     imports: [
-        CommonModule,
-        FormsModule,
-        AngularUIModule
-    ],
+    FormsModule,
+    AngularUIModule
+],
     templateUrl: './board.component.html',
     styleUrl: './board.component.css'
 })

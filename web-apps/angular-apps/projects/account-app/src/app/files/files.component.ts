@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { UnAuthorizedComponent } from '../un-authorized/un-authorized.component';
 import { AccountService } from '../account.service';
@@ -13,14 +13,13 @@ import { getTokens } from '@shared/storages';
 @Component({
     selector: 'app-files',
     imports: [
-        CommonModule,
-        UnAuthorizedComponent,
-        MatSnackBarModule,
-        MatDialogModule,
-        MatSelectModule,
-        MatListModule,
-        MatButtonModule
-    ],
+    UnAuthorizedComponent,
+    MatSnackBarModule,
+    MatDialogModule,
+    MatSelectModule,
+    MatListModule,
+    MatButtonModule
+],
     templateUrl: './files.component.html',
     styleUrl: './files.component.css'
 })

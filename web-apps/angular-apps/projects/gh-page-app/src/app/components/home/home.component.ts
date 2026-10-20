@@ -1,4 +1,4 @@
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SharedModule } from '@shared/shared.module';
@@ -9,10 +9,9 @@ import { fromEvent } from 'rxjs';
 @Component({
     selector: 'app-home',
     imports: [
-        CommonModule,
-        FormsModule,
-        SharedModule
-    ],
+    FormsModule,
+    SharedModule
+],
     templateUrl: './home.component.html',
     styleUrl: './home.component.css'
 })

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
 import { NgxChartsModule } from "@swimlane/ngx-charts";
 import { DashboardService } from '../dashboard.service';
@@ -7,9 +7,8 @@ import { getTokens } from '@shared/storages';
 @Component({
     selector: 'app-statistics',
     imports: [
-        CommonModule,
-        NgxChartsModule
-    ],
+    NgxChartsModule
+],
     templateUrl: './statistics.component.html',
     styleUrl: './statistics.component.css'
 })

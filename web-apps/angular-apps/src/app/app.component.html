@@ -1,7 +1,9 @@
-<app-header *ngIf="!noHeader" [navigation]="links"></app-header>
+@if (!noHeader) {
+  <app-header [navigation]="links"></app-header>
+}
 
 <div style="flex: 1 1 auto;display: block;">
-    <div style="margin-top: 10px;display: block;">
-        <router-outlet></router-outlet>
-    </div>
+  <div style="margin-top: 10px;display: block;">
+    <router-outlet></router-outlet>
+  </div>
 </div>

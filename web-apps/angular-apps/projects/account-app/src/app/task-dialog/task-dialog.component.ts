@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -12,15 +12,14 @@ import { UserTask } from '@phantom-chen/cloud77';
 @Component({
     selector: 'app-task-dialog',
     imports: [
-        CommonModule,
-        FormsModule,
-        MatDialogModule,
-        MatCommonModule,
-        MatInputModule,
-        MatFormFieldModule,
-        MatButtonModule,
-        MatSelectModule
-    ],
+    FormsModule,
+    MatDialogModule,
+    MatCommonModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatButtonModule,
+    MatSelectModule
+],
     templateUrl: './task-dialog.component.html',
     styleUrl: './task-dialog.component.css'
 })

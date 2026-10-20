@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+
 import {
   Component,
   ElementRef,
@@ -27,19 +27,18 @@ import { appMessageLoaded, appMessageUrl, debugMode, rememberMe, userEmail, getT
 @Component({
     selector: "app-login",
     imports: [
-        CommonModule,
-        FormsModule,
-        RouterModule,
-        MatCommonModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatButtonModule,
-        MatCheckboxModule,
-        MatIconModule,
-        SharedModule,
-        TokensComponent,
-        SignInComponent
-    ],
+    FormsModule,
+    RouterModule,
+    MatCommonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatCheckboxModule,
+    MatIconModule,
+    SharedModule,
+    TokensComponent,
+    SignInComponent
+],
     templateUrl: "./login.component.html",
     styleUrl: "./login.component.css"
 })

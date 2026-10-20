@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+
 import { HttpClient } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
 import { FormsModule } from "@angular/forms";
@@ -12,13 +12,12 @@ import { DefaultResponse } from "@phantom-chen/cloud77";
 @Component({
     selector: "app-confirm-email",
     imports: [
-        CommonModule,
-        FormsModule,
-        MatCommonModule,
-        MatInputModule,
-        MatFormFieldModule,
-        MatButtonModule,
-    ],
+    FormsModule,
+    MatCommonModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatButtonModule
+],
     templateUrl: "./confirm-email.component.html",
     styleUrl: "./confirm-email.component.css"
 })

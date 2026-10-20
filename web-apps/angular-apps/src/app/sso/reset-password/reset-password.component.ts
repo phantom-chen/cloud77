@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -12,14 +12,13 @@ import { PasswordStrengthMeterComponent } from 'angular-password-strength-meter'
 @Component({
     selector: 'app-reset-password',
     imports: [
-        CommonModule,
-        FormsModule,
-        MatCommonModule,
-        MatInputModule,
-        MatButtonModule,
-        MatFormFieldModule,
-        PasswordStrengthMeterComponent
-    ],
+    FormsModule,
+    MatCommonModule,
+    MatInputModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    PasswordStrengthMeterComponent
+],
     templateUrl: './reset-password.component.html',
     styleUrl: './reset-password.component.css'
 })

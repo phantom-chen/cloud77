@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -8,11 +8,10 @@ import { SharedModule } from '@shared/shared.module';
 @Component({
     selector: 'app-home',
     imports: [
-        CommonModule,
-        FormsModule,
-        SharedModule,
-        RouterModule
-    ],
+    FormsModule,
+    SharedModule,
+    RouterModule
+],
     templateUrl: './home.component.html',
     styleUrl: './home.component.css'
 })

@@ -1,17 +1,19 @@
 <p>bookmarks works!</p>
 
 <table class="table table-sm table-striped table-bordered table-hover">
-    <tr>
-        <th>Title</th>
-        <th>Tags</th>
-        <th>Collection</th>
+  <tr>
+    <th>Title</th>
+    <th>Tags</th>
+    <th>Collection</th>
+  </tr>
+  @for (bookmark of bookmarks; track bookmark) {
+    <tr (click)="onClick(bookmark)">
+      <td>{{ bookmark.title }}</td>
+      <td>{{ bookmark.tags }}</td>
+      <td>{{ bookmark.collection }}</td>
     </tr>
-    <tr *ngFor="let bookmark of bookmarks" (click)="onClick(bookmark)">
-        <td>{{ bookmark.title }}</td>
-        <td>{{ bookmark.tags }}</td>
-        <td>{{ bookmark.collection }}</td>
-    </tr>
+  }
 </table>
 
 <mat-paginator [length]="length" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 12, 15, 20]" showFirstLastButtons=true
-    (page)="pageChanged($event)"></mat-paginator>
+(page)="pageChanged($event)"></mat-paginator>

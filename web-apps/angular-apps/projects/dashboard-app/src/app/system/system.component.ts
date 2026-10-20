@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+
 import { AfterViewInit, Component, Inject, OnInit } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { MatFormFieldModule } from "@angular/material/form-field";
@@ -18,18 +18,17 @@ import { getTokens } from "@shared/storages";
 @Component({
     selector: "app-system",
     imports: [
-        CommonModule,
-        FormsModule,
-        MatCommonModule,
-        MatFormFieldModule,
-        MatSelectModule,
-        MatIconModule,
-        MatInputModule,
-        MatButtonModule,
-        MatDialogModule,
-        MatSnackBarModule,
-        MatSlideToggleModule,
-    ],
+    FormsModule,
+    MatCommonModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatIconModule,
+    MatInputModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatSnackBarModule,
+    MatSlideToggleModule
+],
     templateUrl: "./system.component.html",
     styleUrl: "./system.component.css"
 })

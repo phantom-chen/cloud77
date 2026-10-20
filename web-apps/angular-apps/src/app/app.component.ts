@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, HostListener } from '@angular/core';
 import { NavigationEnd, NavigationStart, Router, RouterModule } from '@angular/router';
 import { SharedModule } from './shared/shared.module';
-import { CommonModule } from '@angular/common';
+
 
 function yourMethod() {
   console.log('HTML is reloading');
@@ -27,10 +27,9 @@ function yourMethod3() {
 @Component({
     selector: 'app-root',
     imports: [
-        CommonModule,
-        RouterModule,
-        SharedModule
-    ],
+    RouterModule,
+    SharedModule
+],
     templateUrl: './app.component.html',
     styleUrl: './app.component.css'
 })

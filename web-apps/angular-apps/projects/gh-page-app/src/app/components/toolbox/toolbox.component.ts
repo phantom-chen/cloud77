@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { reverseString } from './reverse-string';
 import { convertFromBase64, convertToBase64, hashString } from '@shared/utils';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 
 const codes = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -19,9 +19,8 @@ export function generateUniqueId(length: number): string {
 @Component({
     selector: 'app-toolbox',
     imports: [
-        CommonModule,
-        FormsModule
-    ],
+    FormsModule
+],
     templateUrl: './toolbox.component.html',
     styleUrl: './toolbox.component.css'
 })

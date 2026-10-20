@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,14 +11,13 @@ import { AuthorEntity } from '@phantom-chen/cloud77';
 @Component({
     selector: 'app-author-dialog',
     imports: [
-        CommonModule,
-        FormsModule,
-        MatCommonModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatButtonModule,
-        MatDialogModule
-    ],
+    FormsModule,
+    MatCommonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatDialogModule
+],
     templateUrl: './author-dialog.component.html',
     styleUrl: './author-dialog.component.css'
 })

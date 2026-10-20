@@ -12,7 +12,9 @@
 <div>
   <p>Posts</p>
   <ul>
-    <li *ngFor="let name of names">{{name}}</li>
+    @for (name of names; track name) {
+      <li>{{name}}</li>
+    }
   </ul>
 </div>
 

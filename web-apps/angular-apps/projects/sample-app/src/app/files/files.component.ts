@@ -1,12 +1,10 @@
-import { CommonModule } from '@angular/common';
+
 import { HttpClient, HttpProgressEvent } from '@angular/common/http';
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 
 @Component({
     selector: 'app-files',
-    imports: [
-        CommonModule
-    ],
+    imports: [],
     templateUrl: './files.component.html',
     styleUrl: './files.component.css'
 })

@@ -6,14 +6,13 @@ import { FormsModule } from '@angular/forms';
 import { debugMode, getTokens, saveTokens } from '@shared/storages';
 
 @Component({
-  selector: 'app-home',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule
-  ],
-  templateUrl: './home.component.html',
-  styleUrl: './home.component.css'
+    selector: 'app-home',
+    imports: [
+        CommonModule,
+        FormsModule
+    ],
+    templateUrl: './home.component.html',
+    styleUrl: './home.component.css'
 })
 export class HomeComponent implements AfterViewInit {
   title = 'Dashboard Portal';

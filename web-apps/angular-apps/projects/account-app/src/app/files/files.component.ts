@@ -11,19 +11,18 @@ import { MatButtonModule } from '@angular/material/button';
 import { getTokens } from '@shared/storages';
 
 @Component({
-  selector: 'app-files',
-  standalone: true,
-  imports: [
-    CommonModule,
-    UnAuthorizedComponent,
-    MatSnackBarModule,
-    MatDialogModule,
-    MatSelectModule,
-    MatListModule,
-    MatButtonModule
-  ],
-  templateUrl: './files.component.html',
-  styleUrl: './files.component.css'
+    selector: 'app-files',
+    imports: [
+        CommonModule,
+        UnAuthorizedComponent,
+        MatSnackBarModule,
+        MatDialogModule,
+        MatSelectModule,
+        MatListModule,
+        MatButtonModule
+    ],
+    templateUrl: './files.component.html',
+    styleUrl: './files.component.css'
 })
 export class FilesComponent implements OnInit {
 

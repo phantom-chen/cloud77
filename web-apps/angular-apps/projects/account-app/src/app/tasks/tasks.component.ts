@@ -17,20 +17,19 @@ import { MatButtonModule } from '@angular/material/button';
 import { getTokens } from '@shared/storages';
 
 @Component({
-  selector: 'app-tasks',
-  standalone: true,
-  imports: [
-    CommonModule,
-    UnAuthorizedComponent,
-    MatButtonModule,
-    MatSnackBarModule,
-    MatDialogModule,
-    DragDropModule,
-    MatProgressSpinnerModule,
-    MatPaginatorModule
-  ],
-  templateUrl: './tasks.component.html',
-  styleUrl: './tasks.component.css'
+    selector: 'app-tasks',
+    imports: [
+        CommonModule,
+        UnAuthorizedComponent,
+        MatButtonModule,
+        MatSnackBarModule,
+        MatDialogModule,
+        DragDropModule,
+        MatProgressSpinnerModule,
+        MatPaginatorModule
+    ],
+    templateUrl: './tasks.component.html',
+    styleUrl: './tasks.component.css'
 })
 export class TasksComponent implements OnInit {
 

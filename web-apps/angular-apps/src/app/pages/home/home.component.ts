@@ -6,16 +6,15 @@ import { RouterModule } from '@angular/router';
 import { SharedModule } from '@shared/shared.module';
 
 @Component({
-  selector: 'app-home',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    SharedModule,
-    RouterModule
-  ],
-  templateUrl: './home.component.html',
-  styleUrl: './home.component.css'
+    selector: 'app-home',
+    imports: [
+        CommonModule,
+        FormsModule,
+        SharedModule,
+        RouterModule
+    ],
+    templateUrl: './home.component.html',
+    styleUrl: './home.component.css'
 })
 export class HomeComponent implements OnInit {
   title = 'Cloud77 Portal';

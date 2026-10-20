@@ -9,18 +9,17 @@ import { AccountService } from '../account.service';
 import { getTokens } from '@shared/storages';
 
 @Component({
-  selector: 'app-history',
-  standalone: true,
-  imports: [
-    CommonModule,
-    UnAuthorizedComponent,
-    MatSnackBarModule,
-    MatDialogModule,
-    MatListModule,
-    DatePipe
-  ],
-  templateUrl: './history.component.html',
-  styleUrl: './history.component.css'
+    selector: 'app-history',
+    imports: [
+        CommonModule,
+        UnAuthorizedComponent,
+        MatSnackBarModule,
+        MatDialogModule,
+        MatListModule,
+        DatePipe
+    ],
+    templateUrl: './history.component.html',
+    styleUrl: './history.component.css'
 })
 export class HistoryComponent implements OnInit {
 

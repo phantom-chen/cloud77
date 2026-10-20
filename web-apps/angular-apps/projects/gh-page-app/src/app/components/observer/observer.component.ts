@@ -21,11 +21,10 @@ import {
 import { FormsModule } from "@angular/forms";
 
 @Component({
-  selector: "app-observer",
-  standalone: true,
-  imports: [FormsModule],
-  templateUrl: "./observer.component.html",
-  styleUrl: "./observer.component.css",
+    selector: "app-observer",
+    imports: [FormsModule],
+    templateUrl: "./observer.component.html",
+    styleUrl: "./observer.component.css"
 })
 export class ObserverComponent implements OnInit {
   logs: string = "...";

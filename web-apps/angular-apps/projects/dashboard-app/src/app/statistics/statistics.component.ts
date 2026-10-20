@@ -5,14 +5,13 @@ import { DashboardService } from '../dashboard.service';
 import { getTokens } from '@shared/storages';
 
 @Component({
-  selector: 'app-statistics',
-  standalone: true,
-  imports: [
-    CommonModule,
-    NgxChartsModule
-  ],
-  templateUrl: './statistics.component.html',
-  styleUrl: './statistics.component.css'
+    selector: 'app-statistics',
+    imports: [
+        CommonModule,
+        NgxChartsModule
+    ],
+    templateUrl: './statistics.component.html',
+    styleUrl: './statistics.component.css'
 })
 export class StatisticsComponent implements OnInit, AfterViewInit {
 

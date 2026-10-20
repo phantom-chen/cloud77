@@ -10,19 +10,18 @@ import { ActivatedRoute } from '@angular/router';
 import { PasswordStrengthMeterComponent } from 'angular-password-strength-meter';
 
 @Component({
-  selector: 'app-reset-password',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatCommonModule,
-    MatInputModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    PasswordStrengthMeterComponent
-  ],
-  templateUrl: './reset-password.component.html',
-  styleUrl: './reset-password.component.css'
+    selector: 'app-reset-password',
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatCommonModule,
+        MatInputModule,
+        MatButtonModule,
+        MatFormFieldModule,
+        PasswordStrengthMeterComponent
+    ],
+    templateUrl: './reset-password.component.html',
+    styleUrl: './reset-password.component.css'
 })
 export class ResetPasswordComponent implements OnInit {
   constructor(

@@ -16,22 +16,21 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-  selector: 'app-account',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatCommonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatSnackBarModule,
-    MatIconModule,
-    UnAuthorizedComponent,
-    SharedModule
-  ],
-  templateUrl: './account.component.html',
-  styleUrl: './account.component.css'
+    selector: 'app-account',
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatCommonModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+        MatSnackBarModule,
+        MatIconModule,
+        UnAuthorizedComponent,
+        SharedModule
+    ],
+    templateUrl: './account.component.html',
+    styleUrl: './account.component.css'
 })
 export class AccountComponent implements OnInit {
 

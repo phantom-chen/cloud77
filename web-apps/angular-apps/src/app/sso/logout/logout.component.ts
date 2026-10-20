@@ -4,11 +4,10 @@ import { ActivatedRoute } from "@angular/router";
 import { removeTokens } from "@shared/storages";
 
 @Component({
-  selector: "app-logout",
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: "./logout.component.html",
-  styleUrl: "./logout.component.css",
+    selector: "app-logout",
+    imports: [CommonModule],
+    templateUrl: "./logout.component.html",
+    styleUrl: "./logout.component.css"
 })
 export class LogoutComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {

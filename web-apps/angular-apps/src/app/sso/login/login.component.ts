@@ -25,24 +25,23 @@ import { SignInComponent } from "../sign-in/sign-in.component";
 import { appMessageLoaded, appMessageUrl, debugMode, rememberMe, userEmail, getTokens, removeTokens, saveTokens, appUrl } from "@shared/storages";
 
 @Component({
-  selector: "app-login",
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    RouterModule,
-    MatCommonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatCheckboxModule,
-    MatIconModule,
-    SharedModule,
-    TokensComponent,
-    SignInComponent
-  ],
-  templateUrl: "./login.component.html",
-  styleUrl: "./login.component.css",
+    selector: "app-login",
+    imports: [
+        CommonModule,
+        FormsModule,
+        RouterModule,
+        MatCommonModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+        MatCheckboxModule,
+        MatIconModule,
+        SharedModule,
+        TokensComponent,
+        SignInComponent
+    ],
+    templateUrl: "./login.component.html",
+    styleUrl: "./login.component.css"
 })
 export class LoginComponent implements OnInit, OnDestroy {
   logs: string = "";

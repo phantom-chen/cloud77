@@ -24,17 +24,16 @@ const RawHTML = `
 `;
 
 @Component({
-  selector: 'app-diagram',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatCommonModule,
-    MatCardModule,
-    MatButtonModule
-  ],
-  templateUrl: './diagram.component.html',
-  styleUrl: './diagram.component.css'
+    selector: 'app-diagram',
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatCommonModule,
+        MatCardModule,
+        MatButtonModule
+    ],
+    templateUrl: './diagram.component.html',
+    styleUrl: './diagram.component.css'
 })
 export class DiagramComponent {
 

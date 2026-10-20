@@ -6,11 +6,10 @@ function deepClone<T>(value: T): T {
 }
 
 @Component({
-  selector: "app-clone",
-  standalone: true,
-  imports: [],
-  templateUrl: "./clone.component.html",
-  styleUrl: "./clone.component.css",
+    selector: "app-clone",
+    imports: [],
+    templateUrl: "./clone.component.html",
+    styleUrl: "./clone.component.css"
 })
 export class CloneComponent implements OnInit {
   ngOnInit(): void {

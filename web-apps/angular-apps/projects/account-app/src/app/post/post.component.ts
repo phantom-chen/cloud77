@@ -9,18 +9,17 @@ import { UnAuthorizedComponent } from '../un-authorized/un-authorized.component'
 import { getTokens } from '@shared/storages';
 
 @Component({
-  selector: 'app-post',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatCommonModule,
-    MatChipsModule,
-    MatButtonModule,
-    UnAuthorizedComponent
-  ],
-  templateUrl: './post.component.html',
-  styleUrl: './post.component.css'
+    selector: 'app-post',
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatCommonModule,
+        MatChipsModule,
+        MatButtonModule,
+        UnAuthorizedComponent
+    ],
+    templateUrl: './post.component.html',
+    styleUrl: './post.component.css'
 })
 export class PostComponent implements OnInit {
 

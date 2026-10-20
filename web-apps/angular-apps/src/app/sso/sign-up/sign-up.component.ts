@@ -12,20 +12,19 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: "app-sign-up",
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatCheckboxModule,
-    MatIconModule,
-    PasswordStrengthMeterComponent,
-  ],
-  templateUrl: "./sign-up.component.html",
-  styleUrl: "./sign-up.component.css",
+    selector: "app-sign-up",
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+        MatCheckboxModule,
+        MatIconModule,
+        PasswordStrengthMeterComponent,
+    ],
+    templateUrl: "./sign-up.component.html",
+    styleUrl: "./sign-up.component.css"
 })
 export class SignUpComponent implements OnInit {
   constructor(

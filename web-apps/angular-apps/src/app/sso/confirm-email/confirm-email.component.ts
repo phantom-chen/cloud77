@@ -10,18 +10,17 @@ import { ActivatedRoute } from "@angular/router";
 import { DefaultResponse } from "@phantom-chen/cloud77";
 
 @Component({
-  selector: "app-confirm-email",
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatCommonModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatButtonModule,
-  ],
-  templateUrl: "./confirm-email.component.html",
-  styleUrl: "./confirm-email.component.css",
+    selector: "app-confirm-email",
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatCommonModule,
+        MatInputModule,
+        MatFormFieldModule,
+        MatButtonModule,
+    ],
+    templateUrl: "./confirm-email.component.html",
+    styleUrl: "./confirm-email.component.css"
 })
 export class ConfirmEmailComponent implements OnInit {
   constructor(private route: ActivatedRoute, private http: HttpClient) {}

@@ -13,20 +13,19 @@ import { MatButtonModule } from "@angular/material/button";
 import { getTokens } from "@shared/storages";
 
 @Component({
-  selector: "app-history",
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatCommonModule,
-    MatInputModule,
-    MatSelectModule,
-    MatFormFieldModule,
-    MatButtonModule,
-    MatRadioModule,
-  ],
-  templateUrl: "./history.component.html",
-  styleUrl: "./history.component.css",
+    selector: "app-history",
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatCommonModule,
+        MatInputModule,
+        MatSelectModule,
+        MatFormFieldModule,
+        MatButtonModule,
+        MatRadioModule,
+    ],
+    templateUrl: "./history.component.html",
+    styleUrl: "./history.component.css"
 })
 export class HistoryComponent implements OnInit {
   constructor(

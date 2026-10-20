@@ -3,13 +3,12 @@ import { HttpClient, HttpProgressEvent } from '@angular/common/http';
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-files',
-  standalone: true,
-  imports: [
-    CommonModule
-  ],
-  templateUrl: './files.component.html',
-  styleUrl: './files.component.css'
+    selector: 'app-files',
+    imports: [
+        CommonModule
+    ],
+    templateUrl: './files.component.html',
+    styleUrl: './files.component.css'
 })
 export class FilesComponent implements AfterViewInit {
   selectedFile: File | null = null;

@@ -6,16 +6,15 @@ import { MatIconModule } from '@angular/material/icon';
 import { BehaviorSubject, tap } from 'rxjs';
 
 @Component({
-  selector: 'app-banner',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatCommonModule,
-    MatButtonModule,
-    MatIconModule
-  ],
-  templateUrl: './banner.component.html',
-  styleUrl: './banner.component.css'
+    selector: 'app-banner',
+    imports: [
+        CommonModule,
+        MatCommonModule,
+        MatButtonModule,
+        MatIconModule
+    ],
+    templateUrl: './banner.component.html',
+    styleUrl: './banner.component.css'
 })
 export class BannerComponent implements OnInit {
   isFullScreen = false;

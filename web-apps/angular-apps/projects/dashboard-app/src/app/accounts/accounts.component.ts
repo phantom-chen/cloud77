@@ -13,19 +13,18 @@ import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { getTokens } from "@shared/storages";
 
 @Component({
-  selector: "app-accounts",
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatPaginatorModule,
-    MatButtonToggleModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatAutocompleteModule,
-  ],
-  templateUrl: "./accounts.component.html",
-  styleUrl: "./accounts.component.css",
+    selector: "app-accounts",
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatPaginatorModule,
+        MatButtonToggleModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatAutocompleteModule,
+    ],
+    templateUrl: "./accounts.component.html",
+    styleUrl: "./accounts.component.css"
 })
 export class AccountsComponent implements OnInit {
   accounts: UserAccount[] = [];

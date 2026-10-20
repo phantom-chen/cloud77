@@ -3,14 +3,13 @@ import { AfterViewInit, Component, ElementRef, Inject, ViewChild } from '@angula
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-material-dialog',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatDialogModule
-  ],
-  templateUrl: './material-dialog.component.html',
-  styleUrl: './material-dialog.component.css'
+    selector: 'app-material-dialog',
+    imports: [
+        CommonModule,
+        MatDialogModule
+    ],
+    templateUrl: './material-dialog.component.html',
+    styleUrl: './material-dialog.component.css'
 })
 export class MaterialDialogComponent implements AfterViewInit {
   constructor(

@@ -9,19 +9,18 @@ import { MatInputModule } from '@angular/material/input';
 import { AuthorEntity } from '@phantom-chen/cloud77';
 
 @Component({
-  selector: 'app-author-dialog',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatCommonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatDialogModule
-  ],
-  templateUrl: './author-dialog.component.html',
-  styleUrl: './author-dialog.component.css'
+    selector: 'app-author-dialog',
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatCommonModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+        MatDialogModule
+    ],
+    templateUrl: './author-dialog.component.html',
+    styleUrl: './author-dialog.component.css'
 })
 export class AuthorDialogComponent {
   constructor(

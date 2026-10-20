@@ -7,16 +7,15 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { BookmarkEntity, BookmarkResult } from '@phantom-chen/cloud77';
 
 @Component({
-  selector: 'app-bookmarks',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatCommonModule,
-    MatPaginatorModule
-  ],
-  templateUrl: './bookmarks.component.html',
-  styleUrl: './bookmarks.component.css',
+    selector: 'app-bookmarks',
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatCommonModule,
+        MatPaginatorModule
+    ],
+    templateUrl: './bookmarks.component.html',
+    styleUrl: './bookmarks.component.css'
 })
 export class BookmarksComponent implements AfterViewInit {
 

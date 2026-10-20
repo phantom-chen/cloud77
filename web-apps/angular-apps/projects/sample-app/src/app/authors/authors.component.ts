@@ -14,21 +14,20 @@ import { AuthorDialogComponent } from '../author-dialog/author-dialog.component'
 const duration: number = 2000;
 
 @Component({
-  selector: 'app-authors',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatCommonModule,
-    MatButtonModule,
-    MatCheckboxModule,
-    MatCardModule,
-    MatDialogModule,
-    MatSnackBarModule,
-    DatePipe
-  ],
-  templateUrl: './authors.component.html',
-  styleUrl: './authors.component.css',
+    selector: 'app-authors',
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatCommonModule,
+        MatButtonModule,
+        MatCheckboxModule,
+        MatCardModule,
+        MatDialogModule,
+        MatSnackBarModule,
+        DatePipe
+    ],
+    templateUrl: './authors.component.html',
+    styleUrl: './authors.component.css'
 })
 export class AuthorsComponent implements AfterViewInit {
 

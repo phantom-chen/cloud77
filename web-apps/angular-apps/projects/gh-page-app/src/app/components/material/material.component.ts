@@ -24,30 +24,29 @@ import {
 } from "angular-gridster2";
 
 @Component({
-  selector: "app-material",
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatCommonModule,
-    MatExpansionModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatChipsModule,
-    MatNativeDateModule,
-    MatDatepickerModule,
-    MatCardModule,
-    MatListModule,
-    MatIconModule,
-    MatButtonModule,
-    MatIconModule,
-    MatGridListModule,
-    MatButtonToggleModule,
-    GridsterModule,
-  ],
-  templateUrl: "./material.component.html",
-  styleUrl: "./material.component.css",
+    selector: "app-material",
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatCommonModule,
+        MatExpansionModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
+        MatChipsModule,
+        MatNativeDateModule,
+        MatDatepickerModule,
+        MatCardModule,
+        MatListModule,
+        MatIconModule,
+        MatButtonModule,
+        MatIconModule,
+        MatGridListModule,
+        MatButtonToggleModule,
+        GridsterModule,
+    ],
+    templateUrl: "./material.component.html",
+    styleUrl: "./material.component.css"
 })
 export class MaterialComponent {
   role = "role1";

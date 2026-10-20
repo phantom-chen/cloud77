@@ -10,17 +10,16 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-live-chart',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatButtonModule,
-    MatSnackBarModule,
-    BaseChartDirective,
-  ],
-  templateUrl: './live-chart.component.html',
-  styleUrl: './live-chart.component.css'
+    selector: 'app-live-chart',
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatButtonModule,
+        MatSnackBarModule,
+        BaseChartDirective,
+    ],
+    templateUrl: './live-chart.component.html',
+    styleUrl: './live-chart.component.css'
 })
 export class LiveChartComponent {
 

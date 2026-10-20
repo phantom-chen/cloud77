@@ -5,15 +5,14 @@ import { CommonModule } from '@angular/common';
 import { MarkdownModule } from 'ngx-markdown';
 
 @Component({
-  selector: 'app-posts',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    MarkdownModule
-  ],
-  templateUrl: './posts.component.html',
-  styleUrl: './posts.component.css'
+    selector: 'app-posts',
+    imports: [
+        CommonModule,
+        FormsModule,
+        MarkdownModule
+    ],
+    templateUrl: './posts.component.html',
+    styleUrl: './posts.component.css'
 })
 export class PostsComponent implements AfterViewInit {
   data = '# hello world'

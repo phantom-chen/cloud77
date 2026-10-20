@@ -5,16 +5,15 @@ import { Subscription } from 'rxjs';
 import { ChatSocket } from '../socket';
 
 @Component({
-  selector: 'app-live-chat',
-  standalone: true,
-  imports: [
-    CommonModule,
-  ],
-  providers: [
-    ChatSocket
-  ],
-  templateUrl: './live-chat.component.html',
-  styleUrl: './live-chat.component.css'
+    selector: 'app-live-chat',
+    imports: [
+        CommonModule,
+    ],
+    providers: [
+        ChatSocket
+    ],
+    templateUrl: './live-chat.component.html',
+    styleUrl: './live-chat.component.css'
 })
 export class LiveChatComponent implements OnInit, OnDestroy {
 

@@ -10,20 +10,19 @@ import { MatSelectModule } from '@angular/material/select';
 import { UserTask } from '@phantom-chen/cloud77';
 
 @Component({
-  selector: 'app-task-dialog',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatDialogModule,
-    MatCommonModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatButtonModule,
-    MatSelectModule
-  ],
-  templateUrl: './task-dialog.component.html',
-  styleUrl: './task-dialog.component.css'
+    selector: 'app-task-dialog',
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatDialogModule,
+        MatCommonModule,
+        MatInputModule,
+        MatFormFieldModule,
+        MatButtonModule,
+        MatSelectModule
+    ],
+    templateUrl: './task-dialog.component.html',
+    styleUrl: './task-dialog.component.css'
 })
 export class TaskDialogComponent {
   constructor(

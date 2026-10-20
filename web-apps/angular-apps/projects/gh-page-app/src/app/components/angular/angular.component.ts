@@ -7,10 +7,9 @@ import { AngularUIModule } from 'my-angular-ui';
 import { BoardComponent } from '../board/board.component';
 
 @Component({
-  selector: "app-my-button",
-  standalone: true,
-  imports: [CommonModule],
-  template: `<button [ngStyle]="{'background-color':color}">{{content}}</button>`,
+    selector: "app-my-button",
+    imports: [CommonModule],
+    template: `<button [ngStyle]="{'background-color':color}">{{content}}</button>`
 })
 export class MyButtonComponent {
   @Input()
@@ -21,13 +20,12 @@ export class MyButtonComponent {
 }
 
 @Component({
-  selector: "app-my-buttons",
-  standalone: true,
-  imports: [CommonModule],
-  template: ` <div class="container">
+    selector: "app-my-buttons",
+    imports: [CommonModule],
+    template: ` <div class="container">
     <p [ngStyle]="{'background-color':color}">{{content}}</p>
     <ng-content></ng-content>
-    </div>`,
+    </div>`
 })
 export class MyButtonsComponent {
   @Input()
@@ -41,18 +39,17 @@ export class MyButtonsComponent {
 }
 
 @Component({
-  selector: 'app-angular',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    AngularUIModule,
-    BoardComponent,
-    MyButtonsComponent,
-    MyButtonComponent
-],
-  templateUrl: './angular.component.html',
-  styleUrl: './angular.component.css'
+    selector: 'app-angular',
+    imports: [
+        CommonModule,
+        FormsModule,
+        AngularUIModule,
+        BoardComponent,
+        MyButtonsComponent,
+        MyButtonComponent
+    ],
+    templateUrl: './angular.component.html',
+    styleUrl: './angular.component.css'
 })
 export class AngularComponent {
   items: string[] = ['string1', 'string2'];

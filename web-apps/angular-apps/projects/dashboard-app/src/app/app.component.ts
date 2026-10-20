@@ -9,15 +9,14 @@ import { loadLoginSession, saveLoginSession } from '@shared/services';
 import { ssoMessageLoaded, ssoMessageUrl, ssoUrl } from '@shared/storages';
 
 @Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterOutlet,
-    ToolbarComponent
-  ],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+    selector: 'app-root',
+    imports: [
+        CommonModule,
+        RouterOutlet,
+        ToolbarComponent
+    ],
+    templateUrl: './app.component.html',
+    styleUrl: './app.component.css'
 })
 export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 

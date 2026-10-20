@@ -8,19 +8,18 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
 @Component({
-  selector: 'app-sign-in',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatCommonModule,
-    MatInputModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatCheckboxModule
-  ],
-  templateUrl: './sign-in.component.html',
-  styleUrl: './sign-in.component.css'
+    selector: 'app-sign-in',
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatCommonModule,
+        MatInputModule,
+        MatButtonModule,
+        MatFormFieldModule,
+        MatCheckboxModule
+    ],
+    templateUrl: './sign-in.component.html',
+    styleUrl: './sign-in.component.css'
 })
 export class SignInComponent {
 

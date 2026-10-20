@@ -17,23 +17,22 @@ import { NuMonacoEditorComponent, NuMonacoEditorModel, NuMonacoEditorModule } fr
 import { getTokens } from '@shared/storages';
 
 @Component({
-  selector: 'app-posts',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    RouterModule,
-    MatCommonModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatButtonModule,
-    MatListModule,
-    MatIconModule,
-    NuMonacoEditorModule,
-    UnAuthorizedComponent
-  ],
-  templateUrl: './posts.component.html',
-  styleUrl: './posts.component.css'
+    selector: 'app-posts',
+    imports: [
+        CommonModule,
+        FormsModule,
+        RouterModule,
+        MatCommonModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatButtonModule,
+        MatListModule,
+        MatIconModule,
+        NuMonacoEditorModule,
+        UnAuthorizedComponent
+    ],
+    templateUrl: './posts.component.html',
+    styleUrl: './posts.component.css'
 })
 export class PostsComponent implements OnInit {
 

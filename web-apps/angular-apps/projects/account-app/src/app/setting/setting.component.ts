@@ -15,22 +15,21 @@ import { AccountService } from '../account.service';
 import { getTokens } from '@shared/storages';
 
 @Component({
-  selector: 'app-setting',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatCommonModule,
-    MatCheckboxModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatSnackBarModule,
-    UnAuthorizedComponent
-  ],
-  templateUrl: './setting.component.html',
-  styleUrl: './setting.component.css'
+    selector: 'app-setting',
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatCommonModule,
+        MatCheckboxModule,
+        MatCardModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+        MatSnackBarModule,
+        UnAuthorizedComponent
+    ],
+    templateUrl: './setting.component.html',
+    styleUrl: './setting.component.css'
 })
 export class SettingComponent implements OnInit {
   constructor(

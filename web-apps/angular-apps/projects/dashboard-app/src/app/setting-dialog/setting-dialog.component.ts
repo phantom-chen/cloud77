@@ -8,18 +8,17 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
 @Component({
-  selector: 'app-setting-dialog',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatInputModule,
-    MatFormFieldModule
-  ],
-  templateUrl: './setting-dialog.component.html',
-  styleUrl: './setting-dialog.component.css'
+    selector: 'app-setting-dialog',
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatDialogModule,
+        MatButtonModule,
+        MatInputModule,
+        MatFormFieldModule
+    ],
+    templateUrl: './setting-dialog.component.html',
+    styleUrl: './setting-dialog.component.css'
 })
 export class SettingDialogComponent {
   constructor(

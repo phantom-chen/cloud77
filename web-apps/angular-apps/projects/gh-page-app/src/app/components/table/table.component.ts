@@ -12,16 +12,15 @@ export interface PeriodicElement {
 }
 
 @Component({
-  selector: 'app-table',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatTableModule,
-    CdkTableModule
-  ],
-  templateUrl: './table.component.html',
-  styleUrl: './table.component.css'
+    selector: 'app-table',
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatTableModule,
+        CdkTableModule
+    ],
+    templateUrl: './table.component.html',
+    styleUrl: './table.component.css'
 })
 export class TableComponent {
   displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];

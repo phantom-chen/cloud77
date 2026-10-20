@@ -17,14 +17,13 @@ export function generateUniqueId(length: number): string {
 }
 
 @Component({
-  selector: 'app-toolbox',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule
-  ],
-  templateUrl: './toolbox.component.html',
-  styleUrl: './toolbox.component.css'
+    selector: 'app-toolbox',
+    imports: [
+        CommonModule,
+        FormsModule
+    ],
+    templateUrl: './toolbox.component.html',
+    styleUrl: './toolbox.component.css'
 })
 export class ToolboxComponent {
 

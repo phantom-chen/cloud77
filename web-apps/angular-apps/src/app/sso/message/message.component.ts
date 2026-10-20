@@ -1,11 +1,10 @@
 import { AfterViewInit, Component } from '@angular/core';
 
 @Component({
-  selector: 'app-message',
-  standalone: true,
-  imports: [],
-  templateUrl: './message.component.html',
-  styleUrl: './message.component.css'
+    selector: 'app-message',
+    imports: [],
+    templateUrl: './message.component.html',
+    styleUrl: './message.component.css'
 })
 export class MessageComponent implements AfterViewInit {
   ngAfterViewInit(): void {

@@ -9,19 +9,18 @@ import { MatInputModule } from '@angular/material/input';
 import { UserPost } from '@phantom-chen/cloud77';
 
 @Component({
-  selector: 'app-post-dialog',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatDialogModule,
-    MatCommonModule,
-    MatInputModule,
-    MatButtonModule,
-    MatFormFieldModule
-  ],
-  templateUrl: './post-dialog.component.html',
-  styleUrl: './post-dialog.component.css'
+    selector: 'app-post-dialog',
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatDialogModule,
+        MatCommonModule,
+        MatInputModule,
+        MatButtonModule,
+        MatFormFieldModule
+    ],
+    templateUrl: './post-dialog.component.html',
+    styleUrl: './post-dialog.component.css'
 })
 export class PostDialogComponent {
   constructor(

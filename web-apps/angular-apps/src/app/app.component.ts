@@ -25,15 +25,14 @@ function yourMethod3() {
 }
 
 @Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    SharedModule
-  ],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+    selector: 'app-root',
+    imports: [
+        CommonModule,
+        RouterModule,
+        SharedModule
+    ],
+    templateUrl: './app.component.html',
+    styleUrl: './app.component.css'
 })
 export class AppComponent implements AfterViewInit {
 

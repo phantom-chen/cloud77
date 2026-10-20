@@ -17,22 +17,21 @@ export interface AppItem {
 }
 
 @Component({
-  selector: 'app-layout',
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    FormsModule,
-    MatCommonModule,
-    MatSidenavModule,
-    MatListModule,
-    MatIconModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatMenuModule
-  ],
-  templateUrl: './layout.component.html',
-  styleUrl: './layout.component.css'
+    selector: 'app-layout',
+    imports: [
+        CommonModule,
+        RouterModule,
+        FormsModule,
+        MatCommonModule,
+        MatSidenavModule,
+        MatListModule,
+        MatIconModule,
+        MatToolbarModule,
+        MatButtonModule,
+        MatMenuModule
+    ],
+    templateUrl: './layout.component.html',
+    styleUrl: './layout.component.css'
 })
 export class LayoutComponent {
 

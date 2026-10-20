@@ -5,15 +5,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { getTokens } from '@shared/storages';
 
 @Component({
-  selector: 'app-tokens',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatButtonModule,
-    MatIconModule
-  ],
-  templateUrl: './tokens.component.html',
-  styleUrl: './tokens.component.css'
+    selector: 'app-tokens',
+    imports: [
+        CommonModule,
+        MatButtonModule,
+        MatIconModule
+    ],
+    templateUrl: './tokens.component.html',
+    styleUrl: './tokens.component.css'
 })
 export class TokensComponent {
   @Input()

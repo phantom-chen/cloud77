@@ -17,27 +17,26 @@ import { ObserverComponent } from './components/observer/observer.component';
 import { CloneComponent } from './components/clone/clone.component';
 
 @Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [
-    RouterOutlet,
-    CommonModule,
-    AngularUiComponent,
-    MatCommonModule,
-    MatTabsModule,
-    SharedModule,
-    HomeComponent,
-    DiagramComponent,
-    MaterialComponent,
-    AngularComponent,
-    ToolboxComponent,
-    DragDropComponent,
-    TableComponent,
-    ObserverComponent,
-    CloneComponent
-],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+    selector: 'app-root',
+    imports: [
+        RouterOutlet,
+        CommonModule,
+        AngularUiComponent,
+        MatCommonModule,
+        MatTabsModule,
+        SharedModule,
+        HomeComponent,
+        DiagramComponent,
+        MaterialComponent,
+        AngularComponent,
+        ToolboxComponent,
+        DragDropComponent,
+        TableComponent,
+        ObserverComponent,
+        CloneComponent
+    ],
+    templateUrl: './app.component.html',
+    styleUrl: './app.component.css'
 })
 export class AppComponent {
 

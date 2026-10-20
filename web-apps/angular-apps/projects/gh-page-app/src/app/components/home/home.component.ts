@@ -7,15 +7,14 @@ import drawing from '@phantom-chen/cloud77/service/drawing'
 import { fromEvent } from 'rxjs';
 
 @Component({
-  selector: 'app-home',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    SharedModule
-  ],
-  templateUrl: './home.component.html',
-  styleUrl: './home.component.css'
+    selector: 'app-home',
+    imports: [
+        CommonModule,
+        FormsModule,
+        SharedModule
+    ],
+    templateUrl: './home.component.html',
+    styleUrl: './home.component.css'
 })
 export class HomeComponent implements OnInit {
   title = 'Cloud77 GitHub Pages';

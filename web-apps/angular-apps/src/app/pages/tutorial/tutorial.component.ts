@@ -4,18 +4,17 @@ import { CardComponent, CardTitleComponent, SmallCardComponent, SocialComponent 
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-tutorial',
-  standalone: true,
-  imports: [
-    CommonModule,
-    BannerComponent,
-    CardTitleComponent,
-    CardComponent,
-    SmallCardComponent,
-    SocialComponent
-  ],
-  templateUrl: './tutorial.component.html',
-  styleUrl: './tutorial.component.css'
+    selector: 'app-tutorial',
+    imports: [
+        CommonModule,
+        BannerComponent,
+        CardTitleComponent,
+        CardComponent,
+        SmallCardComponent,
+        SocialComponent
+    ],
+    templateUrl: './tutorial.component.html',
+    styleUrl: './tutorial.component.css'
 })
 export class TutorialComponent {
   

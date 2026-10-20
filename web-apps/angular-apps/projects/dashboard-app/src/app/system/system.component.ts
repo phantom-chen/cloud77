@@ -16,23 +16,22 @@ import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { getTokens } from "@shared/storages";
 
 @Component({
-  selector: "app-system",
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatCommonModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatIconModule,
-    MatInputModule,
-    MatButtonModule,
-    MatDialogModule,
-    MatSnackBarModule,
-    MatSlideToggleModule,
-  ],
-  templateUrl: "./system.component.html",
-  styleUrl: "./system.component.css",
+    selector: "app-system",
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatCommonModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatIconModule,
+        MatInputModule,
+        MatButtonModule,
+        MatDialogModule,
+        MatSnackBarModule,
+        MatSlideToggleModule,
+    ],
+    templateUrl: "./system.component.html",
+    styleUrl: "./system.component.css"
 })
 export class SystemComponent implements OnInit, AfterViewInit {
   loading = true;

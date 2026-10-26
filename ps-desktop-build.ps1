@@ -71,10 +71,10 @@ Get-Content "CoolerApps\build\squirrel.txt"
 Get-ChildItem CoolerApps/nupkg
 Get-ChildItem CoolerApps/release
 
-New-Folder -path "$env:USERPROFILE\Documents\MyServer\desktop-installers"
-New-Folder -path "$env:USERPROFILE\Documents\MyServer\desktop-releases"
-New-Folder -path "$env:USERPROFILE\Documents\MyServer\desktop-releases\cooler-plus"
-$releasePath = "$env:USERPROFILE\Documents\MyServer\desktop-releases\cooler-plus"
+New-Folder -path "$env:USERPROFILE\server\desktop-installers"
+New-Folder -path "$env:USERPROFILE\server\desktop-releases"
+New-Folder -path "$env:USERPROFILE\server\desktop-releases\cooler-plus"
+$releasePath = "$env:USERPROFILE\server\desktop-releases\cooler-plus"
 
 # clean release folder
 Remove-Item "$($releasePath)\RELEASES" -ErrorAction Ignore

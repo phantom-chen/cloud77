@@ -18,7 +18,7 @@ namespace FunctionalTests
         public WindowsStage()
         {
             string programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            var root = Path.Combine(programDataPath, "MyServer", "MyServices");
+            var root = Path.Combine(programDataPath, "server", "data");
 
             var data = new ServiceDataModel();
             ServiceDataModel.ServiceName = "User";
@@ -39,8 +39,8 @@ namespace FunctionalTests
             get
             {
                 string root = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                    "MyServer", "users");
+                    Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                    "server", "users");
 
                 if (!Directory.Exists(root))
                 {

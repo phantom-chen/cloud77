@@ -125,10 +125,10 @@ jobs:
             # execute commands on ssh
             script: |
                 pwd
-                echo '# cooler plus release starts' >> /home/cloud77/resources/releases/logs.txt
-                mv /tmp/releases/*.nupkg /home/cloud77/resources/releases/cooler-plus
-                mv -f /tmp/releases/RELEASES /home/cloud77/resources/releases/cooler-plus/RELEASES
+                echo '# cooler plus release starts' >> /home/user/resources/releases/logs.txt
+                mv /tmp/releases/*.nupkg /home/user/resources/releases/cooler-plus
+                mv -f /tmp/releases/RELEASES /home/user/resources/releases/cooler-plus/RELEASES
                 rm -f -r /tmp/releases
-                echo $PKGVERSION >> /home/cloud77/resources/releases/logs.txt
-                date +"%A, %B %d, %Y %H:%M:%S" >> /home/cloud77/resources/releases/logs.txt
-                echo '# cooler plus release ends' >> /home/cloud77/resources/releases/logs.txt
+                echo $PKGVERSION >> /home/user/resources/releases/logs.txt
+                date +"%A, %B %d, %Y %H:%M:%S" >> /home/user/resources/releases/logs.txt
+                echo '# cooler plus release ends' >> /home/user/resources/releases/logs.txt

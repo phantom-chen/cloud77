@@ -16,7 +16,7 @@ namespace GatewayService.Models
         if (isWindows)
         {
           string programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-          Root = Path.Combine(programDataPath, "MyServer", "MyServices");
+          Root = Path.Combine(programDataPath, "server", "data");
         }
         else
         {

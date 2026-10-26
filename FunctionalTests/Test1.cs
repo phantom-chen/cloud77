@@ -13,7 +13,7 @@ namespace FunctionalTests
         {
             Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             string programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            var root = Path.Combine(programDataPath, "MyServer", "MyServices");
+            var root = Path.Combine(programDataPath, "server", "data");
             var path = Path.Combine(root, "users", "index", "users.json");
             Assert.IsTrue(File.Exists(path));
 

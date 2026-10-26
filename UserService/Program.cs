@@ -156,7 +156,7 @@ namespace UserService
             if (isWindows)
             {
                 string programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                ServiceDataModel.Root = Path.Combine(programDataPath, "MyServer", "MyServices");
+                ServiceDataModel.Root = Path.Combine(programDataPath, "server", "data");
             }
             else
             {

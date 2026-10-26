@@ -27,7 +27,7 @@ function New-Folder {
     }
 }
 
-$root = "$env:USERPROFILE\Documents\MyServer\WindowsBuild"
+$root = "$env:USERPROFILE\server\WindowsBuild"
 New-Folder $root
 
 Write-Host 'Building Windows binaries ...'

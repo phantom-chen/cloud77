@@ -105,10 +105,10 @@ namespace ConsoleApp
             try
             {
                 // Get the ProgramData folder path
-                string programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+                string programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 
                 // Create MyServer subfolder path
-                string myServerPath = Path.Combine(programDataPath, "MyServices");
+                string myServerPath = Path.Combine(programDataPath, "server");
 
                 // Create the directory if it doesn't exist
                 if (!Directory.Exists(myServerPath))

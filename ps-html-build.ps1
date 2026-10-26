@@ -31,7 +31,7 @@ function New-Folder {
     }
 }
 
-$root = "$env:USERPROFILE\Documents\MyServer\html"
+$root = "$env:USERPROFILE\server\html"
 New-Folder $root
 
 Write-Host 'Building Web Html ...'

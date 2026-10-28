@@ -1,7 +1,6 @@
 
 import { Component, Inject, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatCommonModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterModule } from '@angular/router';
@@ -21,7 +20,6 @@ import { getTokens } from '@shared/storages';
     imports: [
     FormsModule,
     RouterModule,
-    MatCommonModule,
     MatFormFieldModule,
     MatSelectModule,
     MatButtonModule,

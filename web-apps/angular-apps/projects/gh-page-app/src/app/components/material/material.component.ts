@@ -8,7 +8,7 @@ import {
 } from "@angular/material/button-toggle";
 import { MatCardModule } from "@angular/material/card";
 import { MatChipsModule } from "@angular/material/chips";
-import { MatCommonModule, MatNativeDateModule } from "@angular/material/core";
+import { MatNativeDateModule } from "@angular/material/core";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatExpansionModule } from "@angular/material/expansion";
 import { MatFormFieldModule } from "@angular/material/form-field";
@@ -20,7 +20,6 @@ import { MatSelectModule } from "@angular/material/select";
 import {
   GridsterConfig,
   GridsterItem,
-  GridsterModule,
 } from "angular-gridster2";
 
 @Component({
@@ -28,7 +27,6 @@ import {
     imports: [
         CommonModule,
         FormsModule,
-        MatCommonModule,
         MatExpansionModule,
         MatFormFieldModule,
         MatInputModule,

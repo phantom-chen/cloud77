@@ -4,7 +4,6 @@ import { RouterOutlet } from '@angular/router';
 // import { AngularUiComponent } from 'my-angular-ui';
 import { AngularUiComponent } from '../../../angular-ui/src/public-api';
 import { MatTabsModule } from '@angular/material/tabs';
-import { MatCommonModule } from '@angular/material/core';
 import { HomeComponent } from "./components/home/home.component";
 import { DiagramComponent } from "./components/diagram/diagram.component";
 import { MaterialComponent } from "./components/material/material.component";
@@ -21,7 +20,6 @@ import { CloneComponent } from './components/clone/clone.component';
     imports: [
     RouterOutlet,
     AngularUiComponent,
-    MatCommonModule,
     MatTabsModule,
     SharedModule,
     HomeComponent,

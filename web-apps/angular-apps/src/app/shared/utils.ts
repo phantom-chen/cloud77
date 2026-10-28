@@ -1,4 +1,4 @@
-import { Buffer } from 'buffer';
+// import { Buffer } from 'buffer';
 import { Md5 } from "md5-typescript";
 
 export function hashString(value: string): string {
@@ -6,16 +6,16 @@ export function hashString(value: string): string {
 }
 
 // window.btoa();
-export function convertToBase64(value: string): string {
-    const buffer = Buffer.from(value);
-    return buffer.toString('base64');
-}
+// export function convertToBase64(value: string): string {
+//     const buffer = Buffer.from(value);
+//     return buffer.toString('base64');
+// }
 
 // window.atob();
-export function convertFromBase64(value: string): string {
-    const buffer = Buffer.from(value, 'base64');
-    return buffer.toString();
-}
+// export function convertFromBase64(value: string): string {
+//     const buffer = Buffer.from(value, 'base64');
+//     return buffer.toString();
+// }
 
 export function timestampToDate(timestamp: string): Date {
     const year = Number(timestamp.substring(0, 4));

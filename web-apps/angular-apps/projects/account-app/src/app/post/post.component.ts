@@ -2,7 +2,6 @@
 import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AccountService } from '../account.service';
-import { MatCommonModule } from '@angular/material/core';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatButtonModule } from '@angular/material/button';
 import { UnAuthorizedComponent } from '../un-authorized/un-authorized.component';
@@ -12,7 +11,6 @@ import { getTokens } from '@shared/storages';
     selector: 'app-post',
     imports: [
     FormsModule,
-    MatCommonModule,
     MatChipsModule,
     MatButtonModule,
     UnAuthorizedComponent

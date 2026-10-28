@@ -1,14 +1,12 @@
 
 import { Component, HostListener, OnInit, Inject, DOCUMENT, ChangeDetectionStrategy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCommonModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { BehaviorSubject, tap } from 'rxjs';
 
 @Component({
     selector: 'app-banner',
     imports: [
-    MatCommonModule,
     MatButtonModule,
     MatIconModule
 ],

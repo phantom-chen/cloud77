@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { reverseString } from './reverse-string';
-import { convertFromBase64, convertToBase64, hashString } from '@shared/utils';
+import { hashString } from '@shared/utils';
 
 import { FormsModule } from '@angular/forms';
 
@@ -50,13 +50,15 @@ export class ToolboxComponent {
 
   encrypt(): void {
     console.log(this.encryptSource);
-    this.encryptResult = convertToBase64(this.encryptSource);
+    // this.encryptResult = convertToBase64(this.encryptSource);
+    this.encryptResult = 'todo';
     console.log(this.encryptResult);
   }
 
   decrypt(): void {
     if (this.decryptSource !== '') {
-      this.decryptResult = convertFromBase64(this.decryptSource);
+      // this.decryptResult = convertFromBase64(this.decryptSource);
+      this.decryptResult = 'todo';
     }
   }
 

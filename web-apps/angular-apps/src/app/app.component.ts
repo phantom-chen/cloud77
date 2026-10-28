@@ -46,8 +46,8 @@ export class AppComponent implements AfterViewInit {
   noHeader: boolean = false;
 
   @HostListener('window:storage')
-  onStorageChange(event: any) {
-    console.log('change...', event);
+  onStorageChange() {
+    console.log('storage change...');
     // console.log(localStorage.getItem('1'))
   }
 

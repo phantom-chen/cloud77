@@ -11,7 +11,6 @@ import {
 import { FormsModule } from "@angular/forms";
 import { UserService } from "../sso.service";
 import { MatIconModule } from "@angular/material/icon";
-import { MatCommonModule } from "@angular/material/core";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { MatButtonModule } from "@angular/material/button";
@@ -30,7 +29,6 @@ import { appMessageLoaded, appMessageUrl, debugMode, rememberMe, userEmail, getT
     imports: [
     FormsModule,
     RouterModule,
-    MatCommonModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,

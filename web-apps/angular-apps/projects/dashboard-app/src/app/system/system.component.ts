@@ -11,7 +11,6 @@ import { MatButtonModule } from "@angular/material/button";
 import { SettingDialogComponent } from "../setting-dialog/setting-dialog.component";
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
-import { MatCommonModule } from "@angular/material/core";
 import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { getTokens } from "@shared/storages";
 
@@ -19,7 +18,6 @@ import { getTokens } from "@shared/storages";
     selector: "app-system",
     imports: [
     FormsModule,
-    MatCommonModule,
     MatFormFieldModule,
     MatSelectModule,
     MatIconModule,

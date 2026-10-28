@@ -1,21 +1,21 @@
 {
   "/resources": {
-    "target": "http://localhost:5096",
+    "target": "http://dev.apps:40466",
     "secure": true,
     "changeOrigin": true
   },
   "/api": {
-    "target": "http://localhost:7710",
+    "target": "http://dev.apps:41573",
     "secure": true,
     "changeOrigin": true
   },
   "/hubs": {
-    "target": "http://localhost:7713",
+    "target": "http://dev.app:7713",
     "ws": true,
     "secure": false
   },
   "/canteen-ws": {
-    "target": "http://localhost:7715",
+    "target": "http://dev.apps:7715",
     "ws": true,
     "secure": false
   }

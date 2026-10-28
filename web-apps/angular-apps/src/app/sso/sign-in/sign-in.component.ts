@@ -3,7 +3,6 @@ import { Component, EventEmitter, input, Input, Output, ChangeDetectionStrategy 
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatCommonModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
@@ -11,7 +10,6 @@ import { MatInputModule } from '@angular/material/input';
     selector: 'app-sign-in',
     imports: [
     FormsModule,
-    MatCommonModule,
     MatInputModule,
     MatButtonModule,
     MatFormFieldModule,

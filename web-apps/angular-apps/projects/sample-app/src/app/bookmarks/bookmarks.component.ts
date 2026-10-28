@@ -2,7 +2,6 @@
 import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatCommonModule } from '@angular/material/core';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { BookmarkEntity, BookmarkResult } from '@phantom-chen/cloud77';
 
@@ -10,7 +9,6 @@ import { BookmarkEntity, BookmarkResult } from '@phantom-chen/cloud77';
     selector: 'app-bookmarks',
     imports: [
     FormsModule,
-    MatCommonModule,
     MatPaginatorModule
 ],
     templateUrl: './bookmarks.component.html',

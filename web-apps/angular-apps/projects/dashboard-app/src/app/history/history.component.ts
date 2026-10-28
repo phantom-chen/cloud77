@@ -2,7 +2,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Component, Inject, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { MatCommonModule } from "@angular/material/core";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { MatSelectModule } from "@angular/material/select";
@@ -16,7 +15,6 @@ import { getTokens } from "@shared/storages";
     selector: "app-history",
     imports: [
     FormsModule,
-    MatCommonModule,
     MatInputModule,
     MatSelectModule,
     MatFormFieldModule,

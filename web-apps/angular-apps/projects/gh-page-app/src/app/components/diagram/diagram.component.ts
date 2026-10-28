@@ -5,7 +5,6 @@ import html2canvas from 'html2canvas';
 import { MaterialDialogComponent } from '../material-dialog/material-dialog.component';
 
 import { FormsModule } from '@angular/forms';
-import { MatCommonModule } from '@angular/material/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 
@@ -27,7 +26,6 @@ const RawHTML = `
     selector: 'app-diagram',
     imports: [
     FormsModule,
-    MatCommonModule,
     MatCardModule,
     MatButtonModule
 ],

@@ -1,5 +1,5 @@
-import { CommonModule } from "@angular/common";
-import { AfterViewInit, Component, Inject, OnInit } from "@angular/core";
+
+import { AfterViewInit, Component, Inject, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatSelectModule } from "@angular/material/select";
@@ -11,16 +11,13 @@ import { MatButtonModule } from "@angular/material/button";
 import { SettingDialogComponent } from "../setting-dialog/setting-dialog.component";
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
-import { MatCommonModule } from "@angular/material/core";
 import { MatSlideToggleModule } from "@angular/material/slide-toggle";
+import { getTokens } from "@shared/storages";
 
 @Component({
-  selector: "app-system",
-  standalone: true,
-  imports: [
-    CommonModule,
+    selector: "app-system",
+    imports: [
     FormsModule,
-    MatCommonModule,
     MatFormFieldModule,
     MatSelectModule,
     MatIconModule,
@@ -28,10 +25,11 @@ import { MatSlideToggleModule } from "@angular/material/slide-toggle";
     MatButtonModule,
     MatDialogModule,
     MatSnackBarModule,
-    MatSlideToggleModule,
-  ],
-  templateUrl: "./system.component.html",
-  styleUrl: "./system.component.css",
+    MatSlideToggleModule
+],
+    templateUrl: "./system.component.html",
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: "./system.component.css"
 })
 export class SystemComponent implements OnInit, AfterViewInit {
   loading = true;
@@ -91,15 +89,6 @@ export class SystemComponent implements OnInit, AfterViewInit {
     this.service.gateway.ssoSignIn$.next();
   }
   ngAfterViewInit(): void {
-    this.service.gateway.loginSession$.subscribe((res) => {
-      this.loading = false;
-      if (res.expiration) {
-        this.isLogin = true;
-      }
-    });
-
-    this.service.gateway.validateToken();
-
     this.http.get("/api/gateway").subscribe((res: any) => {
       console.log(res);
       this.environment = res.environment;
@@ -128,12 +117,12 @@ export class SystemComponent implements OnInit, AfterViewInit {
           ?.value || "";
 
       // collections
-      this.http.get("/api/super/database").subscribe((data: any) => {
+      this.http.get("/api/internal/database").subscribe((data: any) => {
         console.log(data);
       });
 
       this.http
-        .get("/api/super/database/collections")
+        .get("/api/internal/database/collections")
         .subscribe((data: any) => {
           console.log(data);
           this.database = data.database;
@@ -153,7 +142,18 @@ export class SystemComponent implements OnInit, AfterViewInit {
       }
     });
 
-    this.service.gateway.validateToken();
+    this.service.gateway.get().subscribe({
+      next: () => {
+        this.service.gateway.validateToken(getTokens('session')).subscribe({
+          error: err => {
+            console.log(err);
+          }
+        });
+      },
+      error: err => {
+        console.log(err);
+      }
+    })
   }
 
   onValueChange(value: string) {

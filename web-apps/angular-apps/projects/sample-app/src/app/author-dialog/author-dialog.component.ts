@@ -1,27 +1,24 @@
-import { CommonModule } from '@angular/common';
-import { Component, Inject } from '@angular/core';
+
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCommonModule } from '@angular/material/core';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { AuthorEntity } from '@phantom-chen/cloud77';
 
 @Component({
-  selector: 'app-author-dialog',
-  standalone: true,
-  imports: [
-    CommonModule,
+    selector: 'app-author-dialog',
+    imports: [
     FormsModule,
-    MatCommonModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
     MatDialogModule
-  ],
-  templateUrl: './author-dialog.component.html',
-  styleUrl: './author-dialog.component.css'
+],
+    templateUrl: './author-dialog.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './author-dialog.component.css'
 })
 export class AuthorDialogComponent {
   constructor(

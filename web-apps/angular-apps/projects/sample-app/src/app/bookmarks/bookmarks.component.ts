@@ -1,22 +1,19 @@
-import { CommonModule } from '@angular/common';
+
 import { HttpClient } from '@angular/common/http';
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatCommonModule } from '@angular/material/core';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { BookmarkEntity, BookmarkResult } from '@phantom-chen/cloud77';
 
 @Component({
-  selector: 'app-bookmarks',
-  standalone: true,
-  imports: [
-    CommonModule,
+    selector: 'app-bookmarks',
+    imports: [
     FormsModule,
-    MatCommonModule,
     MatPaginatorModule
-  ],
-  templateUrl: './bookmarks.component.html',
-  styleUrl: './bookmarks.component.css',
+],
+    templateUrl: './bookmarks.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './bookmarks.component.css'
 })
 export class BookmarksComponent implements AfterViewInit {
 

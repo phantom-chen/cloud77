@@ -8,5 +8,15 @@
     "target": "http://localhost:7710",
     "secure": true,
     "changeOrigin": true
+  },
+  "/hubs": {
+    "target": "http://localhost:7712",
+    "ws": true,
+    "secure": false
+  },
+  "/canteen-ws": {
+    "target": "http://localhost:7715",
+    "ws": true,
+    "secure": false
   }
 }

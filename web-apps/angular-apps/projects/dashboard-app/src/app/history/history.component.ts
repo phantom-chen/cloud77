@@ -1,8 +1,7 @@
-import { CommonModule } from "@angular/common";
+
 import { HttpClient } from "@angular/common/http";
-import { Component, Inject, OnInit } from "@angular/core";
+import { Component, Inject, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { MatCommonModule } from "@angular/material/core";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { MatSelectModule } from "@angular/material/select";
@@ -10,28 +9,27 @@ import { DashboardService } from "../dashboard.service";
 import { MatRadioModule } from "@angular/material/radio";
 import { EventEntity } from "@phantom-chen/cloud77";
 import { MatButtonModule } from "@angular/material/button";
+import { getTokens } from "@shared/storages";
 
 @Component({
-  selector: "app-history",
-  standalone: true,
-  imports: [
-    CommonModule,
+    selector: "app-history",
+    imports: [
     FormsModule,
-    MatCommonModule,
     MatInputModule,
     MatSelectModule,
     MatFormFieldModule,
     MatButtonModule,
-    MatRadioModule,
-  ],
-  templateUrl: "./history.component.html",
-  styleUrl: "./history.component.css",
+    MatRadioModule
+],
+    templateUrl: "./history.component.html",
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: "./history.component.css"
 })
 export class HistoryComponent implements OnInit {
   constructor(
     private http: HttpClient,
     @Inject("DashboardService") private service: DashboardService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.service.gateway.loginSession$.subscribe((res) => {
@@ -45,7 +43,19 @@ export class HistoryComponent implements OnInit {
         });
       }
     });
-    this.service.gateway.validateToken();
+
+    this.service.gateway.get().subscribe({
+      next: () => {
+        this.service.gateway.validateToken(getTokens('session')).subscribe({
+          error: err => {
+            console.log(err);
+          }
+        });
+      },
+      error: err => {
+        console.log(err);
+      }
+    })
   }
 
   onSSO(): void {

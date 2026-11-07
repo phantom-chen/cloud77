@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { EventEntity } from '@phantom-chen/cloud77';
 import { CommonModule, DatePipe } from '@angular/common';
 import { MatListModule } from '@angular/material/list';
@@ -6,20 +6,21 @@ import { UnAuthorizedComponent } from '../un-authorized/un-authorized.component'
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AccountService } from '../account.service';
+import { getTokens } from '@shared/storages';
 
 @Component({
-  selector: 'app-history',
-  standalone: true,
-  imports: [
-    CommonModule,
-    UnAuthorizedComponent,
-    MatSnackBarModule,
-    MatDialogModule,
-    MatListModule,
-    DatePipe
-  ],
-  templateUrl: './history.component.html',
-  styleUrl: './history.component.css'
+    selector: 'app-history',
+    imports: [
+        CommonModule,
+        UnAuthorizedComponent,
+        MatSnackBarModule,
+        MatDialogModule,
+        MatListModule,
+        DatePipe
+    ],
+    templateUrl: './history.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './history.component.css'
 })
 export class HistoryComponent implements OnInit {
 
@@ -47,7 +48,19 @@ export class HistoryComponent implements OnInit {
         }
       }
     });
-    this.service.gateway.validateToken();
+
+    this.service.gateway.get().subscribe({
+      next: () => {
+        this.service.gateway.validateToken(getTokens('session')).subscribe({
+          error: err => {
+            console.log(err);
+          }
+        });
+      },
+      error: err => {
+        console.log(err);
+      }
+    })
   }
 
   onSSO(): void {

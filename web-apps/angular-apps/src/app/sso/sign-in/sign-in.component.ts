@@ -1,0 +1,58 @@
+
+import { Component, EventEmitter, input, Input, Output, ChangeDetectionStrategy } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+
+@Component({
+    selector: 'app-sign-in',
+    imports: [
+    FormsModule,
+    MatInputModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatCheckboxModule
+],
+    templateUrl: './sign-in.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './sign-in.component.css'
+})
+export class SignInComponent {
+
+  @Input()
+  account = '';
+
+  password = '';
+
+  @Input()
+  remember = false;
+
+  @Input()
+  accountExisting: boolean = false;
+
+  @Output()
+  login: EventEmitter<void> = new EventEmitter();
+
+  @Output()
+  accountChange: EventEmitter<string> = new EventEmitter();
+
+  @Output()
+  signInChange: EventEmitter<{ account: string, password: string, remember: boolean }> = new EventEmitter<{ account: string, password: string, remember: boolean }>();
+
+  onAccountChange(): void {
+    this.accountChange.emit(this.account);
+    this.onSignInChange();
+  }
+
+  onSignInChange(): void {
+    this.signInChange.emit({ account: this.account, password: this.password, remember: this.remember });
+  }
+
+  onKeyUp(event: KeyboardEvent): void {
+    if (event.key === "Enter") {
+        this.login.next();
+    }
+  }
+}

@@ -1,21 +1,27 @@
 <div class="container">
-    <app-un-authorized *ngIf="!loading && !isLogin" (ssoSignIn)="onSSO();"></app-un-authorized>
+  @if (!loading && !isLogin) {
+    <app-un-authorized (ssoSignIn)="onSSO();"></app-un-authorized>
+  }
 
-    <div *ngIf="isLogin" class="card">
-        <div class="card-header">
-            User History
-        </div>
-        <div class="card-body">
-            <mat-list role="list">
-                <mat-list-item role="listitem" *ngFor="let item of history">
-                    <div>
-                        <div>
-                            <span> {{ item.date | date: 'yyyy-MM-dd HH:mm' }}: {{ item.name }}</span>
-                        </div>
-                        <!-- <app-preview [content]="item.payload || 'null'" /> -->
-                        <span class="text-info">{{ item.payload || 'null' }}</span>
-                    </div>
-                </mat-list-item>
-            </mat-list>
+  @if (isLogin) {
+    <div class="card">
+      <div class="card-header">
+        User History
+      </div>
+      <div class="card-body">
+        <mat-list role="list">
+          @for (item of history; track item) {
+            <mat-list-item role="listitem">
+              <div>
+                <div>
+                  <span> {{ item.date | date: 'yyyy-MM-dd HH:mm' }}: {{ item.name }}</span>
+                </div>
+                <!-- <app-preview [content]="item.payload || 'null'" /> -->
+                <span class="text-info">{{ item.payload || 'null' }}</span>
+              </div>
+            </mat-list-item>
+          }
+        </mat-list>
+      </div>
     </div>
-</div>
+  }

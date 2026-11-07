@@ -1,13 +1,13 @@
 import { HttpClient, HttpParams, HttpResponse } from "@angular/common/http";
-import { AfterViewInit, Component } from "@angular/core";
+import { AfterViewInit, Component, ChangeDetectionStrategy } from "@angular/core";
 import { lastValueFrom, retry } from "rxjs";
 
 @Component({
-  selector: "app-orders",
-  standalone: true,
-  imports: [],
-  templateUrl: "./orders.component.html",
-  styleUrl: "./orders.component.css",
+    selector: "app-orders",
+    imports: [],
+    templateUrl: "./orders.component.html",
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: "./orders.component.css"
 })
 export class OrdersComponent implements AfterViewInit {
   constructor(private http: HttpClient) {}

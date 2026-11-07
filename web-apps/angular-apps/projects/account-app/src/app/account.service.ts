@@ -1,8 +1,9 @@
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { EventQueryResult, getUser, Profile, UserAccount, UserPost, UserRole, UserTask } from "@phantom-chen/cloud77";
-import { GatewayService, getTokens, getUserEmail } from "@shared/utils";
-import { Observable, Subject } from "rxjs";
+import { EventQueryResult, Profile, UserAccount, UserPost, UserTask } from "@phantom-chen/cloud77";
+import { userEmail } from "@shared/storages";
+import { GatewayService } from "@shared/services";
+import { Observable } from "rxjs";
 
 export interface IHandleHttpError {
   handleHttpError(response: HttpErrorResponse): void
@@ -30,17 +31,17 @@ export class AccountService {
   }
 
   getAccountInfo(): Observable<UserAccount> {
-    const email = getUserEmail();
+    const email = userEmail('session');
     return this.http.get<UserAccount>(`/api/user/accounts/${email}`);
   }
 
   getHistory(): Observable<EventQueryResult> {
-    const email = getUserEmail();
+    const email = userEmail('session');
     return this.http.get<EventQueryResult>(`/api/super/events/${email}`);
   }
 
   updateProfile(profile: Profile) {
-    const email = getUserEmail();
+    const email = userEmail('session');
     return this.http
       .put(`/api/user/accounts/${email}/profile`, profile)
       .subscribe((res) => console.log(res));
@@ -102,12 +103,12 @@ export class AccountService {
   }
 
   getFiles(): Observable<string[]> {
-    const email = getUserEmail();
+    const email = userEmail('session');
     return this.http.get<string[]>(`/api/sample/files`);
   }
 
   uploadFile(form: FormData): Observable<any> {
-    const email = getUserEmail();
+    const email = userEmail('session');
     return this.http.post("/api/sample/files", form, {
       reportProgress: true,
       observe: "events",
@@ -115,7 +116,7 @@ export class AccountService {
   }
 
   downloadFile(fileName: string): Observable<Blob> {
-    const email = getUserEmail();
+    const email = userEmail('session');
     return this.http.get(`/api/sample/files/${fileName}`, {
       responseType: "blob",
       headers: {
@@ -125,12 +126,12 @@ export class AccountService {
   }
 
   deleteFile(fileName: string): Observable<any> {
-    const email = getUserEmail();
+    const email = userEmail('session');
     return this.http.delete(`/api/sample/files/${fileName}`);
   }
 
   verifyEmail(): Observable<any> {
-    const email = getUserEmail();
+    const email = userEmail('session');
     return this.http.post(
       `/api/user/accounts/${email}/verification`,
       undefined

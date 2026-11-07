@@ -1,11 +1,10 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatCommonModule } from '@angular/material/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthorEntity, AuthorResult, DefaultResponse } from '@phantom-chen/cloud77';
@@ -14,21 +13,20 @@ import { AuthorDialogComponent } from '../author-dialog/author-dialog.component'
 const duration: number = 2000;
 
 @Component({
-  selector: 'app-authors',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatCommonModule,
-    MatButtonModule,
-    MatCheckboxModule,
-    MatCardModule,
-    MatDialogModule,
-    MatSnackBarModule,
-    DatePipe
-  ],
-  templateUrl: './authors.component.html',
-  styleUrl: './authors.component.css',
+    selector: 'app-authors',
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatButtonModule,
+        MatCheckboxModule,
+        MatCardModule,
+        MatDialogModule,
+        MatSnackBarModule,
+        DatePipe
+    ],
+    templateUrl: './authors.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './authors.component.css'
 })
 export class AuthorsComponent implements AfterViewInit {
 

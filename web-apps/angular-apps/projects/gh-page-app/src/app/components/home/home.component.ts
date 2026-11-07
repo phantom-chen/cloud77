@@ -1,5 +1,5 @@
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Component, Inject, OnInit, PLATFORM_ID, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SharedModule } from '@shared/shared.module';
 import { Guid } from 'guid-typescript';
@@ -7,15 +7,14 @@ import drawing from '@phantom-chen/cloud77/service/drawing'
 import { fromEvent } from 'rxjs';
 
 @Component({
-  selector: 'app-home',
-  standalone: true,
-  imports: [
-    CommonModule,
+    selector: 'app-home',
+    imports: [
     FormsModule,
     SharedModule
-  ],
-  templateUrl: './home.component.html',
-  styleUrl: './home.component.css'
+],
+    templateUrl: './home.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './home.component.css'
 })
 export class HomeComponent implements OnInit {
   title = 'Cloud77 GitHub Pages';

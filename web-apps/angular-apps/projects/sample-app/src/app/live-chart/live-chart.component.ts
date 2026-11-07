@@ -1,6 +1,6 @@
-import { CommonModule } from '@angular/common';
+
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ChartConfiguration, ChartType } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartData, HubService } from './hub-service';
@@ -10,17 +10,16 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-live-chart',
-  standalone: true,
-  imports: [
-    CommonModule,
+    selector: 'app-live-chart',
+    imports: [
     FormsModule,
     MatButtonModule,
     MatSnackBarModule,
-    BaseChartDirective,
-  ],
-  templateUrl: './live-chart.component.html',
-  styleUrl: './live-chart.component.css'
+    BaseChartDirective
+],
+    templateUrl: './live-chart.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './live-chart.component.css'
 })
 export class LiveChartComponent {
 

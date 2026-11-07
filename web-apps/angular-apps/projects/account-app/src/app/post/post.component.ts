@@ -1,25 +1,23 @@
-import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
+
+import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AccountService } from '../account.service';
-import { MatCommonModule } from '@angular/material/core';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatButtonModule } from '@angular/material/button';
 import { UnAuthorizedComponent } from '../un-authorized/un-authorized.component';
+import { getTokens } from '@shared/storages';
 
 @Component({
-  selector: 'app-post',
-  standalone: true,
-  imports: [
-    CommonModule,
+    selector: 'app-post',
+    imports: [
     FormsModule,
-    MatCommonModule,
     MatChipsModule,
     MatButtonModule,
     UnAuthorizedComponent
-  ],
-  templateUrl: './post.component.html',
-  styleUrl: './post.component.css'
+],
+    templateUrl: './post.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './post.component.css'
 })
 export class PostComponent implements OnInit {
 
@@ -38,7 +36,19 @@ export class PostComponent implements OnInit {
         }
       }
     });
-    this.service.gateway.validateToken();
+
+    this.service.gateway.get().subscribe({
+      next: () => {
+        this.service.gateway.validateToken(getTokens('session')).subscribe({
+          error: err => {
+            console.log(err);
+          }
+        });
+      },
+      error: err => {
+        console.log(err);
+      }
+    })
   }
 
   loading: boolean = true;

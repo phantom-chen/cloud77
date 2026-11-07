@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, ChangeDetectionStrategy } from "@angular/core";
 
 @Component({
     selector: 'app-card-title',
@@ -12,6 +12,7 @@ import { Component, Input } from "@angular/core";
       <svg class="material-icons" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
     </span>
   `,
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./card.css']
 })
 export class CardTitleComponent {
@@ -29,6 +30,7 @@ export class CardTitleComponent {
       <span>{{ content }}</span>
     </a>
     `,
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./card.css']
   })
   export class CardComponent {
@@ -50,6 +52,7 @@ export class CardTitleComponent {
       </a>
     </div>
     `,
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./card.css']
   })
   export class SmallCardComponent {
@@ -63,6 +66,7 @@ export class CardTitleComponent {
   @Component({
     selector: 'app-social',
     standalone: true,
+    changeDetection: ChangeDetectionStrategy.Eager,
     template: `
     <style>
       .circle-link {

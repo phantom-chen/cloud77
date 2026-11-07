@@ -1,14 +1,14 @@
-import { CommonModule } from "@angular/common";
-import { AfterViewInit, Component, OnInit } from "@angular/core";
+
+import { AfterViewInit, Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { removeTokens } from "@shared/utils";
+import { removeTokens } from "@shared/storages";
 
 @Component({
-  selector: "app-logout",
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: "./logout.component.html",
-  styleUrl: "./logout.component.css",
+    selector: "app-logout",
+    imports: [],
+    templateUrl: "./logout.component.html",
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: "./logout.component.css"
 })
 export class LogoutComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
@@ -17,7 +17,7 @@ export class LogoutComponent implements OnInit, AfterViewInit {
       // Handle the received message here
     };
     console.log("logout");
-    removeTokens();
+    removeTokens('session');
     console.log("go to login page");
     console.log("read related sites from storage");
     console.log("verify logout code / token");

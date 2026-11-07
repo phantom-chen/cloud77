@@ -396,8 +396,8 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
 **/yarn.lock
-**/.vscode
 **/dist
 **/build
 **/.angular

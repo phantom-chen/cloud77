@@ -1,10 +1,9 @@
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 // import { AngularUiComponent } from 'my-angular-ui';
 import { AngularUiComponent } from '../../../angular-ui/src/public-api';
 import { MatTabsModule } from '@angular/material/tabs';
-import { MatCommonModule } from '@angular/material/core';
 import { HomeComponent } from "./components/home/home.component";
 import { DiagramComponent } from "./components/diagram/diagram.component";
 import { MaterialComponent } from "./components/material/material.component";
@@ -17,13 +16,10 @@ import { ObserverComponent } from './components/observer/observer.component';
 import { CloneComponent } from './components/clone/clone.component';
 
 @Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [
+    selector: 'app-root',
+    imports: [
     RouterOutlet,
-    CommonModule,
     AngularUiComponent,
-    MatCommonModule,
     MatTabsModule,
     SharedModule,
     HomeComponent,
@@ -36,8 +32,9 @@ import { CloneComponent } from './components/clone/clone.component';
     ObserverComponent,
     CloneComponent
 ],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+    templateUrl: './app.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './app.component.css'
 })
 export class AppComponent {
 

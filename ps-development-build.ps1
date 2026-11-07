@@ -139,11 +139,11 @@ switch ($action) {
         break;
     }
     'stop-services' {
+        Stop-Service -port 7710
         Stop-Service -port 7711
         Stop-Service -port 7712
         Stop-Service -port 7713
         Stop-Service -port 7715
-        Stop-Service -port 7710
         break;
     }
     'start-sso' {
@@ -175,10 +175,10 @@ switch ($action) {
     }
     '' {
         Write-Host "Supported commands" -ForegroundColor Green
-        Write-Host "  start-services -services gateway,sample,user,super,canteen" -ForegroundColor Green
-        Write-Host "  stop-services" -ForegroundColor Green
-        Write-Host "  start-sso" -ForegroundColor Green
-        Write-Host "  info" -ForegroundColor Green
+        Write-Host "-action start-services -services 'gateway,sample,user,super,canteen'" -ForegroundColor Green
+        Write-Host "-action stop-services" -ForegroundColor Green
+        Write-Host "-action start-sso" -ForegroundColor Green
+        Write-Host "-action info" -ForegroundColor Green
         break;
     }
     Default {

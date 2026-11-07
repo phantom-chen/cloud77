@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { reverseString } from './reverse-string';
-import { convertFromBase64, convertToBase64, hashString } from '@shared/utils';
-import { CommonModule } from '@angular/common';
+import { hashString } from '@shared/utils';
+
 import { FormsModule } from '@angular/forms';
 
 const codes = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -17,14 +17,13 @@ export function generateUniqueId(length: number): string {
 }
 
 @Component({
-  selector: 'app-toolbox',
-  standalone: true,
-  imports: [
-    CommonModule,
+    selector: 'app-toolbox',
+    imports: [
     FormsModule
-  ],
-  templateUrl: './toolbox.component.html',
-  styleUrl: './toolbox.component.css'
+],
+    templateUrl: './toolbox.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './toolbox.component.css'
 })
 export class ToolboxComponent {
 
@@ -51,13 +50,15 @@ export class ToolboxComponent {
 
   encrypt(): void {
     console.log(this.encryptSource);
-    this.encryptResult = convertToBase64(this.encryptSource);
+    // this.encryptResult = convertToBase64(this.encryptSource);
+    this.encryptResult = 'todo';
     console.log(this.encryptResult);
   }
 
   decrypt(): void {
     if (this.decryptSource !== '') {
-      this.decryptResult = convertFromBase64(this.decryptSource);
+      // this.decryptResult = convertFromBase64(this.decryptSource);
+      this.decryptResult = 'todo';
     }
   }
 

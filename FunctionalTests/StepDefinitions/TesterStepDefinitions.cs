@@ -22,8 +22,8 @@ namespace FunctionalTests.StepDefinitions
         public void UseAdministratorAccount()
         {
             string root = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                "MyServer", "users");
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                "server", "users");
 
             if (!Directory.Exists(root))
             {

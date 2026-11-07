@@ -1,7 +1,6 @@
-import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
+
+import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatCommonModule } from '@angular/material/core';
 import { MatCardModule } from "@angular/material/card";
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -9,17 +8,15 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { SNACKBAR_DURATION } from '@shared/utils';
+import { SNACKBAR_DURATION } from '@shared/constants';
 import { UnAuthorizedComponent } from '../un-authorized/un-authorized.component';
 import { AccountService } from '../account.service';
+import { getTokens } from '@shared/storages';
 
 @Component({
-  selector: 'app-setting',
-  standalone: true,
-  imports: [
-    CommonModule,
+    selector: 'app-setting',
+    imports: [
     FormsModule,
-    MatCommonModule,
     MatCheckboxModule,
     MatCardModule,
     MatFormFieldModule,
@@ -27,9 +24,10 @@ import { AccountService } from '../account.service';
     MatButtonModule,
     MatSnackBarModule,
     UnAuthorizedComponent
-  ],
-  templateUrl: './setting.component.html',
-  styleUrl: './setting.component.css'
+],
+    templateUrl: './setting.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './setting.component.css'
 })
 export class SettingComponent implements OnInit {
   constructor(
@@ -47,7 +45,19 @@ export class SettingComponent implements OnInit {
         }
       }
     });
-    this.service.gateway.validateToken();
+
+    this.service.gateway.get().subscribe({
+      next: () => {
+        this.service.gateway.validateToken(getTokens('session')).subscribe({
+          error: err => {
+            console.log(err);
+          }
+        });
+      },
+      error: err => {
+        console.log(err);
+      }
+    })
   }
 
   onSSO(): void {

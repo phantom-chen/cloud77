@@ -1,6 +1,9 @@
 import { Pipe, PipeTransform } from "@angular/core";
 
-@Pipe({ name: "taskState" })
+@Pipe({
+    name: "taskState",
+    standalone: false
+})
 export class TaskStatePipe implements PipeTransform {
     public transform(state: number): string {
         if (state === 0) {

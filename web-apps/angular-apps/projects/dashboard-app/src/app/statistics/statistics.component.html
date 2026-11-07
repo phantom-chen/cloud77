@@ -1,23 +1,25 @@
 <div class="container">
 
-    <div *ngIf="!isLogin && !loading">
-        <p class="text-danger">Not authorized!</p>
-        <button (click)="onSSO()">Sign In with SSO</button>
+  @if (!isLogin && !loading) {
+    <div>
+      <p class="text-danger">Not authorized!</p>
+      <button (click)="onSSO()">Sign In with SSO</button>
     </div>
+  }
 
-    <div *ngIf="isLogin">
-        <div class="col-lg-12 row" style="display: flex;">
-            <ngx-charts-pie-chart [view]="view" [scheme]="'cool'"
-                [results]="single2" [gradient]="gradient" [legend]="showLegend" [labels]="showLabels"
-                [doughnut]="isDoughnut"></ngx-charts-pie-chart>
-        </div>
-
-        <div class="col-lg-12 row" style="display: flex;">
-            <ngx-charts-pie-chart [view]="view" [scheme]="'cool'"
-                [results]="single" [gradient]="gradient" [legend]="showLegend" [labels]="showLabels"
-                [doughnut]="isDoughnut">
-            </ngx-charts-pie-chart>
-
-        </div>
+  @if (isLogin) {
+    <div>
+      <div class="col-lg-12 row" style="display: flex;">
+        <ngx-charts-pie-chart [view]="view" [scheme]="'cool'"
+          [results]="single2" [gradient]="gradient" [legend]="showLegend" [labels]="showLabels"
+        [doughnut]="isDoughnut"></ngx-charts-pie-chart>
+      </div>
+      <div class="col-lg-12 row" style="display: flex;">
+        <ngx-charts-pie-chart [view]="view" [scheme]="'cool'"
+          [results]="single" [gradient]="gradient" [legend]="showLegend" [labels]="showLabels"
+          [doughnut]="isDoughnut">
+        </ngx-charts-pie-chart>
+      </div>
     </div>
+  }
 </div>

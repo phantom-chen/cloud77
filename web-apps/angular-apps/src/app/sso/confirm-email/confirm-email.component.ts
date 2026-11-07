@@ -1,27 +1,24 @@
-import { CommonModule } from "@angular/common";
+
 import { HttpClient } from "@angular/common/http";
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
-import { MatCommonModule } from "@angular/material/core";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { ActivatedRoute } from "@angular/router";
 import { DefaultResponse } from "@phantom-chen/cloud77";
 
 @Component({
-  selector: "app-confirm-email",
-  standalone: true,
-  imports: [
-    CommonModule,
+    selector: "app-confirm-email",
+    imports: [
     FormsModule,
-    MatCommonModule,
     MatInputModule,
     MatFormFieldModule,
-    MatButtonModule,
-  ],
-  templateUrl: "./confirm-email.component.html",
-  styleUrl: "./confirm-email.component.css",
+    MatButtonModule
+],
+    templateUrl: "./confirm-email.component.html",
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: "./confirm-email.component.css"
 })
 export class ConfirmEmailComponent implements OnInit {
   constructor(private route: ActivatedRoute, private http: HttpClient) {}

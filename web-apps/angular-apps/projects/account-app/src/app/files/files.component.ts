@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
+
+import { Component, ElementRef, Inject, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { UnAuthorizedComponent } from '../un-authorized/un-authorized.component';
 import { AccountService } from '../account.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -8,21 +8,21 @@ import { MatSelectModule } from "@angular/material/select";
 import { MatListModule, MatSelectionListChange } from '@angular/material/list';
 import { HttpErrorResponse, HttpProgressEvent } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
+import { getTokens } from '@shared/storages';
 
 @Component({
-  selector: 'app-files',
-  standalone: true,
-  imports: [
-    CommonModule,
+    selector: 'app-files',
+    imports: [
     UnAuthorizedComponent,
     MatSnackBarModule,
     MatDialogModule,
     MatSelectModule,
     MatListModule,
     MatButtonModule
-  ],
-  templateUrl: './files.component.html',
-  styleUrl: './files.component.css'
+],
+    templateUrl: './files.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './files.component.css'
 })
 export class FilesComponent implements OnInit {
 
@@ -55,7 +55,19 @@ export class FilesComponent implements OnInit {
         }
       }
     });
-    this.service.gateway.validateToken();
+
+    this.service.gateway.get().subscribe({
+      next: () => {
+        this.service.gateway.validateToken(getTokens('session')).subscribe({
+          error: err => {
+            console.log(err);
+          }
+        });
+      },
+      error: err => {
+        console.log(err);
+      }
+    })
   }
 
   onSSO(): void {

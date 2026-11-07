@@ -1,21 +1,18 @@
-import { CommonModule, DOCUMENT } from '@angular/common';
-import { Component, HostListener, OnInit, Inject } from '@angular/core';
+
+import { Component, HostListener, OnInit, Inject, DOCUMENT, ChangeDetectionStrategy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCommonModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { BehaviorSubject, tap } from 'rxjs';
 
 @Component({
-  selector: 'app-banner',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatCommonModule,
+    selector: 'app-banner',
+    imports: [
     MatButtonModule,
     MatIconModule
-  ],
-  templateUrl: './banner.component.html',
-  styleUrl: './banner.component.css'
+],
+    templateUrl: './banner.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './banner.component.css'
 })
 export class BannerComponent implements OnInit {
   isFullScreen = false;

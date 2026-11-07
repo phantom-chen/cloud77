@@ -1,19 +1,18 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { CommonModule } from '@angular/common';
+
 import { MarkdownModule } from 'ngx-markdown';
 
 @Component({
-  selector: 'app-posts',
-  standalone: true,
-  imports: [
-    CommonModule,
+    selector: 'app-posts',
+    imports: [
     FormsModule,
     MarkdownModule
-  ],
-  templateUrl: './posts.component.html',
-  styleUrl: './posts.component.css'
+],
+    templateUrl: './posts.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './posts.component.css'
 })
 export class PostsComponent implements AfterViewInit {
   data = '# hello world'

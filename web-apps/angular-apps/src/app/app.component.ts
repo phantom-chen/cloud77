@@ -1,7 +1,7 @@
-import { AfterViewInit, Component, HostListener } from '@angular/core';
+import { AfterViewInit, Component, HostListener, ChangeDetectionStrategy } from '@angular/core';
 import { NavigationEnd, NavigationStart, Router, RouterModule } from '@angular/router';
 import { SharedModule } from './shared/shared.module';
-import { CommonModule } from '@angular/common';
+
 
 function yourMethod() {
   console.log('HTML is reloading');
@@ -25,15 +25,14 @@ function yourMethod3() {
 }
 
 @Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [
-    CommonModule,
+    selector: 'app-root',
+    imports: [
     RouterModule,
     SharedModule
-  ],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+],
+    templateUrl: './app.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './app.component.css'
 })
 export class AppComponent implements AfterViewInit {
 
@@ -47,8 +46,8 @@ export class AppComponent implements AfterViewInit {
   noHeader: boolean = false;
 
   @HostListener('window:storage')
-  onStorageChange(event: any) {
-    console.log('change...', event);
+  onStorageChange() {
+    console.log('storage change...');
     // console.log(localStorage.getItem('1'))
   }
 

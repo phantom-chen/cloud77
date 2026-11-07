@@ -1,6 +1,6 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { CommonModule } from '@angular/common';
+
 import { DragDropModule } from '@angular/cdk/drag-drop';
 
 import { AccountService } from '../account.service';
@@ -14,12 +14,11 @@ import { UserTask } from '@phantom-chen/cloud77';
 import { TaskDialogComponent } from '../task-dialog/task-dialog.component';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatButtonModule } from '@angular/material/button';
+import { getTokens } from '@shared/storages';
 
 @Component({
-  selector: 'app-tasks',
-  standalone: true,
-  imports: [
-    CommonModule,
+    selector: 'app-tasks',
+    imports: [
     UnAuthorizedComponent,
     MatButtonModule,
     MatSnackBarModule,
@@ -27,9 +26,10 @@ import { MatButtonModule } from '@angular/material/button';
     DragDropModule,
     MatProgressSpinnerModule,
     MatPaginatorModule
-  ],
-  templateUrl: './tasks.component.html',
-  styleUrl: './tasks.component.css'
+],
+    templateUrl: './tasks.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './tasks.component.css'
 })
 export class TasksComponent implements OnInit {
 
@@ -71,7 +71,19 @@ export class TasksComponent implements OnInit {
         }
       }
     });
-    this.service.gateway.validateToken();
+
+    this.service.gateway.get().subscribe({
+      next: () => {
+        this.service.gateway.validateToken(getTokens('session')).subscribe({
+          error: err => {
+            console.log(err);
+          }
+        });
+      },
+      error: err => {
+        console.log(err);
+      }
+    })
   }
 
   onSSO(): void {

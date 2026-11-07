@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
+
+import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -12,20 +12,19 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: "app-sign-up",
-  standalone: true,
-  imports: [
-    CommonModule,
+    selector: "app-sign-up",
+    imports: [
     FormsModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
     MatCheckboxModule,
     MatIconModule,
-    PasswordStrengthMeterComponent,
-  ],
-  templateUrl: "./sign-up.component.html",
-  styleUrl: "./sign-up.component.css",
+    PasswordStrengthMeterComponent
+],
+    templateUrl: "./sign-up.component.html",
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: "./sign-up.component.css"
 })
 export class SignUpComponent implements OnInit {
   constructor(

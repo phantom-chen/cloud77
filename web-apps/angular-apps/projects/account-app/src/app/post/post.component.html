@@ -1,22 +1,27 @@
 <div class="container">
-    <app-un-authorized *ngIf="!loading && !isLogin" (ssoSignIn)="onSSO();"></app-un-authorized>
+  @if (!loading && !isLogin) {
+    <app-un-authorized (ssoSignIn)="onSSO();"></app-un-authorized>
+  }
 
-    <div *ngIf="isLogin">
-
-        <div class="row">
-            <mat-chip-listbox>
-                <mat-chip-option color="primary" selected *ngFor="let tag of tags">{{ tag }}</mat-chip-option>
-            </mat-chip-listbox>
-        </div>
-
-        <div class="row">
-            <mat-chip-listbox>
-                <mat-chip-option color="primary" selected *ngFor="let tag of themes">{{ tag }}</mat-chip-option>
-            </mat-chip-listbox>
-        </div>
-
-        <p>Collection: xxx</p>
-        <p>Description: xxx</p>
-        <p>Created at: xxx</p>        
+  @if (isLogin) {
+    <div>
+      <div class="row">
+        <mat-chip-listbox>
+          @for (tag of tags; track tag) {
+            <mat-chip-option color="primary" selected>{{ tag }}</mat-chip-option>
+          }
+        </mat-chip-listbox>
+      </div>
+      <div class="row">
+        <mat-chip-listbox>
+          @for (tag of themes; track tag) {
+            <mat-chip-option color="primary" selected>{{ tag }}</mat-chip-option>
+          }
+        </mat-chip-listbox>
+      </div>
+      <p>Collection: xxx</p>
+      <p>Description: xxx</p>
+      <p>Created at: xxx</p>
     </div>
+  }
 </div>

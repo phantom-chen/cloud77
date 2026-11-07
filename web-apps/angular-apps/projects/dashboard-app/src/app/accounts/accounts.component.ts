@@ -1,6 +1,6 @@
-import { CommonModule } from "@angular/common";
+
 import { HttpClient } from "@angular/common/http";
-import { AfterViewInit, Component, Inject, OnInit } from "@angular/core";
+import { AfterViewInit, Component, Inject, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { MatPaginatorModule, PageEvent } from "@angular/material/paginator";
 import { AccountQueryResult, UserAccount } from "@phantom-chen/cloud77";
 import { DashboardService } from "../dashboard.service";
@@ -10,21 +10,21 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { Router } from "@angular/router";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
+import { getTokens } from "@shared/storages";
 
 @Component({
-  selector: "app-accounts",
-  standalone: true,
-  imports: [
-    CommonModule,
+    selector: "app-accounts",
+    imports: [
     FormsModule,
     MatPaginatorModule,
     MatButtonToggleModule,
     MatFormFieldModule,
     MatInputModule,
-    MatAutocompleteModule,
-  ],
-  templateUrl: "./accounts.component.html",
-  styleUrl: "./accounts.component.css",
+    MatAutocompleteModule
+],
+    templateUrl: "./accounts.component.html",
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: "./accounts.component.css"
 })
 export class AccountsComponent implements OnInit {
   accounts: UserAccount[] = [];
@@ -45,7 +45,7 @@ export class AccountsComponent implements OnInit {
     private http: HttpClient,
     @Inject("DashboardService") private service: DashboardService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.service.gateway.loginSession$.subscribe((res) => {
@@ -58,7 +58,19 @@ export class AccountsComponent implements OnInit {
         });
       }
     });
-    this.service.gateway.validateToken();
+
+    this.service.gateway.get().subscribe({
+      next: () => {
+        this.service.gateway.validateToken(getTokens('session')).subscribe({
+          error: err => {
+            console.log(err);
+          }
+        });
+      },
+      error: err => {
+        console.log(err);
+      }
+    })
     console.log(this.router.routerState.snapshot.url);
   }
 

@@ -1,7 +1,6 @@
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatCommonModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -17,22 +16,20 @@ export interface AppItem {
 }
 
 @Component({
-  selector: 'app-layout',
-  standalone: true,
-  imports: [
-    CommonModule,
+    selector: 'app-layout',
+    imports: [
     RouterModule,
     FormsModule,
-    MatCommonModule,
     MatSidenavModule,
     MatListModule,
     MatIconModule,
     MatToolbarModule,
     MatButtonModule,
     MatMenuModule
-  ],
-  templateUrl: './layout.component.html',
-  styleUrl: './layout.component.css'
+],
+    templateUrl: './layout.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './layout.component.css'
 })
 export class LayoutComponent {
 

@@ -1,9 +1,10 @@
-import { Component, EventEmitter, OnDestroy, Output } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, Output, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'app-un-authorized',
   standalone: true,
   templateUrl: './un-authorized.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './un-authorized.component.css'
 })
 export class UnAuthorizedComponent implements OnDestroy {

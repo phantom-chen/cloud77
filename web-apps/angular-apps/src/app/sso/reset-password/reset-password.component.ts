@@ -1,28 +1,25 @@
-import { CommonModule } from '@angular/common';
+
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCommonModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute } from '@angular/router';
 import { PasswordStrengthMeterComponent } from 'angular-password-strength-meter';
 
 @Component({
-  selector: 'app-reset-password',
-  standalone: true,
-  imports: [
-    CommonModule,
+    selector: 'app-reset-password',
+    imports: [
     FormsModule,
-    MatCommonModule,
     MatInputModule,
     MatButtonModule,
     MatFormFieldModule,
     PasswordStrengthMeterComponent
-  ],
-  templateUrl: './reset-password.component.html',
-  styleUrl: './reset-password.component.css'
+],
+    templateUrl: './reset-password.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './reset-password.component.css'
 })
 export class ResetPasswordComponent implements OnInit {
   constructor(

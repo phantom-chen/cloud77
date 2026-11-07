@@ -3,8 +3,8 @@ import { Injectable } from "@angular/core";
 import { UserRole } from "@phantom-chen/cloud77";
 import { Observable, timeout, catchError, of, map } from "rxjs";
 import { TokenValidationResult } from "./sso/sso.service";
-
-const timeoutSeconds = 3;
+import { HTTP_TIMEOUT_SECOND } from "@shared/constants";
+import { apiKey } from "@shared/storages";
 
 @Injectable()
 export class GatewayService {
@@ -12,17 +12,17 @@ export class GatewayService {
     constructor(private http: HttpClient) { }
 
     isHealth(): Observable<string> {
-        return this.http.get('/api/health', { responseType: 'text' }).pipe(timeout(timeoutSeconds * 1000));
+        return this.http.get('/api/health', { responseType: 'text' }).pipe(timeout(HTTP_TIMEOUT_SECOND * 1000));
     }
 
     get(): Observable<{ key: string }> {
-        if (!localStorage.getItem('api_key')) {
+        if (!apiKey()) {
             return this.http.get('/api/gateway').pipe(
-                timeout(timeoutSeconds * 1000),
+                timeout(HTTP_TIMEOUT_SECOND * 1000),
                 catchError(err => {
                     console.error('Caught error:', err);
                     console.error('Error fetching gateway data:', err);
-                    return of({ key: '' }); // Provide a fallback value
+                    return of({ key: '' });
                 }),
                 map((data: any) => {
                     localStorage.setItem('sso_url', data.sso);
@@ -34,7 +34,7 @@ export class GatewayService {
         }
         else {
             return new Observable(observer => {
-                observer.next({ key: localStorage.getItem('api_key') ?? '' });
+                observer.next({ key: apiKey() });
                 observer.complete();
             })
         }
@@ -43,15 +43,21 @@ export class GatewayService {
     validateToken(): Observable<TokenValidationResult> {
         return this.http.get<UserRole>(`/api/user/accounts/role`, { observe: 'response' })
             .pipe(map(res => {
-                // console.log('Token validation response:', res);
-                // console.log(res.body);
-                // console.log(res.body?.role);
-                // res.body
-                console.log('Token expiration header:', res.headers.get('x-token-expiration'));
                 return {
                     ...res.body,
                     expiration: res.headers.get('x-token-expiration') ?? ''
                 } as TokenValidationResult;
             }))
+    }
+
+    getRole(): void {
+        this.http.get('/api/sso/tokens/validation')
+        .subscribe(res => {
+            console.log('Token validation response:', res);
+            // id, message, code
+            // bad request
+            // incorrect
+            // expired
+        })
     }
 }

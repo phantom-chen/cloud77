@@ -1,15 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
-  selector: 'lib-angular-ui',
-  standalone: true,
-  imports: [],
-  template: `
+    selector: 'lib-angular-ui',
+    imports: [],
+    template: `
     <p>
       angular-ui works!
     </p>
   `,
-  styles: ``
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styles: ``
 })
 export class AngularUiComponent {
 

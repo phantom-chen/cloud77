@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, ChangeDetectionStrategy } from "@angular/core";
 
 @Component({
     selector: 'app-contact-card',
@@ -7,7 +7,10 @@ import { Component, Input } from "@angular/core";
     <h1>{{ name }}</h1>
     <p>{{ city }}</p>
   </div>
-  `})
+  `,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
+})
 export class ContactCard {
     @Input() name!: string;
     @Input() city!: string;

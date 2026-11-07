@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component } from "@angular/core";
+import { Component, ChangeDetectionStrategy } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import {
@@ -8,7 +8,7 @@ import {
 } from "@angular/material/button-toggle";
 import { MatCardModule } from "@angular/material/card";
 import { MatChipsModule } from "@angular/material/chips";
-import { MatCommonModule, MatNativeDateModule } from "@angular/material/core";
+import { MatNativeDateModule } from "@angular/material/core";
 import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatExpansionModule } from "@angular/material/expansion";
 import { MatFormFieldModule } from "@angular/material/form-field";
@@ -20,34 +20,32 @@ import { MatSelectModule } from "@angular/material/select";
 import {
   GridsterConfig,
   GridsterItem,
-  GridsterModule,
 } from "angular-gridster2";
 
 @Component({
-  selector: "app-material",
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatCommonModule,
-    MatExpansionModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatChipsModule,
-    MatNativeDateModule,
-    MatDatepickerModule,
-    MatCardModule,
-    MatListModule,
-    MatIconModule,
-    MatButtonModule,
-    MatIconModule,
-    MatGridListModule,
-    MatButtonToggleModule,
-    GridsterModule,
-  ],
-  templateUrl: "./material.component.html",
-  styleUrl: "./material.component.css",
+    selector: "app-material",
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatExpansionModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
+        MatChipsModule,
+        MatNativeDateModule,
+        MatDatepickerModule,
+        MatCardModule,
+        MatListModule,
+        MatIconModule,
+        MatButtonModule,
+        MatIconModule,
+        MatGridListModule,
+        MatButtonToggleModule,
+        GridsterModule,
+    ],
+    templateUrl: "./material.component.html",
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: "./material.component.css"
 })
 export class MaterialComponent {
   role = "role1";

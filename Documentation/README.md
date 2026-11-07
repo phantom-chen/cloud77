@@ -21,3 +21,7 @@ vscode/launch.json
     ]
 }
 ```
+
+C:\Users\xxx\Documents
+LocalApplicationData          C:\Users\xxx\AppData\Local
+UserProfile                   C:\Users\xxx

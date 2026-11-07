@@ -1,11 +1,10 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import html2canvas from 'html2canvas';
 import { MaterialDialogComponent } from '../material-dialog/material-dialog.component';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
-import { MatCommonModule } from '@angular/material/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 
@@ -24,17 +23,15 @@ const RawHTML = `
 `;
 
 @Component({
-  selector: 'app-diagram',
-  standalone: true,
-  imports: [
-    CommonModule,
+    selector: 'app-diagram',
+    imports: [
     FormsModule,
-    MatCommonModule,
     MatCardModule,
     MatButtonModule
-  ],
-  templateUrl: './diagram.component.html',
-  styleUrl: './diagram.component.css'
+],
+    templateUrl: './diagram.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './diagram.component.css'
 })
 export class DiagramComponent {
 

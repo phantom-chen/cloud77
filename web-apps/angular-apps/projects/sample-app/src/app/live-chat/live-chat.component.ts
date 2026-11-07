@@ -1,20 +1,18 @@
-import { CommonModule } from '@angular/common';
-import { Component, Injectable, OnDestroy, OnInit } from '@angular/core';
+
+import { Component, Injectable, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { Subscription } from 'rxjs';
 import { ChatSocket } from '../socket';
 
 @Component({
-  selector: 'app-live-chat',
-  standalone: true,
-  imports: [
-    CommonModule,
-  ],
-  providers: [
-    ChatSocket
-  ],
-  templateUrl: './live-chat.component.html',
-  styleUrl: './live-chat.component.css'
+    selector: 'app-live-chat',
+    imports: [],
+    providers: [
+        ChatSocket
+    ],
+    templateUrl: './live-chat.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './live-chat.component.css'
 })
 export class LiveChatComponent implements OnInit, OnDestroy {
 

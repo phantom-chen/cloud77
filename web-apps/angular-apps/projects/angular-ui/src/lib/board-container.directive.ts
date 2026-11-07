@@ -1,7 +1,8 @@
 import { Directive, ViewContainerRef } from "@angular/core";
 
 @Directive({
-    selector: '[app-board-container]'
+    selector: '[app-board-container]',
+    standalone: false
 })
 export class BoardContainerDirective {
 

@@ -3,7 +3,7 @@ import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withInterceptors, withXhr } from '@angular/common/http';
 import { TokenInterceptor } from './interceptors';
 import { DashboardService } from './dashboard.service';
 
@@ -13,6 +13,6 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideAnimationsAsync(),
     { provide: 'DashboardService', useClass: DashboardService },
-    provideHttpClient(withInterceptors([TokenInterceptor])),
+    provideHttpClient(withXhr(), withInterceptors([TokenInterceptor])),
   ]
 };

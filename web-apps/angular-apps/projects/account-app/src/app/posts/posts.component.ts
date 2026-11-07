@@ -1,7 +1,6 @@
-import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+
+import { Component, Inject, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatCommonModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterModule } from '@angular/router';
@@ -14,15 +13,13 @@ import { UnAuthorizedComponent } from '../un-authorized/un-authorized.component'
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { NuMonacoEditorComponent, NuMonacoEditorModel, NuMonacoEditorModule } from '@ng-util/monaco-editor';
+import { getTokens } from '@shared/storages';
 
 @Component({
-  selector: 'app-posts',
-  standalone: true,
-  imports: [
-    CommonModule,
+    selector: 'app-posts',
+    imports: [
     FormsModule,
     RouterModule,
-    MatCommonModule,
     MatFormFieldModule,
     MatSelectModule,
     MatButtonModule,
@@ -30,9 +27,10 @@ import { NuMonacoEditorComponent, NuMonacoEditorModel, NuMonacoEditorModule } fr
     MatIconModule,
     NuMonacoEditorModule,
     UnAuthorizedComponent
-  ],
-  templateUrl: './posts.component.html',
-  styleUrl: './posts.component.css'
+],
+    templateUrl: './posts.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrl: './posts.component.css'
 })
 export class PostsComponent implements OnInit {
 
@@ -71,7 +69,20 @@ export class PostsComponent implements OnInit {
         }
       }
     });
-    this.service.gateway.validateToken();
+
+    this.service.gateway.get().subscribe({
+      next: () => {
+        this.service.gateway.validateToken(getTokens('session')).subscribe({
+          error: err => {
+            console.log(err);
+          }
+        });
+      },
+      error: err => {
+        console.log(err);
+      }
+    })
+
     this.editor.autoFormat = true;
   }
 

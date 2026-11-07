@@ -1,7 +1,8 @@
 import { Directive, ElementRef, Renderer2, HostBinding, HostListener } from "@angular/core";
 
 @Directive({
-    selector: '[logging]'
+    selector: '[logging]',
+    standalone: false
 })
 export class LoggingDirective {
 

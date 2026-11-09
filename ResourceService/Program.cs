@@ -1,3 +1,5 @@
+using Microsoft.Extensions.FileProviders;
+
 namespace ResourceService
 {
     public class Program
@@ -20,8 +22,11 @@ namespace ResourceService
             // Configure the HTTP request pipeline.
 
             app.UseDefaultFiles();
-            
-            app.UseStaticFiles();
+
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "server", "resources"))
+            });
 
             app.UseAuthorization();
             

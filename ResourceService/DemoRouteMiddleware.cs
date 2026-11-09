@@ -18,7 +18,8 @@
 
             if (path.StartsWith("/demo/"))
             {
-                var demo = File.ReadAllText(@"./wwwroot/hello/index.html");
+                var indexhtml = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "server", "resources", "hello", "index.html");
+                var demo = File.ReadAllText(indexhtml);
                 await context.Response.WriteAsync(demo);
             }
             else

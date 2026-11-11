@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FunctionalTests
+namespace FunctionalTests.UtilityTests
 {
     [TestClass()]
-    public class UtilityTest
+    public class Format
     {
         [TestMethod()]
         public void CheckEmailFormat()

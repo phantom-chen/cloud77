@@ -49,7 +49,7 @@ function Stop-Service {
     }
 }
 
-Stop-Service -port 5096
+Stop-Service -port 7709
 Start-Sleep -Seconds 1
 Stop-Service -port 7710
 Start-Sleep -Seconds 1

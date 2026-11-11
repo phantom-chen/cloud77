@@ -25,11 +25,11 @@ namespace ResourceService
 
             app.UseStaticFiles(new StaticFileOptions()
             {
-                FileProvider = new PhysicalFileProvider(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "server", "resources"))
+                FileProvider = new PhysicalFileProvider(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "server", "wwwroot"))
             });
 
             app.UseAuthorization();
-            
+
             app.UseMiddleware<DemoRouteMiddleware>();
 
             app.MapControllers();

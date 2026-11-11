@@ -18,7 +18,7 @@ namespace FunctionalTests.StepDefinitions
             this.tester = tester;
         }
 
-        [Given(@"I am using the admininistrator account$")]
+        [Given(@"I am using the administrator account$")]
         public void UseAdministratorAccount()
         {
             string root = Path.Combine(

@@ -3,13 +3,13 @@
 A short summary of the feature
 
 Background:
-  Given I am using the admininistrator account
+	Given I am using the administrator account
 	Then My tokens are valid
 
 Scenario: Database
-  Then Gateway uses the database
-    | Database | Collections  |
-    | test_db  | Users,Events |
+	Then Gateway uses the database
+		| Database | Collections  |
+		| test_db  | Users,Events |
 
 Scenario: Get Administrator Infomation
   #And Get my account information
@@ -20,26 +20,26 @@ Scenario: Get Administrator Infomation
 
 @ignore
 Scenario: Gateway settings
-  Then Gateway has some settings
-  When Gateway creates the setting
-  Then Gateway has the setting
-  When Gateway deletes the setting
+	Then Gateway has some settings
+	When Gateway creates the setting
+	Then Gateway has the setting
+	When Gateway deletes the setting
 
 @ignore
 Scenario: Gateway cache
-  Then Gateway has the cache value "key"
-  And Gateway has the cache list "list_name"
+	Then Gateway has the cache value "key"
+	And Gateway has the cache list "list_name"
 
 @ignore
 Scenario: Gateway message queue
-  When Gateway publishes the message model
-    | Queue | Message |
-  And Gateway sends the mail to "user_email", subject "abcd"
-    """
-    this is the mail body
-    """
-  When Gateway publishes the message via MassTransit
-  | Id | Content |
+	When Gateway publishes the message model
+		| Queue | Message |
+	And Gateway sends the mail to "user_email", subject "abcd"
+		"""
+		this is the mail body
+		"""
+	And Gateway publishes the message via MassTransit
+		| Id | Content |
 
 Scenario: Query events
-  Then Gateway has some settings
+	Then Gateway has some settings

@@ -3,7 +3,7 @@
 A short summary of the feature
 
 Background:
-	Given I am using the admininistrator account
+	Given I am using the administrator account
 
 Scenario: Gateway is running
 	
@@ -12,13 +12,13 @@ Scenario: Gateway is running
 
 @set-up
 Scenario: Administrator get tokens
-	Given I am using the admininistrator account
+	Given I am using the administrator account
 	When Get my access tokens
 	Then My tokens are valid
 
 Scenario: Services are health
 
-	Given I am using the admininistrator account
+	Given I am using the administrator account
 	Then My tokens are valid
 	Given sample is health
 	And user is health

@@ -8,7 +8,7 @@ Scenario: Connect to RPC service
 
 @ignore
 Scenario: Create admin user
-	Given I am using the admininistrator account
+	Given I am using the administrator account
 	Then Check my account registered
 		| Existing |
 		| true     |

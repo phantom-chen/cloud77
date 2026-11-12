@@ -4,14 +4,14 @@ module.exports = function (app) {
     app.use(
         '/resources',
         createProxyMiddleware({
-            target: 'https://www.cloud77.top',
+            target: 'http://localhost',
             changeOrigin: true,
         })
     );
     app.use(
         '/api',
         createProxyMiddleware({
-            target: 'https://www.cloud77.top',
+            target: 'http://localhost',
             changeOrigin: true,
         })
     );

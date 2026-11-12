@@ -38,6 +38,7 @@ const Diagram: React.FC = () => {
             }
             <div style={{width:'100%'}}>
                 <GridEditor />
+                {/* <div>grid editor placeholder</div> */}
             </div>
             <div style={{ display: 'flex', width: '100%' }}>
                 <div style={{ flex: 1 }}>

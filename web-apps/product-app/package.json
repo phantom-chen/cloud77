@@ -1,7 +1,7 @@
 {
   "name": "product-app",
   "version": "0.1.0",
-  "homepage": "http://localhost",
+  "homepage": "http://myapps",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.13.3",
@@ -11,7 +11,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.5.2",
-    "@types/node": "^16.18.105",
+    "@types/node": "^22.11.0",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "apexcharts": "^3.53.0",
@@ -21,14 +21,14 @@
     "react-apexcharts": "^1.4.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.1",
-    "react-scripts": "5.0.1",
     "reaflow": "^5.3.1",
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "vite",
+    "build": "vite build",
+    "build-href": "vite build --base=/product/",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -50,5 +50,10 @@
       "last 1 safari version"
     ]
   },
-  "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610"
+  "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610",
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.7.0",
+    "vite": "^6.3.6",
+    "vite-plugin-checker": "^0.11.0"
+  }
 }

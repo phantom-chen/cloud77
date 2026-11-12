@@ -1,5 +1,6 @@
 "use client";
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
 import './App.css';
 
 import React, { Suspense, useEffect, useState } from "react";
@@ -8,14 +9,37 @@ import LoginPage from './pages/Login';
 import HomePage from './pages/Home';
 import AccountPage from './pages/Account';
 import ChatPage from './pages/Chat';
+import MessagePage from './pages/Message';
+import AccountsPage from './pages/Accounts'
+import NotFound from './pages/NotFound';
+import AccountSettings from './pages/AccountSettings';
+import AppBar from './components/AppBar';
 
-process.env.DEMO_USER = "hello";
-console.log(process.env);
+// process.env.DEMO_USER = "hello";
+// console.log(process.env);
+
+ModuleRegistry.registerModules([AllCommunityModule]);
+
+const items = [
+    { label: 'Home', href: '/', color: 'white' },
+    { label: 'SSO & Login', href: '/login', color: 'white' },
+    { label: 'Account', href: '/account', color: 'white' },
+    { label: 'Accounts', href: '/accounts', color: 'white' },
+    { label: 'Diagram', href: '/diagram', color: 'white' },
+    { label: 'Chat', href: '/chat', color: 'white' },
+    { label: 'Settings', href: '/settings', color: 'white' },
+    { label: 'Posts', href: '/posts', color: 'white' },
+    { label: 'Tasks', href: '/tasks', color: 'white' },
+    { label: 'Files', href: '/files', color: 'white' },
+    { label: 'History', href: '/history', color: 'white' },
+];
 
 function App() {
 
     const navigate = useNavigate();
     const location = useLocation();
+    const [user, setUser] = useState(sessionStorage.getItem('user') || '');
+    const [appBarItems, setAppBarItems] = useState(items);
 
     const hanleLogout = () => {
         sessionStorage.clear();
@@ -23,36 +47,40 @@ function App() {
     }
 
     useEffect(() => {
-        console.log(location);
-    }, [location]);
+        setAppBarItems(items => {
+            const activeItem = items.find(item => location.pathname.split('/')[1] === item.href.split('/')[1]);
+
+            if (activeItem) {
+                activeItem.color = '#00ff00';
+            }
+            return [...items];
+        });
+    }, [location.pathname]);
 
     return (
         <>
-            <nav>
-                <ul style={{ display: 'flex', listStyle: 'none', padding: 0, margin: 0, backgroundColor: '#333' }}>
-                    <li style={{ margin: '0 10px' }}>
-                        <a href="/" style={{ color: location.pathname === '/login' ? 'yellow' : 'white', textDecoration: 'none', padding: '10px 20px', display: 'block' }} onMouseEnter={(e) => e.currentTarget.style.color = 'yellow'} onMouseLeave={(e) => e.currentTarget.style.color = location.pathname === '/login' ? 'yellow' : 'white'}>Home</a>
-                    </li>
-                    <li style={{ margin: '0 10px' }}>
-                        <a href="/login" style={{ color: location.pathname === '/login' ? 'yellow' : 'white', textDecoration: 'none', padding: '10px 20px', display: 'block' }} onMouseEnter={(e) => e.currentTarget.style.color = 'yellow'} onMouseLeave={(e) => e.currentTarget.style.color = location.pathname === '/login' ? 'yellow' : 'white'}>Login</a>
-                    </li>
-                    <li style={{ margin: '0 10px' }}>
-                        <a href="/account" style={{ color: 'white', textDecoration: 'none', padding: '10px 20px', display: 'block' }}>Account</a>
-                    </li>
-                    <li style={{ margin: '0 10px' }}>
-                        <a href="/diagram" style={{ color: 'white', textDecoration: 'none', padding: '10px 20px', display: 'block' }}>Diagram</a>
-                    </li>
-                    <li style={{ margin: '0 10px' }}>
-                        <a href="/chat" style={{ color: 'white', textDecoration: 'none', padding: '10px 20px', display: 'block' }}>Chat</a>
-                    </li>
-                </ul>
-            </nav>
+            <AppBar items={appBarItems} />
             <Routes>
                 <Route path="" element={<HomePage />} />
                 <Route path="/login" element={<LoginPage />} />
+                <Route path="/message" element={<MessagePage />} />
+
                 <Route path="/account" element={<AccountPage />} />
+                <Route path="/account/settings" element={<AccountSettings />} />
+                {/* setting page */}
                 <Route path="/diagram" element={<DiagramPage />} />
                 <Route path="/chat" element={<ChatPage />} />
+                {/* history page */}
+                {/* posts page */}
+                {/* tasks page */}
+                {/* files page */}
+
+                {/* dashboard page */}
+                <Route path="/accounts/:email" element={<AccountPage />} />
+                <Route path="/accounts" element={<AccountsPage />} />
+
+                {/* not found page */}
+                <Route path="*" element={<NotFound />} />
             </Routes>
         </>
     );

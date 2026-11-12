@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
 import { Tester } from './pages/Tester';
 
